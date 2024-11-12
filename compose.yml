@@ -1,10 +1,11 @@
 services:
-  mariadb:
-    image: mariadb:10.10
-    container_name: mariadb
+  postgres17:
+    image: postgres:17
+    container_name: postgres
     environment:
-      - MARIADB_ROOT_PASSWORD=password
-      - MARIADB_DATABASE=node
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=engsel
     ports:
-      - 3306:3306
+      - 5432:5432
     restart: always
