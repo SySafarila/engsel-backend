@@ -2,17 +2,17 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import Joi from "joi";
-import { ErrorResponse } from "../types/ErrorResponseType";
-import { RegisterParams, RegisterResponseSuccess } from "../types/RegisterType";
+import { Register } from "../types/Requests";
+import { ErrorResponse, RegisterSuccess } from "../types/Responses";
 import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
 
 const registerController = async (req: Request, res: Response) => {
-  const { email, password, name } = req.body as RegisterParams;
+  const { email, password, name } = req.body as Register;
   const prisma = new PrismaClient();
 
   try {
-    const schema: Joi.ObjectSchema<RegisterParams> = Joi.object({
+    const schema: Joi.ObjectSchema<Register> = Joi.object({
       email: Joi.string().email().required(),
       password: Joi.string().min(8).required(),
       name: Joi.string().required(),
@@ -21,10 +21,7 @@ const registerController = async (req: Request, res: Response) => {
       abortEarly: false,
     };
 
-    await schema.validateAsync(
-      { email, password, name } as RegisterParams,
-      options
-    );
+    await schema.validateAsync({ email, password, name } as Register, options);
 
     const findUser = await prisma.user.findFirst({
       where: {
@@ -51,7 +48,7 @@ const registerController = async (req: Request, res: Response) => {
       user: {
         name: name,
       },
-    } as RegisterResponseSuccess);
+    } as RegisterSuccess);
   } catch (error: any) {
     const handler = errorHandler(error);
 

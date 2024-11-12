@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { ErrorResponse } from "../types/ErrorResponseType";
 import Locals from "../types/locals";
-import { CurrentUserResponseSuccess } from "../types/UserType";
+import { CurrentUserSuccess, ErrorResponse } from "../types/Responses";
 import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
 
@@ -31,7 +30,7 @@ const meController = async (req: Request, res: Response) => {
         updated_at: user?.updated_at,
         created_at: user?.created_at,
       },
-    } as CurrentUserResponseSuccess);
+    } as CurrentUserSuccess);
   } catch (error: any) {
     const handler = errorHandler(error);
 

@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import Cookies from "../types/Cookies";
-import { ErrorResponse } from "../types/ErrorResponseType";
 import Locals from "../types/locals";
+import { ErrorResponse } from "../types/Responses";
 import CustomError from "../utils/CustomError";
 import verifyJwt from "../utils/verifyJwt";
 

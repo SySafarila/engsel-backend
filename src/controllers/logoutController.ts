@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { ErrorResponse } from "../types/ErrorResponseType";
 import Locals from "../types/locals";
-import { LogoutResponseSuccess } from "../types/LogoutType";
+import { ErrorResponse, LogoutSuccess } from "../types/Responses";
 import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
 
@@ -32,7 +31,7 @@ const logoutController = async (req: Request, res: Response) => {
 
     res.json({
       message: "Logout success",
-    } as LogoutResponseSuccess);
+    } as LogoutSuccess);
   } catch (error: any) {
     const handler = errorHandler(error);
 

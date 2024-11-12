@@ -2,18 +2,18 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import Joi from "joi";
-import { ErrorResponse } from "../types/ErrorResponseType";
-import { LoginParams, LoginResponseSuccess } from "../types/LoginType";
+import { Login } from "../types/Requests";
+import { ErrorResponse, LoginSuccess } from "../types/Responses";
 import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
 import signJwt from "../utils/signJwt";
 
 const loginController = async (req: Request, res: Response) => {
-  const { email, password } = req.body as LoginParams;
+  const { email, password } = req.body as Login;
   const prisma = new PrismaClient();
 
   try {
-    const schema: Joi.ObjectSchema<LoginParams> = Joi.object({
+    const schema: Joi.ObjectSchema<Login> = Joi.object({
       email: Joi.string().email().required(),
       password: Joi.string().min(8).required(),
     });
@@ -21,7 +21,7 @@ const loginController = async (req: Request, res: Response) => {
       abortEarly: false,
     };
 
-    await schema.validateAsync({ email, password } as LoginParams, options);
+    await schema.validateAsync({ email, password } as Login, options);
 
     const findUser = await prisma.user.findFirst({
       where: {
@@ -57,7 +57,7 @@ const loginController = async (req: Request, res: Response) => {
     res.json({
       message: "Login success. Your token valid for 6 hours from now",
       token: token.token,
-    } as LoginResponseSuccess);
+    } as LoginSuccess);
   } catch (error: any) {
     const handler = errorHandler(error);
 
