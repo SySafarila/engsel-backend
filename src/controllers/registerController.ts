@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import Joi from "joi";
 import { Register } from "../types/Requests";
 import { ErrorResponse, RegisterSuccess } from "../types/Responses";
-import CustomError from "../utils/CustomError";
+import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
 
 const registerController = async (req: Request, res: Response) => {
@@ -30,7 +30,7 @@ const registerController = async (req: Request, res: Response) => {
     });
 
     if (findUser) {
-      throw new CustomError("User already registered", 400);
+      throw new HTTPError("User already registered", 400);
     }
 
     const hashPassword: string = bcrypt.hashSync(password, 10);

@@ -2,8 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import Locals from "../types/locals";
 import { CurrentUserSuccess, ErrorResponse } from "../types/Responses";
-import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
+import HTTPError from "../utils/HTTPError";
 
 const meController = async (req: Request, res: Response) => {
   const prisma = new PrismaClient();
@@ -17,7 +17,7 @@ const meController = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      throw new CustomError("User not found", 404);
+      throw new HTTPError("User not found", 404);
     }
 
     res.json({

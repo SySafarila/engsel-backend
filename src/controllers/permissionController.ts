@@ -12,7 +12,7 @@ import {
   PermissionDeleteSuccess,
   PermissionReadSuccess,
 } from "../types/Responses";
-import CustomError from "../utils/CustomError";
+import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
 
 export const storePermission = async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ export const storePermission = async (req: Request, res: Response) => {
     });
 
     if (check) {
-      throw new CustomError("Permission already exists", 400);
+      throw new HTTPError("Permission already exists", 400);
     }
 
     const permission = await prisma.permission.create({
@@ -82,7 +82,7 @@ export const updatePermission = async (req: Request, res: Response) => {
     });
 
     if (!check) {
-      throw new CustomError("Permission not found", 404);
+      throw new HTTPError("Permission not found", 404);
     }
 
     const permission = await prisma.permission.update({
@@ -132,7 +132,7 @@ export const deletePermission = async (req: Request, res: Response) => {
     });
 
     if (!check) {
-      throw new CustomError("Permission not found", 404);
+      throw new HTTPError("Permission not found", 404);
     }
 
     await prisma.permission.delete({

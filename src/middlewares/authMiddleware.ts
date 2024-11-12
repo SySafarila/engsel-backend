@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import Cookies from "../types/Cookies";
 import Locals from "../types/locals";
 import { ErrorResponse } from "../types/Responses";
-import CustomError from "../utils/CustomError";
+import HTTPError from "../utils/HTTPError";
 import verifyJwt from "../utils/verifyJwt";
 
 const authMiddleware = async (
@@ -23,7 +23,7 @@ const authMiddleware = async (
     }
 
     if (!jwt) {
-      throw new CustomError("Token required", 401);
+      throw new HTTPError("Token required", 401);
     }
 
     const { payload } = await verifyJwt(jwt!);
@@ -37,7 +37,7 @@ const authMiddleware = async (
     });
 
     if (!token) {
-      throw new CustomError("Token invalid", 401);
+      throw new HTTPError("Token invalid", 401);
     }
 
     const rolesAndPermissions = await prisma.user.findFirst({
@@ -86,7 +86,7 @@ const authMiddleware = async (
 
     return next();
   } catch (error: any) {
-    if (error instanceof CustomError) {
+    if (error instanceof HTTPError) {
       res.status(error.code).json({
         message: error.message,
       } as ErrorResponse);

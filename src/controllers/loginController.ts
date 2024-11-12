@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import Joi from "joi";
 import { Login } from "../types/Requests";
 import { ErrorResponse, LoginSuccess } from "../types/Responses";
-import CustomError from "../utils/CustomError";
+import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
 import signJwt from "../utils/signJwt";
 
@@ -30,7 +30,7 @@ const loginController = async (req: Request, res: Response) => {
     });
 
     if (!findUser) {
-      throw new CustomError("User not found", 404);
+      throw new HTTPError("User not found", 404);
     }
 
     const comparePassword: boolean = await bcrypt.compare(
@@ -38,7 +38,7 @@ const loginController = async (req: Request, res: Response) => {
       findUser.password
     );
     if (!comparePassword) {
-      throw new CustomError("Credentials not match", 401);
+      throw new HTTPError("Credentials not match", 401);
     }
 
     const token = await signJwt(findUser.id);

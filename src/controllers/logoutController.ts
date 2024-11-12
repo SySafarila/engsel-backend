@@ -2,8 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import Locals from "../types/locals";
 import { ErrorResponse, LogoutSuccess } from "../types/Responses";
-import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
+import HTTPError from "../utils/HTTPError";
 
 const logoutController = async (req: Request, res: Response) => {
   const { token_id } = res.locals as Locals;
@@ -17,7 +17,7 @@ const logoutController = async (req: Request, res: Response) => {
     });
 
     if (!findToken) {
-      throw new CustomError("Token not found", 404);
+      throw new HTTPError("Token not found", 404);
     }
 
     await prisma.token.update({

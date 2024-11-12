@@ -10,8 +10,8 @@ import {
   RoleReadSuccess,
   RoleUpdateSuccess,
 } from "../types/Responses";
-import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
+import HTTPError from "../utils/HTTPError";
 
 export const storeRole = async (req: Request, res: Response) => {
   const { name, level, permissions } = req.body as RoleCreate;
@@ -33,7 +33,7 @@ export const storeRole = async (req: Request, res: Response) => {
     );
 
     if (role_level_peak && role_level_peak >= level) {
-      throw new CustomError(
+      throw new HTTPError(
         `Your peak role level is ${role_level_peak}, you cannot create role with level that higher than your level. Note: lower is higher (1 > 2)`,
         400
       );
@@ -46,7 +46,7 @@ export const storeRole = async (req: Request, res: Response) => {
     });
 
     if (check) {
-      throw new CustomError("Role already exists", 400);
+      throw new HTTPError("Role already exists", 400);
     }
 
     const validPermissions: { name: string }[] = [];
@@ -135,18 +135,18 @@ export const updateRole = async (req: Request, res: Response) => {
     });
 
     if (!check) {
-      throw new CustomError("Role not found", 404);
+      throw new HTTPError("Role not found", 404);
     }
 
     if (role_level_peak && role_level_peak >= check.level) {
-      throw new CustomError(
+      throw new HTTPError(
         `Your peak role level is ${role_level_peak}, you cannot update role with level that higher than your level. Note: lower is higher (1 > 2)`,
         400
       );
     }
 
     if (role_level_peak && new_level && role_level_peak >= new_level) {
-      throw new CustomError(
+      throw new HTTPError(
         `Your peak role level is ${role_level_peak}, you cannot update role with level that higher than your level. Note: lower is higher (1 > 2)`,
         400
       );
@@ -240,11 +240,11 @@ export const deleteRole = async (req: Request, res: Response) => {
     });
 
     if (!check) {
-      throw new CustomError("Role not found", 404);
+      throw new HTTPError("Role not found", 404);
     }
 
     if (role_level_peak && role_level_peak >= check.level) {
-      throw new CustomError(
+      throw new HTTPError(
         `Your peak role level is ${role_level_peak}, you cannot delete role with level that higher than your level. Note: lower is higher (1 > 2)`,
         400
       );

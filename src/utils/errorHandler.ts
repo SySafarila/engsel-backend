@@ -1,5 +1,5 @@
 import Joi from "joi";
-import CustomError from "./CustomError";
+import HTTPError from "./HTTPError";
 import logger from "./logger";
 
 const errorHandler = (error: any): { code: number; message: string } => {
@@ -9,7 +9,7 @@ const errorHandler = (error: any): { code: number; message: string } => {
   if (error instanceof Joi.ValidationError) {
     code = 400;
     message = error.message;
-  } else if (error instanceof CustomError) {
+  } else if (error instanceof HTTPError) {
     code = error.code;
     message = error.message;
   } else {
