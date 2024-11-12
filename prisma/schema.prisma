@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  email       String    @unique @db.VarChar(255)
+  password    String
+  verified_at DateTime?
+  updated_at  DateTime  @default(now())
+  created_at  DateTime  @default(now())
+  roles       Role[]
+  tokens      Token[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique @db.VarChar(255)
+  level       Int          @default(100) @db.TinyInt
+  updated_at  DateTime     @default(now())
+  created_at  DateTime     @default(now())
+  users       User[]
+  permissions Permission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(255)
+  updated_at DateTime @default(now())
+  created_at DateTime @default(now())
+  roles      Role[]
+
+  @@map("permissions")
+}
+
+model Token {
+  id         Int      @id @default(autoincrement())
+  token_id   String   @db.VarChar(255)
+  is_active  Boolean  @default(true)
+  device     String   @default("-") @db.VarChar(255)
+  updated_at DateTime @default(now())
+  created_at DateTime @default(now())
+  users      User[]
+
+  @@map("tokens")
+}

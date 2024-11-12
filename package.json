@@ -1,0 +1,56 @@
+{
+  "name": "nodejs-backend",
+  "version": "0.0.7",
+  "description": "a boilerplate for backend with Express",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "npm i semver && npm i --save-dev ts-node && ts-node semver.ts",
+    "start": "ts-node src/index.ts",
+    "build": "ts-node semver.ts && npx tsc -b",
+    "test": "jest --verbose",
+    "semver": "ts-node semver.ts"
+  },
+  "keywords": [
+    "express",
+    "typescript",
+    "node"
+  ],
+  "author": "Syahrul Safarila",
+  "email": "sysafarila.official@gmail.com",
+  "url": "https://sysafarila.my.id",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "joi": "^17.13.3",
+    "jose": "^5.6.3",
+    "semver": "^7.6.3",
+    "winston": "^3.13.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-typescript": "^7.24.7",
+    "@jest/globals": "^29.7.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.11",
+    "@types/semver": "^7.5.8",
+    "@types/supertest": "^6.0.2",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "prisma": "^5.17.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  }
+}

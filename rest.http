@@ -1,0 +1,63 @@
+# use it with VSCode extensions: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+GET http://localhost:3000/auth/me
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCR1M2kxUnpTZVlrTjJLZlA4ZjNTZi8uIn0.eyJ1c2VyX2lkIjoxLCJyYW5kb21pemVyIjoxNzIxNzg5NTc4NTE2LCJ0b2tlbl9pZCI6IiQyYiQxMCR1M2kxUnpTZVlrTjJLZlA4ZjNTZi8uIiwiaWF0IjoxNzIxNzg5NTc4LCJleHAiOjE3MjE4MTExNzh9.aiCaVSsqanQC_7KwpoBIDwB85PwsK6dXtQUMS3yy6HM
+
+###
+
+POST http://localhost:3000/auth/login
+content-type: application/json
+
+{
+    "email": "super.admin@admin.com",
+    "password": "password"
+}
+
+###
+
+POST http://localhost:3000/auth/register
+content-type: application/json
+
+{
+    "email": "sysafarila@email.com",
+    "password": "password",
+    "name": "Syahrul"
+}
+
+###
+
+PUT http://localhost:3000/permissions
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCRIeWdwSG5QWnZtUVguZEJHWGhXcDJ1In0.eyJ1c2VyX2lkIjoxLCJyYW5kb21pemVyIjoxNzIyMTQ3NjE0MjE0LCJ0b2tlbl9pZCI6IiQyYiQxMCRIeWdwSG5QWnZtUVguZEJHWGhXcDJ1IiwiaWF0IjoxNzIyMTQ3NjE0LCJleHAiOjE3MjIxNjkyMTR9.0GBT9RQVsQylT41Ag33KSDdg05d8x-a6O6O_j6XQkLE
+
+{
+    "name": "permissions-readxx"
+}
+
+###
+
+GET http://localhost:3000/permissions
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCRkUmxrZ3M5WWFaYmsyOHRNTXJ4bmV1In0.eyJ1c2VyX2lkIjoxLCJyYW5kb21pemVyIjoxNzIyMzEwMDgzNzQzLCJ0b2tlbl9pZCI6IiQyYiQxMCRkUmxrZ3M5WWFaYmsyOHRNTXJ4bmV1IiwiaWF0IjoxNzIyMzEwMDgzLCJleHAiOjE3MjIzMzE2ODN9.Ca39UqnpJSGAUlRCjR1QhlBGrCHiWHUoqPmnfcBpWAU
+
+###
+
+PATCH  http://localhost:3000/permissions
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCRkUmxrZ3M5WWFaYmsyOHRNTXJ4bmV1In0.eyJ1c2VyX2lkIjoxLCJyYW5kb21pemVyIjoxNzIyMzEwMDgzNzQzLCJ0b2tlbl9pZCI6IiQyYiQxMCRkUmxrZ3M5WWFaYmsyOHRNTXJ4bmV1IiwiaWF0IjoxNzIyMzEwMDgzLCJleHAiOjE3MjIzMzE2ODN9.Ca39UqnpJSGAUlRCjR1QhlBGrCHiWHUoqPmnfcBpWAU
+
+{
+    "name": "permissions-readx",
+    "new_name": "permissions-readx2"
+}
+
+###
+
+DELETE   http://localhost:3000/permissions
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCRkUmxrZ3M5WWFaYmsyOHRNTXJ4bmV1In0.eyJ1c2VyX2lkIjoxLCJyYW5kb21pemVyIjoxNzIyMzEwMDgzNzQzLCJ0b2tlbl9pZCI6IiQyYiQxMCRkUmxrZ3M5WWFaYmsyOHRNTXJ4bmV1IiwiaWF0IjoxNzIyMzEwMDgzLCJleHAiOjE3MjIzMzE2ODN9.Ca39UqnpJSGAUlRCjR1QhlBGrCHiWHUoqPmnfcBpWAU
+
+{
+    "name": "permissions-readx2"
+}
