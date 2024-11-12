@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "npm i semver && npm i --save-dev ts-node && ts-node semver.ts",
-    "start": "ts-node src/index.ts",
-    "dev": "npm run start",
+    "start": "node ./dist/index.js",
+    "dev": "node ./dist/index.js",
     "build": "ts-node semver.ts && npx tsc -b",
     "test": "jest --verbose",
     "semver": "ts-node semver.ts"

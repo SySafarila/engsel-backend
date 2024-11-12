@@ -1,14 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { ErrorResponse } from "../types/ErrorResponseType";
-import SignedResponseType from "../types/SignedResponseType";
+import Locals from "../types/locals";
 import { CurrentUserResponseSuccess } from "../types/UserType";
 import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
 
-const meController = async (req: Request, res: SignedResponseType) => {
+const meController = async (req: Request, res: Response) => {
   const prisma = new PrismaClient();
-  const { user_id } = res.locals;
+  const { user_id } = res.locals as Locals;
 
   try {
     const user = await prisma.user.findFirst({

@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import Joi from "joi";
 import { ErrorResponse } from "../types/ErrorResponseType";
+import Locals from "../types/locals";
 import {
   DeleteParams,
   DeleteResponseSuccess,
@@ -11,13 +12,12 @@ import {
   UpdateParams,
   UpdateResponseSuccess,
 } from "../types/RoleType";
-import SignedResponseType from "../types/SignedResponseType";
 import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
 
-export const storeRole = async (req: Request, res: SignedResponseType) => {
+export const storeRole = async (req: Request, res: Response) => {
   const { name, level, permissions } = req.body as StoreParams;
-  const { role_level_peak } = res.locals;
+  const { role_level_peak } = res.locals as Locals;
   const prisma = new PrismaClient();
   try {
     const schema: Joi.ObjectSchema<StoreParams> = Joi.object({
@@ -95,10 +95,10 @@ export const storeRole = async (req: Request, res: SignedResponseType) => {
   }
 };
 
-export const updateRole = async (req: Request, res: SignedResponseType) => {
+export const updateRole = async (req: Request, res: Response) => {
   const { name, new_name, new_level, new_permissions } =
     req.body as UpdateParams;
-  const { role_level_peak } = res.locals;
+  const { role_level_peak } = res.locals as Locals;
   const prisma = new PrismaClient();
   try {
     const schema: Joi.ObjectSchema<UpdateParams> = Joi.object({
@@ -223,9 +223,9 @@ export const updateRole = async (req: Request, res: SignedResponseType) => {
   }
 };
 
-export const deleteRole = async (req: Request, res: SignedResponseType) => {
+export const deleteRole = async (req: Request, res: Response) => {
   const { name } = req.body as DeleteParams;
-  const { role_level_peak } = res.locals;
+  const { role_level_peak } = res.locals as Locals;
   const prisma = new PrismaClient();
   try {
     const schema: Joi.ObjectSchema<DeleteParams> = Joi.object({

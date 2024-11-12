@@ -1,21 +1,21 @@
 import { PrismaClient } from "@prisma/client";
-import { NextFunction, Request } from "express";
+import { NextFunction, Request, Response } from "express";
 import Cookies from "../types/Cookies";
 import { ErrorResponse } from "../types/ErrorResponseType";
-import SignedResponseType from "../types/SignedResponseType";
+import Locals from "../types/locals";
 import CustomError from "../utils/CustomError";
 import verifyJwt from "../utils/verifyJwt";
 
 const authMiddleware = async (
   req: Request,
-  res: SignedResponseType,
+  res: Response,
   next: NextFunction
 ) => {
   try {
+    const locals = res.locals as Locals;
     const cookies: Cookies = req.cookies;
     const prisma = new PrismaClient();
     const { authorization } = req.headers;
-
     let jwt = authorization?.split("Bearer ")[1];
 
     if (cookies.access_token) {
@@ -59,7 +59,7 @@ const authMiddleware = async (
       },
     });
 
-    let role_level_peak: number | undefined = undefined;
+    let role_level_peak: Locals["role_level_peak"];
     const roles: string[] = [];
     const permissions: string[] = [];
 
@@ -77,12 +77,12 @@ const authMiddleware = async (
       });
     });
 
-    res.locals.jwt = jwt;
-    res.locals.token_id = token_id;
-    res.locals.user_id = user_id;
-    res.locals.permissions = permissions;
-    res.locals.roles = roles;
-    res.locals.role_level_peak = role_level_peak;
+    locals.jwt = jwt;
+    locals.token_id = token_id;
+    locals.user_id = user_id;
+    locals.permissions = permissions;
+    locals.roles = roles;
+    locals.role_level_peak = role_level_peak;
 
     return next();
   } catch (error: any) {

@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import { Request } from "express";
-import SignedResponseType from "../types/SignedResponseType";
+import { Request, Response } from "express";
+import { ErrorResponse } from "../types/ErrorResponseType";
+import Locals from "../types/locals";
+import { LogoutResponseSuccess } from "../types/LogoutType";
 import CustomError from "../utils/CustomError";
 import errorHandler from "../utils/errorHandler";
-import { LogoutResponseSuccess } from "../types/LogoutType";
-import { ErrorResponse } from "../types/ErrorResponseType";
 
-const logoutController = async (req: Request, res: SignedResponseType) => {
-  const { token_id } = res.locals;
+const logoutController = async (req: Request, res: Response) => {
+  const { token_id } = res.locals as Locals;
   const prisma = new PrismaClient();
 
   try {
