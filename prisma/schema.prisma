@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -30,7 +30,7 @@ model User {
 model Role {
   id          Int          @id @default(autoincrement())
   name        String       @unique @db.VarChar(255)
-  level       Int          @default(100) @db.TinyInt
+  level       Int          @default(100) @db.Integer
   updated_at  DateTime     @default(now())
   created_at  DateTime     @default(now())
   users       User[]
