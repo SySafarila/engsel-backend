@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import Joi from "joi";
+import { v7 as UUIDV7 } from "uuid";
 import {
   PermissionCreate,
   PermissionDelete,
@@ -39,6 +40,7 @@ export const storePermission = async (req: Request, res: Response) => {
 
     const permission = await prisma.permission.create({
       data: {
+        id: UUIDV7(),
         name: name,
       },
     });

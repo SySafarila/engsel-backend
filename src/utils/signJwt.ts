@@ -3,7 +3,7 @@ import * as jose from "jose";
 import JwtPayloadType from "../types/JwtPayloadType";
 
 const signJwt = async (
-  user_id: number
+  user_id: string
 ): Promise<{ token: string; payload: JwtPayloadType }> => {
   const tokenSecret = new TextEncoder().encode(process.env.JWT_SECRET);
   const token_unique = await bcrypt.genSalt(10);

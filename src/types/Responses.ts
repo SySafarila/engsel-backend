@@ -11,7 +11,7 @@ export type RegisterSuccess = {
 };
 
 export type User = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   verified_at: Date;
@@ -38,7 +38,7 @@ export type PermissionDeleteSuccess = {
 };
 
 export type Permission = {
-  id: number;
+  id: string;
   name: string;
   updated_at: Date;
   created_at: Date;
@@ -50,7 +50,7 @@ export type PermissionReadSuccess = {
 };
 
 export type Role = {
-  id: number;
+  id: string;
   name: string;
   level: number;
   updated_at: Date;

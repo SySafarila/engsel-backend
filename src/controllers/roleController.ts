@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import Joi from "joi";
+import { v7 as UUIDV7 } from "uuid";
 import Locals from "../types/locals";
 import { RoleCreate, RoleDelete, RoleUpdate } from "../types/Requests";
 import {
@@ -65,6 +66,7 @@ export const storeRole = async (req: Request, res: Response) => {
 
     const role = await prisma.role.create({
       data: {
+        id: UUIDV7(),
         name: name,
         level: level,
         permissions: {

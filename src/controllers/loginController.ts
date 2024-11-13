@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import Joi from "joi";
+import { v7 as UUIDV7 } from "uuid";
 import { Login } from "../types/Requests";
 import { ErrorResponse, LoginSuccess } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
@@ -45,6 +46,7 @@ const loginController = async (req: Request, res: Response) => {
 
     await prisma.token.create({
       data: {
+        id: UUIDV7(),
         token_id: token.payload.token_id,
         users: {
           connect: {

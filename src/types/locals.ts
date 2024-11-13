@@ -1,5 +1,5 @@
 type Locals = {
-  user_id: number;
+  user_id: string;
   jwt: string;
   token_id: string;
   permissions?: string[];

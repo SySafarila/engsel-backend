@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "users" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "password" TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE "users" (
 
 -- CreateTable
 CREATE TABLE "roles" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "level" INTEGER NOT NULL DEFAULT 100,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -24,7 +24,7 @@ CREATE TABLE "roles" (
 
 -- CreateTable
 CREATE TABLE "permissions" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -34,7 +34,7 @@ CREATE TABLE "permissions" (
 
 -- CreateTable
 CREATE TABLE "tokens" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL,
     "token_id" VARCHAR(255) NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "device" VARCHAR(255) NOT NULL DEFAULT '-',
@@ -46,30 +46,42 @@ CREATE TABLE "tokens" (
 
 -- CreateTable
 CREATE TABLE "_RoleToUser" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_PermissionToRole" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_TokenToUser" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_id_key" ON "users"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "roles_id_key" ON "roles"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "permissions_id_key" ON "permissions"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "permissions_name_key" ON "permissions"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tokens_id_key" ON "tokens"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_RoleToUser_AB_unique" ON "_RoleToUser"("A", "B");

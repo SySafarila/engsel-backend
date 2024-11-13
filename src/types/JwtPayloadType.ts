@@ -1,5 +1,5 @@
 type JwtPayloadType = {
-  user_id: number;
+  user_id: string;
   token_id: string;
   randomizer: number;
 };

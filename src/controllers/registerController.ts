@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import Joi from "joi";
+import { v7 as UUIDV7 } from "uuid";
 import { Register } from "../types/Requests";
 import { ErrorResponse, RegisterSuccess } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
@@ -37,6 +38,7 @@ const registerController = async (req: Request, res: Response) => {
 
     await prisma.user.create({
       data: {
+        id: UUIDV7(),
         name: name,
         email: email,
         password: hashPassword,
