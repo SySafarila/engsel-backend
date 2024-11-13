@@ -57,7 +57,7 @@ const loginController = async (req: Request, res: Response) => {
     });
 
     res.json({
-      message: "Login success. Your token valid for 6 hours from now",
+      message: `Login success. Your token valid for ${token.expHours} hours from now`,
       token: token.token,
     } as LoginSuccess);
   } catch (error: any) {
