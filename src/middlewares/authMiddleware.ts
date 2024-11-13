@@ -16,7 +16,7 @@ const authMiddleware = async (
     const cookies: Cookies = req.cookies;
     const prisma = new PrismaClient();
     const { authorization } = req.headers;
-    let jwt = authorization?.split("Bearer ")[1];
+    let jwt: string | undefined = authorization?.split("Bearer ")[1];
 
     if (cookies.access_token) {
       jwt = cookies.access_token;
