@@ -9,10 +9,10 @@ describe("Register a user", () => {
       .post("/auth/register")
       .accept("application/json")
       .send({
-        email: "syahrul@email.com",
+        email: "test@test.com",
         password: "password",
-        name: "Syahrul",
-        username: "SySafarila",
+        name: "test",
+        username: "test",
       });
 
     expect(res.statusCode).toBe(200);

@@ -65,8 +65,10 @@ const doncateController = async (req: Request, res: Response) => {
       },
       grossAmount: amount,
     });
-    paymentGateway.charge("QRIS");
+    await paymentGateway.charge("QRIS");
+
     let va: DonateSuccess["virtual_account"] = null;
+
     if (paymentGateway.virtualAccount) {
       va = {
         bank: "bank",

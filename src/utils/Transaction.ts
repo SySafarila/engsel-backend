@@ -1,4 +1,8 @@
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { v7 as UUIDV7 } from "uuid";
+import { MidtransQrisSuccess } from "../types/Responses";
+import HTTPError from "./HTTPError";
+import { getMidtransEndpoint, getMidtransServerKey } from "./midtrans";
 
 type TransactionParam = {
   donator: Donator;
@@ -56,6 +60,8 @@ export class MidtransTransaction
   extends Transaction
   implements TransactionInterface
 {
+  private readonly MIDTRANS_SERVER_KEY: string = getMidtransServerKey();
+  private readonly MIDTRANS_ENDPOINT: string = getMidtransEndpoint();
   readonly provider: string = "MIDTRANS";
   protected paymentMethod: string = "QRIS";
 
@@ -63,12 +69,59 @@ export class MidtransTransaction
     super(values);
   }
 
-  charge(paymentMethod: PaymentMethod): void {
-    console.log(
-      `Charge to ${this.provider} with ${this.paymentMethod} payment method`
-    );
+  async charge(paymentMethod: PaymentMethod) {
     this.paymentMethod = paymentMethod;
-    this.qris = "base64 qris";
+
+    switch (paymentMethod) {
+      case "QRIS":
+        await this.qrisCharge();
+        break;
+
+      default:
+        throw new Error("Unsupported payment method");
+        break;
+    }
+  }
+
+  private async qrisCharge(): Promise<void> {
+    try {
+      const body = {
+        payment_type: "qris",
+        transaction_details: {
+          order_id: this.transactionId,
+          gross_amount: this.grossAmount,
+        },
+        qris: {
+          acquirer: "gopay",
+        },
+      };
+
+      const axiosConfig: AxiosRequestConfig = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Basic ${btoa(this.MIDTRANS_SERVER_KEY! + ":")}`,
+        },
+      };
+
+      const res = await axios.post(
+        this.MIDTRANS_ENDPOINT,
+        JSON.stringify(body),
+        axiosConfig
+      );
+      const parser = res.data as MidtransQrisSuccess;
+
+      this.qris = parser.actions[0].url;
+    } catch (error: any) {
+      if (error instanceof AxiosError) {
+        throw new HTTPError(
+          error.response?.data.status_message ?? error.message,
+          error.response?.status ?? 500
+        );
+      }
+
+      throw new HTTPError("Internal server error", 500);
+    }
   }
 }
 
@@ -84,9 +137,6 @@ export class TriPayTransaction
   }
 
   charge(paymentMethod: PaymentMethod): void {
-    console.log(
-      `Charge to ${this.provider} with ${this.paymentMethod} payment method`
-    );
     this.paymentMethod = paymentMethod;
     this.virtualAccount = "000011112222";
   }
@@ -104,9 +154,6 @@ export class XenditTransaction
   }
 
   charge(paymentMethod: PaymentMethod): void {
-    console.log(
-      `Charge to ${this.provider} with ${this.paymentMethod} payment method`
-    );
     this.paymentMethod = paymentMethod;
     this.virtualAccount = "111122223333";
     this.qris = "base64 qris";
