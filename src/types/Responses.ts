@@ -91,7 +91,7 @@ type VirtualAccount = {
 export type DonateSuccess = {
   message: string;
   qris?: string;
-  virtual_account: null | VirtualAccount;
+  virtual_account?: VirtualAccount;
 };
 
 export type MidtransQrisSuccess = {

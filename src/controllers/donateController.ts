@@ -55,44 +55,20 @@ const doncateController = async (req: Request, res: Response) => {
     }
 
     // charge to payment gateway
-    let va: DonateSuccess["virtual_account"] = null;
     const donator = new Donator(donator_name);
     const receiver = new Receiver(receiver_username);
     const paymentGateway = new MidtransTransaction({
       donator: donator,
       receiver: receiver,
       grossAmount: amount,
+      message: message,
     });
     await paymentGateway.charge("QRIS");
-
-    if (paymentGateway.virtualAccount) {
-      va = {
-        bank: "bank",
-        number: paymentGateway.virtualAccount,
-      };
-    }
-
-    // save donation
-    await prisma.donation.create({
-      data: {
-        amount: amount,
-        currency: "IDR",
-        donator_name: donator_name,
-        message: message,
-        payment_method: payment_method,
-        id: paymentGateway.transactionId,
-        user: {
-          connect: {
-            username: receiver_username,
-          },
-        },
-      },
-    });
 
     res.json({
       message: "success",
       qris: paymentGateway.qris ?? null,
-      virtual_account: va,
+      virtual_account: paymentGateway.virtualAccount,
     } as DonateSuccess);
   } catch (error: any) {
     const handler = errorHandler(error);

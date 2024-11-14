@@ -4,6 +4,7 @@ export type TransactionParam = {
   donator: Donator;
   receiver: Receiver;
   grossAmount: number;
+  message: string;
 };
 
 export type PaymentMethod = "QRIS" | "BCA-VA" | "PERMATA-VA";
@@ -42,12 +43,17 @@ export class Transaction {
   protected donator: Donator;
   protected receiver: Receiver;
   protected grossAmount: number;
+  protected message?: string;
   qris?: string;
-  virtualAccount?: string;
+  virtualAccount?: {
+    bank: string;
+    number: string;
+  };
 
   constructor(values: TransactionParam) {
     this.receiver = values.receiver;
     this.donator = values.donator;
     this.grossAmount = values.grossAmount;
+    this.message = values.message;
   }
 }

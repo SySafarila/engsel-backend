@@ -18,6 +18,9 @@ export class TriPayTransaction
 
   charge(paymentMethod: PaymentMethod): void {
     this.paymentMethod = paymentMethod;
-    this.virtualAccount = "000011112222";
+    this.virtualAccount = {
+      bank: "bank",
+      number: "000011112222",
+    };
   }
 }
