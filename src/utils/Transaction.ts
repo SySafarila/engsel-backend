@@ -38,7 +38,7 @@ class Receiver {
 }
 
 class Transaction {
-  protected readonly transactionId: string = UUIDV7();
+  readonly transactionId: string = UUIDV7();
   protected donator: Donator;
   protected receiver: Receiver;
   protected grossAmount: number;

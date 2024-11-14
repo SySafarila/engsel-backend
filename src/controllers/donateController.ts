@@ -74,6 +74,23 @@ const doncateController = async (req: Request, res: Response) => {
       };
     }
 
+    // save donation
+    await prisma.donation.create({
+      data: {
+        amount: amount,
+        currency: "IDR",
+        donator_name: donator_name,
+        message: message,
+        payment_method: payment_method,
+        id: paymentGateway.transactionId,
+        user: {
+          connect: {
+            username: receiver_username,
+          },
+        },
+      },
+    });
+
     res.json({
       message: "success",
       qris: paymentGateway.qris ?? null,
