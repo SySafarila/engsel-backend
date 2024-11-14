@@ -3,8 +3,6 @@ import app from "../src/server";
 
 describe("Donation", () => {
   it("Charge donation to payment gateway", async () => {
-    console.log('MIDTRANS_SERVER_KEY', process.env.MIDTRANS_SERVER_KEY);
-    
     const res = await request(app)
       .post("/donate")
       .accept("application/json")

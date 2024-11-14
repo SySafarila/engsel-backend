@@ -12,7 +12,7 @@ export interface TransactionInterface {
   charge(paymentMethod: PaymentMethod): void;
 }
 
-class Donator {
+export class Donator {
   name: string;
   email?: string;
   phone?: string;
@@ -24,7 +24,7 @@ class Donator {
   }
 }
 
-class Receiver {
+export class Receiver {
   username: string;
   name?: string;
   url?: string;

@@ -1,12 +1,12 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { MidtransQrisSuccess } from "../types/Responses";
+import HTTPError from "./HTTPError";
 import {
   PaymentMethod,
   Transaction,
   TransactionInterface,
   TransactionParam,
 } from "./Transaction";
-import { MidtransQrisSuccess } from "../types/Responses";
-import HTTPError from "./HTTPError";
 
 export const getMidtransServerKey = (): string => {
   if (process.env.MIDTRANS_SERVER_KEY) {
@@ -15,16 +15,15 @@ export const getMidtransServerKey = (): string => {
   throw new Error("Server key not set");
 };
 
-export const getMidtransEndpoint = (): string => {
-  return "https://api.sandbox.midtrans.com/v2/charge";
-};
-
 export class MidtransTransaction
   extends Transaction
   implements TransactionInterface
 {
   private readonly MIDTRANS_SERVER_KEY: string = getMidtransServerKey();
-  private readonly MIDTRANS_ENDPOINT: string = getMidtransEndpoint();
+  private readonly MIDTRANS_ENDPOINT: string =
+    process.env.DEV_MODE === "false"
+      ? "https://api.midtrans.com/v2/charge"
+      : "https://api.sandbox.midtrans.com/v2/charge";
   readonly provider: string = "MIDTRANS";
   protected paymentMethod: string = "QRIS";
 
@@ -63,7 +62,7 @@ export class MidtransTransaction
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Basic ${btoa(this.MIDTRANS_SERVER_KEY! + ":")}`,
+          Authorization: `Basic ${btoa(this.MIDTRANS_SERVER_KEY + ":")}`,
         },
       };
 

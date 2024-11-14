@@ -6,6 +6,7 @@ import { DonateSuccess, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { MidtransTransaction } from "../utils/Midtrans";
+import { Donator, Receiver } from "../utils/Transaction";
 
 const doncateController = async (req: Request, res: Response) => {
   const {
@@ -43,31 +44,26 @@ const doncateController = async (req: Request, res: Response) => {
       options
     );
 
-    const receiver = await prisma.user.findFirst({
+    const checkReceiver = await prisma.user.findFirst({
       where: {
         username: receiver_username,
       },
     });
 
-    if (!receiver) {
+    if (!checkReceiver) {
       throw new HTTPError("Receiver not found", 400);
     }
 
-    // save donation
-
     // charge to payment gateway
+    let va: DonateSuccess["virtual_account"] = null;
+    const donator = new Donator(donator_name);
+    const receiver = new Receiver(receiver_username);
     const paymentGateway = new MidtransTransaction({
-      donator: {
-        name: donator_name,
-      },
-      receiver: {
-        username: receiver_username,
-      },
+      donator: donator,
+      receiver: receiver,
       grossAmount: amount,
     });
     await paymentGateway.charge("QRIS");
-
-    let va: DonateSuccess["virtual_account"] = null;
 
     if (paymentGateway.virtualAccount) {
       va = {
