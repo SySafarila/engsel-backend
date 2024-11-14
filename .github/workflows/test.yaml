@@ -15,11 +15,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.17.x"
+        env:
+          MIDTRANS_SERVER_KEY: ${{ secrets.MIDTRANS_SERVER_KEY }}
       - run: docker compose up -d
       - run: npm ci
       - run: cp .env.github .env
-      - run: |
-          echo "MIDTRANS_SERVER_KEY=${{ secrets.MIDTRANS_SERVER_KEY }}" >> .env
       - run: npx prisma generate
       - run: npx prisma migrate deploy
       - run: npx prisma db seed
