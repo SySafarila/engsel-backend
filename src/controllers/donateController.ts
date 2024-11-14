@@ -5,7 +5,7 @@ import { SendDonate } from "../types/Requests";
 import { DonateSuccess, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
-import { MidtransTransaction } from "../utils/Transaction";
+import { MidtransTransaction } from "../utils/Midtrans";
 
 const doncateController = async (req: Request, res: Response) => {
   const {
