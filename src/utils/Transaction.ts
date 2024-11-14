@@ -25,15 +25,15 @@ class Donator {
 }
 
 class Receiver {
-  name: string;
-  url: string;
+  username: string;
+  name?: string;
+  url?: string;
   email?: string;
   phone?: string;
   country?: string;
 
-  constructor(name: string, url: string) {
-    this.name = name;
-    this.url = url;
+  constructor(username: string) {
+    this.username = username;
   }
 }
 
@@ -42,8 +42,8 @@ class Transaction {
   protected donator: Donator;
   protected receiver: Receiver;
   protected grossAmount: number;
-  protected qris?: string;
-  protected virtualAccount?: string;
+  qris?: string;
+  virtualAccount?: string;
 
   constructor(values: TransactionParam) {
     this.receiver = values.receiver;
@@ -52,7 +52,10 @@ class Transaction {
   }
 }
 
-class MidtransTransaction extends Transaction implements TransactionInterface {
+export class MidtransTransaction
+  extends Transaction
+  implements TransactionInterface
+{
   readonly provider: string = "MIDTRANS";
   protected paymentMethod: string = "QRIS";
 
@@ -69,7 +72,10 @@ class MidtransTransaction extends Transaction implements TransactionInterface {
   }
 }
 
-class TriPayTransaction extends Transaction implements TransactionInterface {
+export class TriPayTransaction
+  extends Transaction
+  implements TransactionInterface
+{
   readonly provider: string = "TRIPAY";
   protected paymentMethod: string = "QRIS";
 
@@ -86,7 +92,10 @@ class TriPayTransaction extends Transaction implements TransactionInterface {
   }
 }
 
-class XenditTransaction extends Transaction implements TransactionInterface {
+export class XenditTransaction
+  extends Transaction
+  implements TransactionInterface
+{
   readonly provider: string = "XENDIT";
   protected paymentMethod: string = "QRIS";
 
@@ -103,28 +112,3 @@ class XenditTransaction extends Transaction implements TransactionInterface {
     this.qris = "base64 qris";
   }
 }
-
-const syahrul = new Donator("Syahrul");
-const safarila = new Receiver("Safarila", "https://sysafarila.my.id");
-
-const tripay = new TriPayTransaction({
-  donator: syahrul,
-  receiver: safarila,
-  grossAmount: 10000,
-});
-const xendit = new XenditTransaction({
-  donator: syahrul,
-  receiver: safarila,
-  grossAmount: 10000,
-});
-const midtrans = new MidtransTransaction({
-  donator: syahrul,
-  receiver: safarila,
-  grossAmount: 10000,
-});
-
-xendit.charge("BCA-VA");
-midtrans.charge("QRIS");
-tripay.charge("QRIS");
-
-console.log(xendit, midtrans, tripay);

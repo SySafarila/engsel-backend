@@ -82,3 +82,14 @@ export type RoleReadSuccess = {
 export type ErrorResponse = {
   message: string;
 };
+
+type VirtualAccount = {
+  number: string;
+  bank: string;
+};
+
+export type DonateSuccess = {
+  message: string;
+  qris?: string;
+  virtual_account: null | VirtualAccount;
+};

@@ -12,6 +12,7 @@ describe("Register a user", () => {
         email: "syahrul@email.com",
         password: "password",
         name: "Syahrul",
+        username: "SySafarila",
       });
 
     expect(res.statusCode).toBe(200);

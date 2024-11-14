@@ -7,6 +7,7 @@ export type Register = {
   email: string;
   password: string;
   name: string;
+  username: string;
 };
 
 export type PermissionCreate = {
@@ -37,4 +38,13 @@ export type RoleUpdate = {
 
 export type RoleDelete = {
   name: string;
+};
+
+export type SendDonate = {
+  donator_name: string;
+  donator_email?: string;
+  receiver_username: string;
+  message: string;
+  payment_method: string;
+  amount: number;
 };

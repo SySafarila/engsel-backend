@@ -9,7 +9,7 @@ import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
 
 const registerController = async (req: Request, res: Response) => {
-  const { email, password, name } = req.body as Register;
+  const { email, password, name, username } = req.body as Register;
   const prisma = new PrismaClient();
 
   try {
@@ -17,21 +17,32 @@ const registerController = async (req: Request, res: Response) => {
       email: Joi.string().email().required(),
       password: Joi.string().min(8).required(),
       name: Joi.string().required(),
+      username: Joi.string().required(),
     });
     const options: Joi.ValidationOptions = {
       abortEarly: false,
     };
 
-    await schema.validateAsync({ email, password, name } as Register, options);
+    await schema.validateAsync(
+      { email, password, name, username } as Register,
+      options
+    );
 
     const findUser = await prisma.user.findFirst({
       where: {
-        email: email,
+        OR: [
+          {
+            email: email,
+          },
+          {
+            username: username,
+          },
+        ],
       },
     });
 
     if (findUser) {
-      throw new HTTPError("User already registered", 400);
+      throw new HTTPError("Username or email already registered", 400);
     }
 
     const hashPassword: string = bcrypt.hashSync(password, 10);
@@ -40,6 +51,7 @@ const registerController = async (req: Request, res: Response) => {
       data: {
         id: UUIDV7(),
         name: name,
+        username: username,
         email: email,
         password: hashPassword,
       },

@@ -61,3 +61,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCRkUm
 {
     "name": "permissions-readx2"
 }
+
+###
+POST http://localhost:3000/donate
+Content-Type: application/json
+
+{
+    "amount": 10000,
+    "donator_name": "Syahrul",
+    "message": "Some message",
+    "payment_method": "QRIS",
+    "receiver_username": "SySafarila",
+    "donator_email": null
+}

@@ -90,6 +90,7 @@ async function main() {
     data: {
       id: String(UUIDV7()),
       email: "super.admin@admin.com",
+      username: "_SUPERADMIN",
       password: bcrypt.hashSync("password", 10),
       name: "Super Admin",
       roles: {
@@ -110,6 +111,7 @@ async function main() {
     data: {
       id: String(UUIDV7()),
       email: "admin@admin.com",
+      username: "_ADMIN",
       password: bcrypt.hashSync("password", 10),
       name: "Admin",
       roles: {
