@@ -19,7 +19,7 @@ jobs:
       - run: npm ci
       - run: cp .env.github .env
       - run: |
-          echo MIDTRANS_SERVER_KEY=${{ secrets.MIDTRANS_SERVER_KEY }} >> .env
+          echo "MIDTRANS_SERVER_KEY=${{ secrets.MIDTRANS_SERVER_KEY }}" >> .env
       - run: npx prisma generate
       - run: npx prisma migrate deploy
       - run: npx prisma db seed
