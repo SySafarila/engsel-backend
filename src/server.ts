@@ -3,7 +3,7 @@ import cors from "cors";
 import express from "express";
 import donateController from "./controllers/donateController";
 import rootController from "./controllers/rootController";
-import { getUserDetail } from "./controllers/userController";
+import { getUserDetail, getUsers } from "./controllers/userController";
 import auth from "./routes/auth";
 import permissions from "./routes/permissions";
 import roles from "./routes/roles";
@@ -18,6 +18,7 @@ app.get("/", rootController);
 app.use(auth);
 app.use(permissions);
 app.use(roles);
+app.post("/users", getUsers);
 app.post("/user/:username/donate", donateController);
 app.get("/user/:username", getUserDetail);
 

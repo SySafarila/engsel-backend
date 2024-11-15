@@ -106,6 +106,14 @@ export type UserDetail = {
   };
 };
 
+export type Users = {
+  message: string;
+  user: {
+    name: string;
+    username: string;
+  }[];
+};
+
 export type MidtransQrisSuccess = {
   status_code: string;
   status_message: string;
