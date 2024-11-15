@@ -39,7 +39,11 @@ export default class Transaction {
   async charge(): Promise<void> {
     switch (this.paymentMethod) {
       case "qris":
-        await this.chargeQris();
+        await this.chargeByProvider();
+        break;
+
+      case "bca-virtual-account":
+        await this.chargeByProvider();
         break;
 
       default:
@@ -73,7 +77,7 @@ export default class Transaction {
     }
   }
 
-  protected async chargeQris(): Promise<void> {
+  protected async chargeByProvider(): Promise<void> {
     const providers = [new Midtrans(this), new Xendit(this)];
     let allFail: boolean = false;
 

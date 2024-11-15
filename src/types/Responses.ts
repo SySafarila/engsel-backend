@@ -126,3 +126,19 @@ export type MidtransQrisSuccess = {
   }[];
   expired_at?: number;
 };
+export type MidtransBcaVaSuccess = {
+  status_code: string;
+  status_message: string;
+  transaction_id: string;
+  order_id: string;
+  gross_amount: string;
+  payment_type: string;
+  transaction_time: string;
+  transaction_status: string;
+  va_numbers: {
+    bank: "BCA";
+    va_number: string;
+  }[];
+  fraud_status: string;
+  currency: string;
+};

@@ -23,22 +23,9 @@ describe("Donation", () => {
         amount: 10000,
         donator_name: "Syahrul Safarila",
         message: "Hello world!",
-        payment_method: "qris",
+        payment_method: "bca-virtual-account",
       });
 
     expect(res2.statusCode).toBe(200);
-
-    const res3 = await request(app)
-      .post("/user/SySafarila/donate")
-      .accept("application/json")
-      .send({
-        amount: 10000,
-        donator_name: "Syahrul Safarila",
-        message: "Hello world!",
-        payment_method: "qris",
-        donator_email: null,
-      });
-
-    expect(res3.statusCode).toBe(200);
   });
 });

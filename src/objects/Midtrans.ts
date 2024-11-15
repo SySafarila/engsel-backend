@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import moment from "moment";
-import { MidtransQrisSuccess } from "../types/Responses";
+import { MidtransBcaVaSuccess, MidtransQrisSuccess } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import Transaction from "./Transaction";
 
@@ -44,8 +44,18 @@ export default class Midtrans {
     console.log(
       `Provider: ${this.provider} trying to charge transaction: ${this.transaction.transactionId}`
     );
-    if (this.transaction.paymentMethod == "qris") {
-      await this.chargeQris();
+    switch (this.transaction.paymentMethod) {
+      case "qris":
+        await this.chargeQris();
+        break;
+
+      case "bca-virtual-account":
+        await this.chargeBcaVa();
+        break;
+
+      default:
+        throw new HTTPError("Unsupported payment method", 500);
+        break;
     }
   }
 
@@ -74,6 +84,51 @@ export default class Midtrans {
       const parser = res.data as MidtransQrisSuccess;
 
       this.transaction.qris = parser.actions[0].url;
+      this.transaction.expired_at = parseInt(
+        moment(parser.transaction_time)
+          .add(this.transaction.experiry_time_in_minutes, "minutes")
+          .format("x")
+      );
+      console.log(
+        `Provider: ${this.provider} success to charge transaction: ${this.transaction.transactionId}`
+      );
+    } catch (error) {
+      console.log(
+        `Provider: ${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
+      );
+
+      throw new HTTPError("Midtrans fail", 500);
+    }
+  }
+
+  private async chargeBcaVa() {
+    try {
+      const requestBody = {
+        payment_type: "bank_transfer",
+        transaction_details: {
+          order_id: this.transaction.transactionId,
+          gross_amount: this.transaction.amount,
+        },
+        bank_transfer: {
+          bank: "bca",
+        },
+        custom_expiry: {
+          unit: "minute",
+          expiry_duration: this.transaction.experiry_time_in_minutes,
+        },
+      };
+
+      const res = await axios.post(
+        this.MIDTRANS_ENDPOINT,
+        JSON.stringify(requestBody),
+        this.getAxiosConfig()
+      );
+      const parser = res.data as MidtransBcaVaSuccess;
+
+      this.transaction.virtualAccount = {
+        bank: parser.va_numbers[0].bank,
+        number: parseInt(parser.va_numbers[0].va_number),
+      };
       this.transaction.expired_at = parseInt(
         moment(parser.transaction_time)
           .add(this.transaction.experiry_time_in_minutes, "minutes")
