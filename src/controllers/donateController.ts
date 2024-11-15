@@ -9,14 +9,9 @@ import { MidtransTransaction } from "../utils/Midtrans";
 import { Donator, Receiver } from "../utils/Transaction";
 
 const doncateController = async (req: Request, res: Response) => {
-  const {
-    amount,
-    donator_name,
-    message,
-    payment_method,
-    receiver_username,
-    donator_email,
-  } = req.body as SendDonate;
+  const { amount, donator_name, message, payment_method, donator_email } =
+    req.body as SendDonate;
+  const { username } = req.params as { username: string };
   const prisma = new PrismaClient();
 
   try {
@@ -25,7 +20,6 @@ const doncateController = async (req: Request, res: Response) => {
       donator_name: Joi.string().required(),
       message: Joi.string().required(),
       payment_method: Joi.string().required(),
-      receiver_username: Joi.string().required(),
       donator_email: Joi.string().email().optional().allow(null),
     });
     const options: Joi.ValidationOptions = {
@@ -38,7 +32,6 @@ const doncateController = async (req: Request, res: Response) => {
         donator_name,
         message,
         payment_method,
-        receiver_username,
         donator_email,
       } as SendDonate,
       options
@@ -46,17 +39,17 @@ const doncateController = async (req: Request, res: Response) => {
 
     const checkReceiver = await prisma.user.findFirst({
       where: {
-        username: receiver_username,
+        username: username,
       },
     });
 
     if (!checkReceiver) {
-      throw new HTTPError("Receiver not found", 400);
+      throw new HTTPError("Receiver not found", 404);
     }
 
     // charge to payment gateway
     const donator = new Donator(donator_name);
-    const receiver = new Receiver(receiver_username);
+    const receiver = new Receiver(username);
     const paymentGateway = new MidtransTransaction({
       donator: donator,
       receiver: receiver,

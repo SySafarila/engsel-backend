@@ -99,7 +99,7 @@ export class MidtransTransaction extends Transaction implements TransactionInter
     }
   }
 
-  private async saveToDatabase() {
+  private async saveToDatabase(): Promise<void> {
     const prisma = new PrismaClient();
 
     try {

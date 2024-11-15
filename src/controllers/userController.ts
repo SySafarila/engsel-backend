@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { ErrorResponse } from "../types/Responses";
+import { ErrorResponse, UserDetail } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 
@@ -19,13 +19,15 @@ export const getUserDetail = async (req: Request, res: Response) => {
       throw new HTTPError("User not found", 404);
     }
 
-    res.json({
+    const response: UserDetail = {
       message: `Get user detail by username: ${username}`,
       user: {
         name: checkUsername.name,
         username: checkUsername.username,
       },
-    });
+    };
+
+    res.json(response);
   } catch (error: any) {
     const handler = errorHandler(error);
 

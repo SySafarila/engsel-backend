@@ -43,7 +43,6 @@ export type RoleDelete = {
 export type SendDonate = {
   donator_name: string;
   donator_email?: string;
-  receiver_username: string;
   message: string;
   payment_method: string;
   amount: number;

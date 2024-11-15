@@ -18,7 +18,7 @@ app.get("/", rootController);
 app.use(auth);
 app.use(permissions);
 app.use(roles);
-app.post("/donate", doncateController);
+app.post("/user/:username/donate", doncateController);
 app.get("/user/:username", getUserDetail);
 
 export default app;

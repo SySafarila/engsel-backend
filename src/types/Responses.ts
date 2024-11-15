@@ -117,3 +117,11 @@ export type MidtransQrisSuccess = {
     url: string;
   }[];
 };
+
+export type UserDetail = {
+  message: string;
+  user: {
+    name: string;
+    username: string;
+  };
+};
