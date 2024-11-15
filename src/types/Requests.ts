@@ -44,6 +44,11 @@ export type SendDonate = {
   donator_name: string;
   donator_email?: string;
   message: string;
-  payment_method: string;
+  payment_method: PaymentMethod;
   amount: number;
 };
+
+export type PaymentMethod =
+  | "qris"
+  | "bca virtual account"
+  | "permata virtual account";

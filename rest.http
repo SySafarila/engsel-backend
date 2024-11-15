@@ -63,7 +63,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCRkUm
 }
 
 ###
-POST http://localhost:3000/donate
+POST http://localhost:3000/user/SySafarila/donate
 Content-Type: application/json
 
 {
@@ -71,6 +71,5 @@ Content-Type: application/json
     "donator_name": "Syahrul",
     "message": "Some message",
     "payment_method": "QRIS",
-    "receiver_username": "SySafarila",
     "donator_email": null
 }
