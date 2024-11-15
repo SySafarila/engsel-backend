@@ -50,5 +50,5 @@ export type SendDonate = {
 
 export type PaymentMethod =
   | "qris"
-  | "bca virtual account"
-  | "permata virtual account";
+  | "bca-virtual-account"
+  | "permata-virtual-account";

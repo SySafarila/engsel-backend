@@ -70,6 +70,6 @@ Content-Type: application/json
     "amount": 10000,
     "donator_name": "Syahrul",
     "message": "Some message",
-    "payment_method": "QRIS",
+    "payment_method": "qris",
     "donator_email": null
 }

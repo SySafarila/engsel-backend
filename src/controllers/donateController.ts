@@ -9,7 +9,7 @@ import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateDonate } from "../validator/validateDonate";
 
-const doncateController = async (req: Request, res: Response) => {
+const donateController = async (req: Request, res: Response) => {
   const { amount, donator_name, message, payment_method, donator_email } =
     req.body as SendDonate;
   const { username } = req.params as { username: string };
@@ -31,19 +31,19 @@ const doncateController = async (req: Request, res: Response) => {
     });
 
     if (!checkReceiver) {
-      throw new HTTPError("Receiver not found", 404);
+      throw new HTTPError("User not found", 404);
     }
 
     // charge to payment gateway and save to database
     const donator = new Donator(donator_name);
     const receiver = new Receiver(username);
-    const transaction = new Transaction(
-      donator,
-      receiver,
-      message,
-      amount,
-      payment_method
-    );
+    const transaction = new Transaction({
+      amount: amount,
+      donator: donator,
+      receiver: receiver,
+      message: message,
+      paymentMethod: payment_method,
+    });
     await transaction.charge();
     await transaction.save();
 
@@ -65,4 +65,4 @@ const doncateController = async (req: Request, res: Response) => {
   }
 };
 
-export default doncateController;
+export default donateController;
