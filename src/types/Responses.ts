@@ -84,7 +84,7 @@ export type ErrorResponse = {
 };
 
 export type VirtualAccount = {
-  number: string;
+  number: number;
   bank: string;
 };
 
@@ -92,10 +92,18 @@ export type Qris = string;
 
 export type DonateSuccess = {
   message: string;
-  qris: Qris | null;
-  virtual_account: VirtualAccount | null;
+  qris?: Qris;
+  virtual_account?: VirtualAccount;
   amount: number;
-  expired_at: number;
+  expired_at?: number;
+};
+
+export type UserDetail = {
+  message: string;
+  user: {
+    name: string;
+    username: string;
+  };
 };
 
 export type MidtransQrisSuccess = {
@@ -116,12 +124,5 @@ export type MidtransQrisSuccess = {
     method: string;
     url: string;
   }[];
-};
-
-export type UserDetail = {
-  message: string;
-  user: {
-    name: string;
-    username: string;
-  };
+  expired_at?: number;
 };

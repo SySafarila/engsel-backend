@@ -1,7 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import doncateController from "./controllers/donateController";
+import donateController from "./controllers/donateController";
 import rootController from "./controllers/rootController";
 import { getUserDetail } from "./controllers/userController";
 import auth from "./routes/auth";
@@ -18,7 +18,7 @@ app.get("/", rootController);
 app.use(auth);
 app.use(permissions);
 app.use(roles);
-app.post("/user/:username/donate", doncateController);
+app.post("/user/:username/donate", donateController);
 app.get("/user/:username", getUserDetail);
 
 export default app;

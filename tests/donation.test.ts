@@ -10,7 +10,7 @@ describe("Donation", () => {
         amount: 10000,
         donator_name: "Syahrul Safarila",
         message: "Hello world!",
-        payment_method: "QRIS",
+        payment_method: "qris",
         donator_email: "sysafarila@gmail.com",
       });
 
@@ -23,7 +23,7 @@ describe("Donation", () => {
         amount: 10000,
         donator_name: "Syahrul Safarila",
         message: "Hello world!",
-        payment_method: "QRIS",
+        payment_method: "qris",
       });
 
     expect(res2.statusCode).toBe(200);
@@ -35,7 +35,7 @@ describe("Donation", () => {
         amount: 10000,
         donator_name: "Syahrul Safarila",
         message: "Hello world!",
-        payment_method: "QRIS",
+        payment_method: "qris",
         donator_email: null,
       });
 
