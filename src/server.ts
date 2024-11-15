@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import doncateController from "./controllers/donateController";
 import rootController from "./controllers/rootController";
+import { getUserDetail } from "./controllers/userController";
 import auth from "./routes/auth";
 import permissions from "./routes/permissions";
 import roles from "./routes/roles";
@@ -17,6 +18,7 @@ app.get("/", rootController);
 app.use(auth);
 app.use(permissions);
 app.use(roles);
-app.post("/donate", doncateController)
+app.post("/donate", doncateController);
+app.get("/user/:username", getUserDetail);
 
 export default app;

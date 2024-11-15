@@ -65,11 +65,15 @@ const doncateController = async (req: Request, res: Response) => {
     });
     await paymentGateway.charge("QRIS");
 
-    res.json({
+    const response: DonateSuccess = {
       message: "success",
       qris: paymentGateway.qris ?? null,
-      virtual_account: paymentGateway.virtualAccount,
-    } as DonateSuccess);
+      virtual_account: paymentGateway.virtualAccount ?? null,
+      amount: amount,
+      expired_at: paymentGateway.expired_at!,
+    };
+
+    res.status(200).json(response);
   } catch (error: any) {
     const handler = errorHandler(error);
 

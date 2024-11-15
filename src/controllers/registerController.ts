@@ -61,6 +61,7 @@ const registerController = async (req: Request, res: Response) => {
       message: "Register success",
       user: {
         name: name,
+        username: username,
       },
     } as RegisterSuccess);
   } catch (error: any) {

@@ -1,4 +1,5 @@
 import { v7 as UUIDV7 } from "uuid";
+import { Qris, VirtualAccount } from "../types/Responses";
 
 export type TransactionParam = {
   donator: Donator;
@@ -44,11 +45,11 @@ export class Transaction {
   protected receiver: Receiver;
   protected grossAmount: number;
   protected message?: string;
-  qris?: string;
-  virtualAccount?: {
-    bank: string;
-    number: string;
-  };
+  protected paymentMethod?: string;
+  protected experiry_time_in_minutes: number = 30;
+  qris?: Qris;
+  virtualAccount?: VirtualAccount;
+  expired_at?: number;
 
   constructor(values: TransactionParam) {
     this.receiver = values.receiver;

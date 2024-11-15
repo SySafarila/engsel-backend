@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import moment from "moment";
 import { MidtransQrisSuccess } from "../types/Responses";
 import HTTPError from "./HTTPError";
 import {
@@ -9,27 +10,24 @@ import {
   TransactionParam,
 } from "./Transaction";
 
-export const getMidtransServerKey = (): string => {
-  if (process.env.MIDTRANS_SERVER_KEY) {
-    return process.env.MIDTRANS_SERVER_KEY;
-  }
-  throw new Error("Server key not set");
-};
-
-export class MidtransTransaction
-  extends Transaction
-  implements TransactionInterface
-{
-  private readonly MIDTRANS_SERVER_KEY: string = btoa(getMidtransServerKey());
-  private readonly MIDTRANS_ENDPOINT: string =
-    process.env.DEV_MODE === "false"
-      ? "https://api.midtrans.com/v2/charge"
-      : "https://api.sandbox.midtrans.com/v2/charge";
+export class MidtransTransaction extends Transaction implements TransactionInterface {
+  private readonly MIDTRANS_SERVER_KEY: string = btoa(this.getMidtransServerKey());
+  private readonly MIDTRANS_ENDPOINT: string = this.getEndpoint();
   readonly provider: string = "MIDTRANS";
-  protected paymentMethod: string | undefined;
 
   constructor(values: TransactionParam) {
     super(values);
+  }
+
+  private getMidtransServerKey(): string {
+    if (process.env.MIDTRANS_SERVER_KEY) {
+      return process.env.MIDTRANS_SERVER_KEY;
+    }
+    throw new Error("Server key not set");
+  }
+
+  private getEndpoint(): string {
+    return process.env.DEV_MODE === "false" ? "https://api.midtrans.com/v2/charge" : "https://api.sandbox.midtrans.com/v2/charge";
   }
 
   async charge(paymentMethod: PaymentMethod) {
@@ -70,6 +68,10 @@ export class MidtransTransaction
         qris: {
           acquirer: "gopay",
         },
+        custom_expiry: {
+          unit: "minute",
+          expiry_duration: this.experiry_time_in_minutes,
+        },
       };
 
       const res = await axios.post(
@@ -80,6 +82,11 @@ export class MidtransTransaction
       const parser = res.data as MidtransQrisSuccess;
 
       this.qris = parser.actions[0].url;
+      this.expired_at = parseInt(
+        moment(parser.transaction_time)
+          .add(this.experiry_time_in_minutes, "minutes")
+          .format("x")
+      );
     } catch (error: any) {
       if (error instanceof AxiosError) {
         throw new HTTPError(

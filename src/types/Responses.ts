@@ -83,15 +83,19 @@ export type ErrorResponse = {
   message: string;
 };
 
-type VirtualAccount = {
+export type VirtualAccount = {
   number: string;
   bank: string;
 };
 
+export type Qris = string;
+
 export type DonateSuccess = {
   message: string;
-  qris?: string;
-  virtual_account?: VirtualAccount;
+  qris: Qris | null;
+  virtual_account: VirtualAccount | null;
+  amount: number;
+  expired_at: number;
 };
 
 export type MidtransQrisSuccess = {
