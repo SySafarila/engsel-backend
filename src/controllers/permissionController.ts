@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import Joi from "joi";
 import { v7 as UUIDV7 } from "uuid";
 import {
   PermissionCreate,
@@ -15,19 +14,19 @@ import {
 } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
+import {
+  validateDelete,
+  validateStore,
+  validateUpdate,
+} from "../validator/validatePermission";
 
 export const storePermission = async (req: Request, res: Response) => {
   const { name } = req.body as PermissionCreate;
   const prisma = new PrismaClient();
   try {
-    const schema: Joi.ObjectSchema<PermissionCreate> = Joi.object({
-      name: Joi.string().required(),
+    await validateStore({
+      name: name,
     });
-    const options: Joi.ValidationOptions = {
-      abortEarly: false,
-    };
-
-    await schema.validateAsync({ name } as PermissionCreate, options);
     const check = await prisma.permission.findFirst({
       where: {
         name: name,
@@ -45,7 +44,7 @@ export const storePermission = async (req: Request, res: Response) => {
       },
     });
 
-    res.json({
+    const response: PermissionCreateSuccess = {
       message: "Success",
       data: {
         id: permission.id,
@@ -53,7 +52,9 @@ export const storePermission = async (req: Request, res: Response) => {
         created_at: permission.created_at,
         updated_at: permission.updated_at,
       },
-    } as PermissionCreateSuccess);
+    };
+
+    res.json(response);
     return;
   } catch (error: any) {
     const handler = errorHandler(error);
@@ -68,15 +69,10 @@ export const updatePermission = async (req: Request, res: Response) => {
   const { name, new_name } = req.body as PermissionUpdate;
   const prisma = new PrismaClient();
   try {
-    const schema: Joi.ObjectSchema<PermissionUpdate> = Joi.object({
-      name: Joi.string().required(),
-      new_name: Joi.string().required(),
+    await validateUpdate({
+      name: name,
+      new_name: new_name,
     });
-    const options: Joi.ValidationOptions = {
-      abortEarly: false,
-    };
-
-    await schema.validateAsync({ name, new_name } as PermissionUpdate, options);
     const check = await prisma.permission.findFirst({
       where: {
         name: name,
@@ -96,7 +92,7 @@ export const updatePermission = async (req: Request, res: Response) => {
       },
     });
 
-    res.json({
+    const response: PermissionCreateSuccess = {
       message: "Success",
       data: {
         id: permission.id,
@@ -104,7 +100,9 @@ export const updatePermission = async (req: Request, res: Response) => {
         created_at: permission.created_at,
         updated_at: permission.updated_at,
       },
-    } as PermissionCreateSuccess);
+    };
+
+    res.json(response);
     return;
   } catch (error: any) {
     const handler = errorHandler(error);
@@ -119,14 +117,9 @@ export const deletePermission = async (req: Request, res: Response) => {
   const { name } = req.body as PermissionDelete;
   const prisma = new PrismaClient();
   try {
-    const schema: Joi.ObjectSchema<PermissionDelete> = Joi.object({
-      name: Joi.string().required(),
+    await validateDelete({
+      name: name,
     });
-    const options: Joi.ValidationOptions = {
-      abortEarly: false,
-    };
-
-    await schema.validateAsync({ name } as PermissionDelete, options);
     const check = await prisma.permission.findFirst({
       where: {
         name: name,
@@ -165,10 +158,12 @@ export const readPermission = async (req: Request, res: Response) => {
       },
     });
 
-    res.json({
+    const response: PermissionReadSuccess = {
       message: "Success",
       data: permissions,
-    } as PermissionReadSuccess);
+    };
+
+    res.json(response);
     return;
   } catch (error: any) {
     const handler = errorHandler(error);

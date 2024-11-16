@@ -1,12 +1,11 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import donateController from "./controllers/donateController";
 import rootController from "./controllers/rootController";
-import { getUserDetail, getUsers } from "./controllers/userController";
 import auth from "./routes/auth";
 import permissions from "./routes/permissions";
 import roles from "./routes/roles";
+import users from "./routes/users";
 
 const app = express();
 
@@ -18,8 +17,6 @@ app.get("/", rootController);
 app.use(auth);
 app.use(permissions);
 app.use(roles);
-app.get("/users", getUsers);
-app.post("/user/:username/donate", donateController);
-app.get("/user/:username", getUserDetail);
+app.use(users);
 
 export default app;

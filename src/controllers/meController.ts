@@ -20,17 +20,19 @@ const meController = async (req: Request, res: Response) => {
       throw new HTTPError("User not found", 404);
     }
 
-    res.json({
+    const response: CurrentUserSuccess = {
       message: "Success",
       user: {
-        id: user?.id,
-        name: user?.name,
-        email: user?.email,
-        verified_at: user?.verified_at,
-        updated_at: user?.updated_at,
-        created_at: user?.created_at,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        verified_at: user.verified_at ?? undefined,
+        updated_at: user.updated_at,
+        created_at: user.created_at,
       },
-    } as CurrentUserSuccess);
+    };
+
+    res.json(response);
   } catch (error: any) {
     const handler = errorHandler(error);
 

@@ -4,7 +4,7 @@ import app from "../src/server";
 describe("Donation", () => {
   it("Get user detail", async () => {
     const res = await request(app)
-      .get("/user/SySafarila")
+      .get("/users/SySafarila")
       .accept("application/json")
       .send();
 

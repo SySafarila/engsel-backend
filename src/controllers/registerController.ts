@@ -1,32 +1,24 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import Joi from "joi";
 import { v7 as UUIDV7 } from "uuid";
 import { Register } from "../types/Requests";
 import { ErrorResponse, RegisterSuccess } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
+import validateRegister from "../validator/validateRegister";
 
 const registerController = async (req: Request, res: Response) => {
   const { email, password, name, username } = req.body as Register;
   const prisma = new PrismaClient();
 
   try {
-    const schema: Joi.ObjectSchema<Register> = Joi.object({
-      email: Joi.string().email().required(),
-      password: Joi.string().min(8).required(),
-      name: Joi.string().required(),
-      username: Joi.string().required(),
+    await validateRegister({
+      email: email,
+      name: name,
+      password: password,
+      username: username,
     });
-    const options: Joi.ValidationOptions = {
-      abortEarly: false,
-    };
-
-    await schema.validateAsync(
-      { email, password, name, username } as Register,
-      options
-    );
 
     const findUser = await prisma.user.findFirst({
       where: {
@@ -57,13 +49,15 @@ const registerController = async (req: Request, res: Response) => {
       },
     });
 
-    res.json({
+    const response: RegisterSuccess = {
       message: "Register success",
       user: {
         name: name,
         username: username,
       },
-    } as RegisterSuccess);
+    };
+
+    res.json(response);
   } catch (error: any) {
     const handler = errorHandler(error);
 

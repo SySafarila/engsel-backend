@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import Joi from "joi";
 import { v7 as UUIDV7 } from "uuid";
 import Locals from "../types/locals";
 import { RoleCreate, RoleDelete, RoleUpdate } from "../types/Requests";
@@ -13,25 +12,22 @@ import {
 } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
+import {
+  validateDelete,
+  validateStore,
+  validateUpdate,
+} from "../validator/validateRole";
 
 export const storeRole = async (req: Request, res: Response) => {
   const { name, level, permissions } = req.body as RoleCreate;
   const { role_level_peak } = res.locals as Locals;
   const prisma = new PrismaClient();
   try {
-    const schema: Joi.ObjectSchema<RoleCreate> = Joi.object({
-      name: Joi.string().required(),
-      level: Joi.number().required(),
-      permissions: Joi.array().items(Joi.string()).required(),
+    await validateStore({
+      level: level,
+      name: name,
+      permissions: permissions,
     });
-    const options: Joi.ValidationOptions = {
-      abortEarly: false,
-    };
-
-    await schema.validateAsync(
-      { name, level, permissions } as RoleCreate,
-      options
-    );
 
     if (role_level_peak && role_level_peak >= level) {
       throw new HTTPError(
@@ -75,7 +71,7 @@ export const storeRole = async (req: Request, res: Response) => {
       },
     });
 
-    res.json({
+    const response: RoleCreateSuccess = {
       message: "Success",
       data: {
         id: role.id,
@@ -84,7 +80,9 @@ export const storeRole = async (req: Request, res: Response) => {
         created_at: role.created_at,
         updated_at: role.updated_at,
       },
-    } as RoleCreateSuccess);
+    };
+
+    res.json(response);
     return;
   } catch (error: any) {
     const handler = errorHandler(error);
@@ -100,20 +98,12 @@ export const updateRole = async (req: Request, res: Response) => {
   const { role_level_peak } = res.locals as Locals;
   const prisma = new PrismaClient();
   try {
-    const schema: Joi.ObjectSchema<RoleUpdate> = Joi.object({
-      name: Joi.string().required(),
-      new_name: Joi.string().optional().max(255),
-      new_level: Joi.number().optional(),
-      new_permissions: Joi.array().items(Joi.string()).optional(),
+    await validateUpdate({
+      name: name,
+      new_level: new_level,
+      new_name: new_name,
+      new_permissions: new_permissions,
     });
-    const options: Joi.ValidationOptions = {
-      abortEarly: false,
-    };
-
-    await schema.validateAsync(
-      { name, new_name, new_level, new_permissions } as RoleUpdate,
-      options
-    );
 
     const validPermissions: { name: string }[] = [];
     if (new_permissions) {
@@ -188,7 +178,7 @@ export const updateRole = async (req: Request, res: Response) => {
         },
       });
 
-      res.json({
+      const response: RoleUpdateSuccess = {
         message: "Success",
         data: {
           id: updateRolePermissions.id,
@@ -198,11 +188,13 @@ export const updateRole = async (req: Request, res: Response) => {
           updated_at: updateRolePermissions.updated_at,
           permissions: updateRolePermissions.permissions,
         },
-      } as RoleUpdateSuccess);
+      };
+
+      res.json(response);
       return;
     }
 
-    res.json({
+    const response: RoleUpdateSuccess = {
       message: "Success",
       data: {
         id: updateRole.id,
@@ -211,7 +203,9 @@ export const updateRole = async (req: Request, res: Response) => {
         created_at: updateRole.created_at,
         updated_at: updateRole.updated_at,
       },
-    } as RoleUpdateSuccess);
+    };
+
+    res.json(response);
     return;
   } catch (error: any) {
     const handler = errorHandler(error);
@@ -227,14 +221,9 @@ export const deleteRole = async (req: Request, res: Response) => {
   const { role_level_peak } = res.locals as Locals;
   const prisma = new PrismaClient();
   try {
-    const schema: Joi.ObjectSchema<RoleDelete> = Joi.object({
-      name: Joi.string().required(),
+    await validateDelete({
+      name: name,
     });
-    const options: Joi.ValidationOptions = {
-      abortEarly: false,
-    };
-
-    await schema.validateAsync({ name } as RoleDelete, options);
     const check = await prisma.role.findFirst({
       where: {
         name: name,

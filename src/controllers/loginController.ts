@@ -1,28 +1,23 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import Joi from "joi";
 import { v7 as UUIDV7 } from "uuid";
 import { Login } from "../types/Requests";
 import { ErrorResponse, LoginSuccess } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
+import comparePassword from "../utils/comparePassword";
 import errorHandler from "../utils/errorHandler";
 import signJwt from "../utils/signJwt";
+import { validateLogin } from "../validator/validateLogin";
 
 const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body as Login;
   const prisma = new PrismaClient();
 
   try {
-    const schema: Joi.ObjectSchema<Login> = Joi.object({
-      email: Joi.string().email().required(),
-      password: Joi.string().min(8).required(),
+    await validateLogin({
+      email: email,
+      password: password,
     });
-    const options: Joi.ValidationOptions = {
-      abortEarly: false,
-    };
-
-    await schema.validateAsync({ email, password } as Login, options);
 
     const findUser = await prisma.user.findFirst({
       where: {
@@ -34,13 +29,10 @@ const loginController = async (req: Request, res: Response) => {
       throw new HTTPError("User not found", 404);
     }
 
-    const comparePassword: boolean = await bcrypt.compare(
-      password,
-      findUser.password
-    );
-    if (!comparePassword) {
-      throw new HTTPError("Credentials not match", 401);
-    }
+    await comparePassword({
+      plainPassword: password,
+      hashedPassword: findUser.password,
+    });
 
     const token = await signJwt(findUser.id);
 
@@ -56,10 +48,12 @@ const loginController = async (req: Request, res: Response) => {
       },
     });
 
-    res.json({
+    const response: LoginSuccess = {
       message: `Login success. Your token valid for ${token.expHours} hours from now`,
       token: token.token,
-    } as LoginSuccess);
+    };
+
+    res.json(response);
   } catch (error: any) {
     const handler = errorHandler(error);
 

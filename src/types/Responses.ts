@@ -7,6 +7,7 @@ export type RegisterSuccess = {
   message: string;
   user: {
     name: string;
+    username: string;
   };
 };
 
@@ -14,7 +15,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  verified_at: Date;
+  verified_at?: Date;
   updated_at: Date;
   created_at: Date;
 };

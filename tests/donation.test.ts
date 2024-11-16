@@ -4,7 +4,7 @@ import app from "../src/server";
 describe("Donation", () => {
   it("Charge donation to payment gateway", async () => {
     const res = await request(app)
-      .post("/user/SySafarila/donate")
+      .post("/users/SySafarila/donate")
       .accept("application/json")
       .send({
         amount: 10000,
@@ -17,7 +17,7 @@ describe("Donation", () => {
     expect(res.statusCode).toBe(200);
 
     const res2 = await request(app)
-      .post("/user/SySafarila/donate")
+      .post("/users/SySafarila/donate")
       .accept("application/json")
       .send({
         amount: 10000,
