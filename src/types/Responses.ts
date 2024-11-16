@@ -97,6 +97,7 @@ export type DonateSuccess = {
   virtual_account?: VirtualAccount;
   amount: number;
   expired_at?: number;
+  transaction_id: string;
 };
 
 export type UserDetail = {

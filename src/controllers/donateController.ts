@@ -53,6 +53,7 @@ const donateController = async (req: Request, res: Response) => {
       virtual_account: transaction.virtualAccount,
       amount: amount,
       expired_at: transaction.expired_at,
+      transaction_id: transaction.transactionId,
     };
 
     res.status(200).json(response);
