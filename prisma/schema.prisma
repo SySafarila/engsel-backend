@@ -76,9 +76,11 @@ model Donation {
   qris_image             String?  @db.Text
   virtual_account_number String?  @db.VarChar(100)
   virtual_account_bank   String?  @db.VarChar(50)
+  is_paid                Boolean  @default(false)
   expired_at             BigInt?  @db.BigInt
   updated_at             DateTime @default(now())
   created_at             DateTime @default(now())
 
+  @@index([created_at])
   @@map("donations")
 }
