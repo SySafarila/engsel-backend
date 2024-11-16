@@ -1,8 +1,9 @@
 import HTTPError from "../utils/HTTPError";
+import logger from "../utils/logger";
 import Transaction from "./Transaction";
 
 export default class Xendit {
-  private readonly provider = "Xendit";
+  readonly provider = "XENDIT";
   protected transaction: Transaction;
 
   constructor(transaction: Transaction) {
@@ -10,8 +11,8 @@ export default class Xendit {
   }
 
   async charge() {
-    console.log(
-      `Provider: ${this.provider} trying to charge transaction: ${this.transaction.transactionId}`
+    logger.info(
+      `${this.provider} trying to charge transaction: ${this.transaction.transactionId}`
     );
     switch (this.transaction.paymentMethod) {
       case "qris":
@@ -25,8 +26,8 @@ export default class Xendit {
   }
 
   private async chargeQris() {
-    console.log(
-      `Provider: ${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
+    logger.error(
+      `${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
     );
     throw new HTTPError("Xendit fail", 500);
     console.log(
@@ -35,8 +36,8 @@ export default class Xendit {
   }
 
   private async chargeBcaVa() {
-    console.log(
-      `Provider: ${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
+    logger.error(
+      `${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
     );
     throw new HTTPError("Xendit fail", 500);
     console.log(

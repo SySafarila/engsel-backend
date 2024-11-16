@@ -3,6 +3,7 @@ import { v7 as uuid } from "uuid";
 import { PaymentMethod } from "../types/Requests";
 import { Qris, VirtualAccount } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
+import logger from "../utils/logger";
 import Donator from "./Donator";
 import Midtrans from "./Midtrans";
 import Receiver from "./Receiver";
@@ -91,13 +92,13 @@ export default class Transaction {
         await provider.charge();
         break;
       } catch (error) {
+        logger.error(`${provider.provider} fail`);
         allFail = true;
         continue;
       }
     }
 
     if (allFail == true) {
-      console.log("All providers failed to charge");
       throw new HTTPError("All providers failed to charge", 500);
     }
   }

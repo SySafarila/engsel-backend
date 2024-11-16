@@ -1,6 +1,7 @@
 import Joi from "joi";
 import HTTPError from "./HTTPError";
 import logger from "./logger";
+import { AxiosError } from "axios";
 
 const errorHandler = (error: any): { code: number; message: string } => {
   let code: number | undefined = undefined;
@@ -12,6 +13,11 @@ const errorHandler = (error: any): { code: number; message: string } => {
   } else if (error instanceof HTTPError) {
     code = error.code;
     message = error.message;
+    logger.error(error.message);
+  } else if (error instanceof AxiosError) {
+    code = 500;
+    message = error.message;
+    logger.error(error);
   } else {
     logger.error(error.message ?? "Internal server error");
   }

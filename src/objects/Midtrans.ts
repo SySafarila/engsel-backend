@@ -1,7 +1,8 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import moment from "moment";
 import { MidtransBcaVaSuccess, MidtransQrisSuccess } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
+import logger from "../utils/logger";
 import Transaction from "./Transaction";
 
 type ReqBodyTemplate = {
@@ -20,7 +21,7 @@ type ReqBodyTemplate = {
 };
 
 export default class Midtrans {
-  private readonly provider = "Midtrans";
+  readonly provider = "MIDTRANS";
   protected transaction: Transaction;
   protected MIDTRANS_SERVER_KEY: string = btoa(
     this.getMidtransServerKey() + ":"
@@ -73,8 +74,8 @@ export default class Midtrans {
   }
 
   async charge(): Promise<void> {
-    console.log(
-      `Provider: ${this.provider} trying to charge transaction: ${this.transaction.transactionId}`
+    logger.info(
+      `${this.provider} trying to charge transaction: ${this.transaction.transactionId}`
     );
     switch (this.transaction.paymentMethod) {
       case "qris":
@@ -114,15 +115,16 @@ export default class Midtrans {
           .add(this.transaction.experiry_time_in_minutes, "minutes")
           .format("x")
       );
-      console.log(
-        `Provider: ${this.provider} success to charge transaction: ${this.transaction.transactionId}`
+      logger.info(
+        `${this.provider} success charge transaction: ${this.transaction.transactionId}`
       );
     } catch (error) {
-      console.log(error);
-
-      console.log(
-        `Provider: ${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
+      logger.error(
+        `${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
       );
+      if (error instanceof AxiosError) {
+        logger.error(`${this.provider}: ${error.message}`);
+      }
 
       throw new HTTPError("Midtrans fail", 500);
     }
@@ -154,15 +156,16 @@ export default class Midtrans {
           .add(this.transaction.experiry_time_in_minutes, "minutes")
           .format("x")
       );
-      console.log(
-        `Provider: ${this.provider} success to charge transaction: ${this.transaction.transactionId}`
+      logger.info(
+        `${this.provider} success charge transaction: ${this.transaction.transactionId}`
       );
     } catch (error) {
-      console.log(error);
-
-      console.log(
-        `Provider: ${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
+      logger.error(
+        `${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
       );
+      if (error instanceof AxiosError) {
+        logger.error(`${this.provider}: ${error.message}`);
+      }
 
       throw new HTTPError("Midtrans fail", 500);
     }

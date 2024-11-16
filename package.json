@@ -8,7 +8,7 @@
     "start": "node ./dist/index.js",
     "dev": "ts-node ./src/index.ts",
     "build": "ts-node semver.ts && npx tsc -b",
-    "test": "jest --verbose",
+    "test": "jest",
     "semver": "ts-node semver.ts"
   },
   "keywords": [
