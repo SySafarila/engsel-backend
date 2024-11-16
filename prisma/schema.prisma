@@ -64,17 +64,21 @@ model Token {
 }
 
 model Donation {
-  id             String   @id @unique @db.Uuid
-  user           User[]
-  currency       String   @db.VarChar(3)
-  donator_name   String   @db.VarChar(255)
-  donator_email  String?  @db.VarChar(255)
-  message        String   @db.Text
-  amount         Float
-  payment_method String   @db.VarChar(50)
-  tts            Json?
-  updated_at     DateTime @default(now())
-  created_at     DateTime @default(now())
+  id                     String   @id @unique @db.Uuid
+  user                   User[]
+  currency               String   @db.VarChar(3)
+  donator_name           String   @db.VarChar(255)
+  donator_email          String?  @db.VarChar(255)
+  message                String   @db.Text
+  amount                 Float
+  payment_method         String   @db.VarChar(50)
+  tts                    Json?
+  qris_image             String?  @db.Text
+  virtual_account_number String?  @db.VarChar(100)
+  virtual_account_bank   String?  @db.VarChar(50)
+  expired_at             BigInt?  @db.BigInt
+  updated_at             DateTime @default(now())
+  created_at             DateTime @default(now())
 
   @@map("donations")
 }

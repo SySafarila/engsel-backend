@@ -136,6 +136,7 @@ export type MidtransQrisSuccess = {
   }[];
   expired_at?: number;
 };
+
 export type MidtransBcaVaSuccess = {
   status_code: string;
   status_message: string;

@@ -1,0 +1,45 @@
+import { PrismaClient } from "@prisma/client";
+import { Request, Response } from "express";
+import { DonateSuccess, ErrorResponse } from "../types/Responses";
+import errorHandler from "../utils/errorHandler";
+import HTTPError from "../utils/HTTPError";
+
+export const getTransactionDetail = async (req: Request, res: Response) => {
+  const prisma = new PrismaClient();
+  const { transactionId } = req.params as { transactionId: string };
+
+  try {
+    const donation = await prisma.donation.findFirst({
+      where: {
+        id: transactionId,
+      },
+    });
+
+    if (!donation) {
+      throw new HTTPError("Donate not found", 404);
+    }
+
+    const response: DonateSuccess = {
+      amount: donation.amount,
+      message: donation.message,
+      transaction_id: donation.id,
+      expired_at: Number(donation.expired_at),
+      qris: donation.qris_image ? donation.qris_image : undefined,
+      virtual_account:
+        donation.virtual_account_number && donation.virtual_account_bank
+          ? {
+              bank: donation.virtual_account_bank,
+              number: donation.virtual_account_number,
+            }
+          : undefined,
+    };
+
+    return res.json(response);
+  } catch (error) {
+    const handler = errorHandler(error);
+
+    res.status(handler.code).json({
+      message: handler.message,
+    } as ErrorResponse);
+  }
+};

@@ -70,6 +70,11 @@ Content-Type: application/json
     "amount": 10000,
     "donator_name": "Syahrul",
     "message": "Some message",
-    "payment_method": "bca-virtual-account",
+    "payment_method": "qris",
     "donator_email": null
 }
+
+###
+
+GET http://localhost:3000/transactions/019333ff-b0f5-739a-b725-4f41f3c380bc
+Content-Type: application/json

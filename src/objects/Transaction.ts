@@ -64,6 +64,10 @@ export default class Transaction {
           message: this.message ?? "",
           payment_method: this.paymentMethod!,
           id: this.transactionId,
+          qris_image: this.qris,
+          virtual_account_bank: this.virtualAccount?.bank,
+          virtual_account_number: this.virtualAccount?.number,
+          expired_at: this.expired_at,
           user: {
             connect: {
               username: this.receiver.username,
