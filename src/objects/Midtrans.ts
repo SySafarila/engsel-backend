@@ -4,6 +4,21 @@ import { MidtransBcaVaSuccess, MidtransQrisSuccess } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import Transaction from "./Transaction";
 
+type ReqBodyTemplate = {
+  transaction_details: {
+    order_id: string;
+    gross_amount: number;
+  };
+  custom_expiry: {
+    unit: "minute";
+    expiry_duration: number;
+  };
+  customer_details: {
+    first_name: string;
+    email?: string;
+  };
+};
+
 export default class Midtrans {
   private readonly provider = "Midtrans";
   protected transaction: Transaction;
@@ -40,6 +55,23 @@ export default class Midtrans {
     return axiosConfig;
   }
 
+  private getReqBodyTemplate(): ReqBodyTemplate {
+    return {
+      transaction_details: {
+        order_id: this.transaction.transactionId,
+        gross_amount: this.transaction.amount,
+      },
+      custom_expiry: {
+        unit: "minute",
+        expiry_duration: this.transaction.experiry_time_in_minutes,
+      },
+      customer_details: {
+        first_name: this.transaction.donator.name,
+        email: this.transaction.donator.email,
+      },
+    };
+  }
+
   async charge(): Promise<void> {
     console.log(
       `Provider: ${this.provider} trying to charge transaction: ${this.transaction.transactionId}`
@@ -62,17 +94,10 @@ export default class Midtrans {
   private async chargeQris() {
     try {
       const requestBody = {
+        ...this.getReqBodyTemplate(),
         payment_type: "qris",
-        transaction_details: {
-          order_id: this.transaction.transactionId,
-          gross_amount: this.transaction.amount,
-        },
         qris: {
           acquirer: "gopay",
-        },
-        custom_expiry: {
-          unit: "minute",
-          expiry_duration: this.transaction.experiry_time_in_minutes,
         },
       };
 
@@ -93,6 +118,8 @@ export default class Midtrans {
         `Provider: ${this.provider} success to charge transaction: ${this.transaction.transactionId}`
       );
     } catch (error) {
+      console.log(error);
+
       console.log(
         `Provider: ${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
       );
@@ -104,17 +131,10 @@ export default class Midtrans {
   private async chargeBcaVa() {
     try {
       const requestBody = {
+        ...this.getReqBodyTemplate(),
         payment_type: "bank_transfer",
-        transaction_details: {
-          order_id: this.transaction.transactionId,
-          gross_amount: this.transaction.amount,
-        },
         bank_transfer: {
           bank: "bca",
-        },
-        custom_expiry: {
-          unit: "minute",
-          expiry_duration: this.transaction.experiry_time_in_minutes,
         },
       };
 
@@ -127,7 +147,7 @@ export default class Midtrans {
 
       this.transaction.virtualAccount = {
         bank: parser.va_numbers[0].bank,
-        number: parseInt(parser.va_numbers[0].va_number),
+        number: parser.va_numbers[0].va_number,
       };
       this.transaction.expired_at = parseInt(
         moment(parser.transaction_time)
@@ -138,6 +158,8 @@ export default class Midtrans {
         `Provider: ${this.provider} success to charge transaction: ${this.transaction.transactionId}`
       );
     } catch (error) {
+      console.log(error);
+
       console.log(
         `Provider: ${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
       );

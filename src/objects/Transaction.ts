@@ -17,9 +17,9 @@ type TransactionParam = {
 };
 
 export default class Transaction {
-  protected receiver: Receiver;
-  protected donator: Donator;
   protected message: string;
+  receiver: Receiver;
+  donator: Donator;
   amount: number;
   transactionId: string = uuid();
   paymentMethod: PaymentMethod;

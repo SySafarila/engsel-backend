@@ -63,13 +63,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCRkUm
 }
 
 ###
-POST http://localhost:3000/user/SySafarila/donate
+POST http://localhost:3000/users/SySafarila/donate
 Content-Type: application/json
 
 {
     "amount": 10000,
     "donator_name": "Syahrul",
     "message": "Some message",
-    "payment_method": "qris",
+    "payment_method": "bca-virtual-account",
     "donator_email": null
 }

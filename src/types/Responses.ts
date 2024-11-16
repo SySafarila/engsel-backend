@@ -85,7 +85,7 @@ export type ErrorResponse = {
 };
 
 export type VirtualAccount = {
-  number: number;
+  number: string;
   bank: string;
 };
 
