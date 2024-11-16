@@ -5,8 +5,8 @@ import rootController from "./controllers/rootController";
 import auth from "./routes/auth";
 import permissions from "./routes/permissions";
 import roles from "./routes/roles";
+import transactions from "./routes/transactions";
 import users from "./routes/users";
-import { getTransactionDetail } from "./controllers/transactionController";
 
 const app = express();
 
@@ -19,6 +19,6 @@ app.use(auth);
 app.use(permissions);
 app.use(roles);
 app.use(users);
-app.get("/transactions/:transactionId", getTransactionDetail);
+app.use(transactions);
 
 export default app;

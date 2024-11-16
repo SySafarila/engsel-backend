@@ -3,6 +3,7 @@ import moment from "moment";
 import { MidtransBcaVaSuccess, MidtransQrisSuccess } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import logger from "../utils/logger";
+import { getMidtransServerKey } from "../utils/midtrans";
 import Transaction from "./Transaction";
 
 type ReqBodyTemplate = {
@@ -23,20 +24,11 @@ type ReqBodyTemplate = {
 export default class Midtrans {
   readonly provider = "MIDTRANS";
   protected transaction: Transaction;
-  protected MIDTRANS_SERVER_KEY: string = btoa(
-    this.getMidtransServerKey() + ":"
-  );
+  protected MIDTRANS_SERVER_KEY: string = btoa(getMidtransServerKey() + ":");
   protected MIDTRANS_ENDPOINT: string = this.getEndpoint();
 
   constructor(transaction: Transaction) {
     this.transaction = transaction;
-  }
-
-  private getMidtransServerKey(): string {
-    if (process.env.MIDTRANS_SERVER_KEY) {
-      return process.env.MIDTRANS_SERVER_KEY;
-    }
-    throw new Error("Server key not set");
   }
 
   private getEndpoint(): string {
@@ -51,6 +43,7 @@ export default class Midtrans {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Basic ${this.MIDTRANS_SERVER_KEY}`,
+        "X-Append-Notification": `${process.env.BASE_URL}/transactions/${this.transaction.transactionId}/midtrans`,
       },
     };
     return axiosConfig;
