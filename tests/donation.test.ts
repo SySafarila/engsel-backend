@@ -43,5 +43,8 @@ describe("Donation", () => {
       .get(`/transactions/${transactionBcaVa}`)
       .send();
     expect(res2.statusCode).toBe(200);
+
+    const res3 = await request(app).get(`/transactions/xxx`).send();
+    expect(res3.statusCode).toBe(400);
   });
 });

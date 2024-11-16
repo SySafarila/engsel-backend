@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { validate as validateUUID } from "uuid";
 import { DonateSuccess, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
@@ -9,7 +10,12 @@ export const getTransactionDetail = async (req: Request, res: Response) => {
   const { transactionId } = req.params as { transactionId: string };
 
   try {
-    const donation = await prisma.donation.findFirst({
+    const checkUUID = validateUUID(transactionId);
+    if (!checkUUID) {
+      throw new HTTPError("Invalid Transaction ID", 400);
+    }
+
+    const donation = await prisma.donation.findUnique({
       where: {
         id: transactionId,
       },
