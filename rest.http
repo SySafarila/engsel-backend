@@ -10,7 +10,7 @@ POST http://localhost:3000/auth/login
 content-type: application/json
 
 {
-    "email": "super.admin@admin.com",
+    "email": "sysafarila@mail.com",
     "password": "password"
 }
 
@@ -82,7 +82,7 @@ Content-Type: application/json
     "amount": 10000,
     "donator_name": "Syahrul",
     "message": "Some message",
-    "payment_method": "qris",
+    "payment_method": "bca-virtual-account",
     "donator_email": null
 }
 
@@ -90,3 +90,8 @@ Content-Type: application/json
 
 GET http://localhost:3000/transactions/019333ff-b0f5-739a-b725-4f41f3c380bc
 Content-Type: application/json
+
+###
+GET http://localhost:3000/auth/donations
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IiQyYiQxMCQ0MmJyTzV2NTNneFp6MGIxUjhidTd1In0.eyJ1c2VyX2lkIjoiMDE5MzNjNWUtZTNkYS03Njc0LWFmZDMtM2Q5Y2EwZWRhY2E1IiwicmFuZG9taXplciI6MTczMTg4NDk3NjM4OSwidG9rZW5faWQiOiIkMmIkMTAkNDJick81djUzZ3haejBiMVI4YnU3dSIsImlhdCI6MTczMTg4NDk3NiwiZXhwIjoxNzMxOTA2NTc2fQ.1GJzNbr7pho2a7hs5FSfa7q_tgXWg7_MHUY__854YcY

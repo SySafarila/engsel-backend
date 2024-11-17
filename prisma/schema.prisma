@@ -65,7 +65,8 @@ model Token {
 
 model Donation {
   id                     String   @id @unique @db.Uuid
-  user                   User[]
+  user_id                String   @db.Uuid
+  user                   User     @relation(fields: [user_id], references: [id])
   currency               String   @db.VarChar(3)
   donator_name           String   @db.VarChar(255)
   donator_email          String?  @db.VarChar(255)

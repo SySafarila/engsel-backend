@@ -1,7 +1,8 @@
 import { createServer } from "http";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import app from "./server";
-import transactions from "./socket.io/transactions";
+import { onConnection as donationsOnConnection } from "./socket.io/donations";
+import { onConnection as transactionsOnConnection } from "./socket.io/transactions";
 
 export const httpServer = createServer(app);
 export const io = new Server(httpServer, {
@@ -11,9 +12,7 @@ export const io = new Server(httpServer, {
 });
 
 // namespace /transactions
-io.of("/transactions").on("connection", transactions);
+io.of("/transactions").on("connection", transactionsOnConnection);
 
 // namespace /donations
-io.of("/donations").on("connection", (socket: Socket) => {
-  //
-});
+io.of("/donations").on("connection", donationsOnConnection);

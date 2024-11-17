@@ -8,8 +8,10 @@ import { DonateSuccess, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateDonate } from "../validator/validateDonate";
+import Locals from "../types/locals";
+import { AxiosError } from "axios";
 
-const donateController = async (req: Request, res: Response) => {
+export const donateCharge = async (req: Request, res: Response) => {
   const { amount, donator_name, message, payment_method, donator_email } =
     req.body as SendDonate;
   const { username } = req.params as { username: string };
@@ -66,4 +68,42 @@ const donateController = async (req: Request, res: Response) => {
   }
 };
 
-export default donateController;
+export const getDonations = async (req: Request, res: Response) => {
+  const prisma = new PrismaClient();
+  const { user_id } = res.locals as Locals;
+
+  try {
+    const donations = await prisma.donation.findMany({
+      where: {
+        user: {
+          id: user_id,
+        },
+        is_paid: true,
+      },
+      select: {
+        id: true,
+        amount: true,
+        message: true,
+        currency: true,
+        donator_name: true,
+        donator_email: true,
+        created_at: true,
+        updated_at: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    res.status(200).json({
+      message: "Success get donations",
+      donations: donations,
+    });
+  } catch (error: any) {
+    const handler = errorHandler(error);
+
+    res.status(handler.code).json({
+      message: handler.message,
+    } as ErrorResponse);
+  }
+};
