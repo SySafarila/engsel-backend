@@ -76,7 +76,6 @@ export default class Transaction {
           },
         },
       });
-      console.log("Saved to database");
     } catch (error: any) {
       throw new Error(error.message);
     }
