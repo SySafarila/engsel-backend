@@ -1,7 +1,7 @@
 import { createServer } from "http";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import app from "./server";
-import logger from "./utils/logger";
+import transactions from "./socket.io/transactions";
 
 export const httpServer = createServer(app);
 export const io = new Server(httpServer, {
@@ -10,12 +10,10 @@ export const io = new Server(httpServer, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log(`${socket.id} connected`);
+// namespace /transactions
+io.of("/transactions").on("connection", transactions);
 
-  socket.on("join", (transactionId) => {
-    socket.join(transactionId);
-    socket.emit("join", `Joined room:${transactionId}`);
-    logger.info(`socket ${socket.id} joined room:${transactionId}`);
-  });
+// namespace /donations
+io.of("/donations").on("connection", (socket: Socket) => {
+  //
 });

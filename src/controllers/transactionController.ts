@@ -99,10 +99,12 @@ export const midtransWebhook = async (req: Request, res: Response) => {
             is_paid: true,
           },
         });
-        io.to(transactionId).emit(
-          "transaction-settlement",
-          `Transaction ID: ${transactionId} success`
-        );
+        io.of("/transactions")
+          .to(transactionId)
+          .emit(
+            "transaction-settlement",
+            `Transaction ID: ${transactionId} success`
+          );
         break;
 
       case "expire":
