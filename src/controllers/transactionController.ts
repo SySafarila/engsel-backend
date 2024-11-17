@@ -2,8 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { createHash } from "node:crypto";
 import { validate as validateUUID } from "uuid";
+import { io } from "../socketio";
 import { MidtransWebhookQrisSettlement } from "../types/Requests";
-import { DonateSuccess, ErrorResponse } from "../types/Responses";
+import { DetailTransaction, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { getMidtransServerKey } from "../utils/midtrans";
@@ -28,7 +29,7 @@ export const getTransactionDetail = async (req: Request, res: Response) => {
       throw new HTTPError("Donate not found", 404);
     }
 
-    const response: DonateSuccess = {
+    const response: DetailTransaction = {
       amount: donation.amount,
       message: donation.message,
       transaction_id: donation.id,
@@ -41,6 +42,7 @@ export const getTransactionDetail = async (req: Request, res: Response) => {
               number: donation.virtual_account_number,
             }
           : undefined,
+      is_paid: donation.is_paid,
     };
 
     return res.json(response);
@@ -97,6 +99,10 @@ export const midtransWebhook = async (req: Request, res: Response) => {
             is_paid: true,
           },
         });
+        io.to(transactionId).emit(
+          "transaction-settlement",
+          `Transaction ID: ${transactionId} success`
+        );
         break;
 
       case "expire":

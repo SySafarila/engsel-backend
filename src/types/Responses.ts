@@ -100,6 +100,16 @@ export type DonateSuccess = {
   transaction_id: string;
 };
 
+export type DetailTransaction = {
+  message: string;
+  qris?: Qris;
+  virtual_account?: VirtualAccount;
+  amount: number;
+  expired_at?: number;
+  transaction_id: string;
+  is_paid: boolean;
+};
+
 export type UserDetail = {
   message: string;
   user: {
