@@ -26,7 +26,7 @@ const loginController = async (req: Request, res: Response) => {
     });
 
     if (!findUser) {
-      throw new HTTPError("User not found", 404);
+      throw new HTTPError("Credentials not match", 401);
     }
 
     await comparePassword({
