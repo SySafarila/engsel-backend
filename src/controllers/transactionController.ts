@@ -2,12 +2,12 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { createHash } from "node:crypto";
 import { validate as validateUUID } from "uuid";
-import { io } from "../socketio";
 import { MidtransWebhookQrisSettlement } from "../types/Requests";
 import { DetailTransaction, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { getMidtransServerKey } from "../utils/midtrans";
+import { settlement } from "../utils/transactions";
 
 export const getTransactionDetail = async (req: Request, res: Response) => {
   const prisma = new PrismaClient();
@@ -91,42 +91,7 @@ export const midtransWebhook = async (req: Request, res: Response) => {
 
     switch (body.transaction_status) {
       case "settlement":
-        const donate = await prisma.donation.findUnique({
-          where: {
-            id: transactionId,
-          },
-        });
-
-        if (!donate) {
-          throw new HTTPError("Donation not found", 404);
-        }
-
-        await prisma.donation.update({
-          where: {
-            id: transactionId,
-          },
-          data: {
-            is_paid: true,
-            updated_at: new Date(),
-          },
-        });
-
-        io.of("/transactions")
-          .to(transactionId)
-          .emit(
-            "transaction-settlement",
-            `Transaction ID: ${transactionId} success`
-          );
-        io.of("/donations")
-          .to(donate.user_id)
-          .emit("donation", {
-            donator: {
-              name: donate.donator_name,
-            },
-            amount: donate.amount,
-            currency: donate.currency,
-            message: donate.message,
-          });
+        await settlement({ transactionId: transactionId });
         break;
 
       case "expire":
