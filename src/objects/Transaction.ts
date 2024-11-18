@@ -62,6 +62,7 @@ export default class Transaction {
           amount: this.amount,
           currency: "IDR",
           donator_name: this.donator.name,
+          donator_email: this.donator.email,
           message: this.message ?? "",
           payment_method: this.paymentMethod!,
           id: this.transactionId,

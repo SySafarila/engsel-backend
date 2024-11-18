@@ -9,7 +9,6 @@ import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateDonate } from "../validator/validateDonate";
 import Locals from "../types/locals";
-import { AxiosError } from "axios";
 
 export const donateCharge = async (req: Request, res: Response) => {
   const { amount, donator_name, message, payment_method, donator_email } =
@@ -37,7 +36,7 @@ export const donateCharge = async (req: Request, res: Response) => {
     }
 
     // charge to payment gateway and save to database
-    const donator = new Donator(donator_name);
+    const donator = new Donator(donator_name, donator_email);
     const receiver = new Receiver(username);
     const transaction = new Transaction({
       amount: amount,
