@@ -22,6 +22,7 @@ export const getUserDetail = async (req: Request, res: Response) => {
     const response: UserDetail = {
       message: `Get user detail by username: ${username}`,
       user: {
+        id: checkUsername.id,
         name: checkUsername.name,
         username: checkUsername.username,
       },

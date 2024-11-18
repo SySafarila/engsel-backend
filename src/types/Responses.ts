@@ -113,6 +113,7 @@ export type DetailTransaction = {
 export type UserDetail = {
   message: string;
   user: {
+    id: string;
     name: string;
     username: string;
   };
