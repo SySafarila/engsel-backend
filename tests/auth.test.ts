@@ -98,3 +98,32 @@ describe("User can logout", () => {
     expect(res2.statusCode).toBe(401);
   });
 });
+
+describe("Updating user", () => {
+  it("Should success", async () => {
+    let token: string = "";
+    const res = await request(app)
+      .post("/auth/login")
+      .accept("application/json")
+      .send({
+        email: "super.admin@admin.com",
+        password: "password",
+      });
+
+    expect(res.statusCode).toBe(200);
+    token = res.body.token;
+
+    const res2 = await request(app)
+      .patch("/auth/me")
+      .accept("application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        email: "testing.update@gmail.com",
+        password: "password2",
+        name: "name name",
+        username: "password2",
+      });
+
+    expect(res2.statusCode).toBe(200);
+  });
+});

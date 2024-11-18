@@ -7,7 +7,7 @@ import { onConnection as transactionsOnConnection } from "./socket.io/transactio
 export const httpServer = createServer(app);
 export const io = new Server(httpServer, {
   cors: {
-    origin: "*",
+    origin: process.env.FRONT_END_URL,
   },
 });
 
