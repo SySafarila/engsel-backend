@@ -25,6 +25,7 @@ model User {
   roles       Role[]
   tokens      Token[]
   donations   Donation[]
+  balance     Decimal    @default(0) @db.Decimal()
 
   @@map("users")
 }

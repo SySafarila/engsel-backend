@@ -19,14 +19,37 @@ export const settlement = async ({
     throw new HTTPError("Donation not found", 404);
   }
 
-  await prisma.donation.update({
+  const user = await prisma.user.findUnique({
     where: {
-      id: transactionId,
+      id: donate.user_id,
     },
-    data: {
-      is_paid: true,
-      updated_at: new Date(),
-    },
+  });
+
+  if (!user) {
+    throw new HTTPError("User not found", 404);
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      where: {
+        id: donate.user_id,
+      },
+      data: {
+        balance: {
+          increment: donate.amount,
+        },
+      },
+    });
+
+    await tx.donation.update({
+      where: {
+        id: transactionId,
+      },
+      data: {
+        is_paid: true,
+        updated_at: new Date(),
+      },
+    });
   });
 
   io.of("/transactions")

@@ -75,7 +75,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/users/SySafarila/donate
+POST http://localhost:3000/donations/SySafarila/donate
 Content-Type: application/json
 
 {
