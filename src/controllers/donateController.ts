@@ -152,3 +152,30 @@ export const replayDonation = async (req: Request, res: Response) => {
     } as ErrorResponse);
   }
 };
+
+export const testDonation = async (req: Request, res: Response) => {
+  const { user_id } = res.locals as Locals;
+
+  try {
+    io.of("/donations")
+      .to(user_id)
+      .emit("donation", {
+        donator: {
+          name: "Syahrul Safarila",
+        },
+        amount: 100000,
+        currency: "IDR",
+        message: "Hello world! ini hanya testing!",
+      });
+
+    res.json({
+      message: "success",
+    });
+  } catch (error) {
+    const handler = errorHandler(error);
+
+    res.status(handler.code).json({
+      message: handler.message,
+    } as ErrorResponse);
+  }
+};
