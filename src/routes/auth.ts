@@ -1,5 +1,4 @@
 import express from "express";
-import { getDonations } from "../controllers/donateController";
 import loginController from "../controllers/loginController";
 import logoutController from "../controllers/logoutController";
 import meController from "../controllers/meController";
@@ -14,6 +13,5 @@ router.post("/auth/register", registerController);
 router.get("/auth/me", authMiddleware, meController);
 router.patch("/auth/me", authMiddleware, updateAccountController);
 router.post("/auth/logout", authMiddleware, logoutController);
-router.get("/auth/donations", authMiddleware, getDonations);
 
 export default router;

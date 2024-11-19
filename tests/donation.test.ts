@@ -6,7 +6,7 @@ let transactionQris: string, transactionBcaVa: string;
 describe("Donation", () => {
   it("Charge donation to payment gateway", async () => {
     const res = await request(app)
-      .post("/users/SySafarila/donate")
+      .post("/donations/SySafarila/donate")
       .accept("application/json")
       .send({
         amount: 10000,
@@ -20,7 +20,7 @@ describe("Donation", () => {
     transactionQris = res.body.transaction_id;
 
     const res2 = await request(app)
-      .post("/users/SySafarila/donate")
+      .post("/donations/SySafarila/donate")
       .accept("application/json")
       .send({
         amount: 10000,

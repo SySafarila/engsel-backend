@@ -3,12 +3,13 @@ import { Request, Response } from "express";
 import Donator from "../objects/Donator";
 import Receiver from "../objects/Receiver";
 import Transaction from "../objects/Transaction";
+import { io } from "../socketio";
+import Locals from "../types/locals";
 import { SendDonate } from "../types/Requests";
 import { DonateSuccess, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateDonate } from "../validator/validateDonate";
-import Locals from "../types/locals";
 
 export const donateCharge = async (req: Request, res: Response) => {
   const { amount, donator_name, message, payment_method, donator_email } =
@@ -99,6 +100,46 @@ export const getDonations = async (req: Request, res: Response) => {
       donations: donations,
     });
   } catch (error: any) {
+    const handler = errorHandler(error);
+
+    res.status(handler.code).json({
+      message: handler.message,
+    } as ErrorResponse);
+  }
+};
+
+export const replayDonation = async (req: Request, res: Response) => {
+  const { user_id } = res.locals as Locals;
+  const { transaction_id } = req.body as { transaction_id: string };
+  const prisma = new PrismaClient();
+
+  try {
+    const donation = await prisma.donation.findFirst({
+      where: {
+        user_id: user_id,
+        id: transaction_id,
+      },
+    });
+
+    if (!donation) {
+      throw new HTTPError("Donation not found", 404);
+    }
+
+    io.of("/donations")
+      .to(donation.user_id)
+      .emit("donation", {
+        donator: {
+          name: donation.donator_name,
+        },
+        amount: donation.amount,
+        currency: donation.currency,
+        message: donation.message,
+      });
+
+    res.json({
+      message: "success",
+    });
+  } catch (error) {
     const handler = errorHandler(error);
 
     res.status(handler.code).json({

@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import rootController from "./controllers/rootController";
 import auth from "./routes/auth";
+import donations from "./routes/donations";
 import permissions from "./routes/permissions";
 import roles from "./routes/roles";
 import transactions from "./routes/transactions";
@@ -25,5 +26,6 @@ app.use(permissions);
 app.use(roles);
 app.use(users);
 app.use(transactions);
+app.use(donations);
 
 export default app;
