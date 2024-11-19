@@ -25,6 +25,7 @@ const meController = async (req: Request, res: Response) => {
       user: {
         id: user.id,
         name: user.name,
+        username: user.username,
         email: user.email,
         verified_at: user.verified_at ?? undefined,
         updated_at: user.updated_at,

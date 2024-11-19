@@ -14,6 +14,7 @@ export type RegisterSuccess = {
 export type User = {
   id: string;
   name: string;
+  username: string;
   email: string;
   verified_at?: Date;
   updated_at: Date;
