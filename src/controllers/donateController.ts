@@ -10,6 +10,7 @@ import { DonateSuccess, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateDonate } from "../validator/validateDonate";
+import { validateReplayDonate } from "../validator/validateReplayDonate";
 
 export const donateCharge = async (req: Request, res: Response) => {
   const { amount, donator_name, message, payment_method, donator_email } =
@@ -114,6 +115,10 @@ export const replayDonation = async (req: Request, res: Response) => {
   const prisma = new PrismaClient();
 
   try {
+    await validateReplayDonate({
+      transaction_id: transaction_id,
+    });
+
     const donation = await prisma.donation.findFirst({
       where: {
         user_id: user_id,
