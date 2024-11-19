@@ -47,4 +47,22 @@ describe("Donation", () => {
     const res3 = await request(app).get(`/transactions/xxx`).send();
     expect(res3.statusCode).toBe(400);
   });
+
+  it("Replay donation", async () => {
+    let token: string = "";
+    const res = await request(app).post("/auth/login").send({
+      email: "sysafarila@mail.com",
+      password: "password",
+    });
+    token = res.body.token;
+
+    const res2 = await request(app)
+      .post("/donations/replay")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        transaction_id: transactionBcaVa,
+      });
+
+    expect(res2.statusCode).toBe(200);
+  });
 });
