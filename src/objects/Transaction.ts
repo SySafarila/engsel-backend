@@ -28,6 +28,7 @@ export default class Transaction {
   virtualAccount?: VirtualAccount;
   expired_at?: number;
   experiry_time_in_minutes: number = 30;
+  provider?: string;
 
   constructor(values: TransactionParam) {
     this.receiver = values.receiver;
@@ -70,6 +71,7 @@ export default class Transaction {
           virtual_account_bank: this.virtualAccount?.bank,
           virtual_account_number: this.virtualAccount?.number,
           expired_at: this.expired_at,
+          provider: this.provider!,
           user: {
             connect: {
               username: this.receiver.username,

@@ -83,6 +83,7 @@ export default class Midtrans {
         throw new HTTPError("Unsupported payment method", 500);
         break;
     }
+    this.transaction.provider = this.provider;
   }
 
   private async chargeQris() {
