@@ -83,6 +83,6 @@ model Donation {
   updated_at             DateTime @default(now())
   created_at             DateTime @default(now())
 
-  @@index([created_at])
+  @@index([updated_at])
   @@map("donations")
 }

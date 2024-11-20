@@ -72,6 +72,7 @@ export const donateCharge = async (req: Request, res: Response) => {
 export const getDonations = async (req: Request, res: Response) => {
   const prisma = new PrismaClient();
   const { user_id } = res.locals as Locals;
+  const { cursor } = req.query as { cursor: string };
 
   try {
     const donations = await prisma.donation.findMany({
@@ -92,8 +93,15 @@ export const getDonations = async (req: Request, res: Response) => {
         updated_at: true,
       },
       orderBy: {
-        created_at: "desc",
+        updated_at: "desc",
       },
+      take: 10,
+      ...(cursor && {
+        cursor: {
+          id: cursor,
+        },
+      }),
+      ...(cursor && { skip: 1 }),
     });
 
     res.status(200).json({
