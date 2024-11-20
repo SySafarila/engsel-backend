@@ -1,12 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { v7 as UUIDV7 } from "uuid";
 import Donator from "../objects/Donator";
 import Receiver from "../objects/Receiver";
 import Transaction from "../objects/Transaction";
 import { io } from "../socketio";
 import Locals from "../types/locals";
 import { SendDonate } from "../types/Requests";
-import { DonateSuccess, ErrorResponse } from "../types/Responses";
+import {
+  DonateSuccess,
+  DonationSocket,
+  ErrorResponse,
+} from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateDonate } from "../validator/validateDonate";
@@ -168,13 +173,14 @@ export const testDonation = async (req: Request, res: Response) => {
     io.of("/donations")
       .to(user_id)
       .emit("donation", {
-        donator: {
-          name: "Syahrul Safarila",
-        },
+        donator_name: "Syahrul Safarila",
         amount: 100000,
         currency: "IDR",
         message: "Hello world! ini hanya testing!",
-      });
+        created_at: new Date().toDateString(),
+        updated_at: new Date().toDateString(),
+        id: UUIDV7(),
+      } as DonationSocket);
 
     res.json({
       message: "success",

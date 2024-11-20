@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { io } from "../socketio";
+import { DonationSocket } from "../types/Responses";
 import HTTPError from "./HTTPError";
 
 export const settlement = async ({
@@ -58,11 +59,12 @@ export const settlement = async ({
   io.of("/donations")
     .to(donate.user_id)
     .emit("donation", {
-      donator: {
-        name: donate.donator_name,
-      },
+      donator_name: donate.donator_name,
       amount: donate.amount,
       currency: donate.currency,
       message: donate.message,
-    });
+      created_at: donate.created_at.toString(),
+      updated_at: donate.updated_at.toString(),
+      id: donate.id,
+    } as DonationSocket);
 };

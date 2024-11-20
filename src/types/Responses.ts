@@ -165,3 +165,13 @@ export type MidtransBcaVaSuccess = {
   fraud_status: string;
   currency: string;
 };
+
+export type DonationSocket = {
+  amount: number;
+  created_at: string;
+  updated_at: string;
+  donator_name: string;
+  donator_email?: string;
+  id: string;
+  message: string;
+};
