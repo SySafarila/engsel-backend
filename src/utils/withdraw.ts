@@ -20,12 +20,7 @@ export default async function withdraw(values: Params): Promise<void> {
     throw new HTTPError("User not found", 404);
   }
   if (Number(user.balance) < values.amount) {
-    throw new HTTPError(
-      `Balance not match, current: ${Number(user.balance)} and request ${
-        values.amount
-      }`,
-      400
-    );
+    throw new HTTPError(`Request larger than your balance`, 400);
   }
 
   await prisma.$transaction(async (tx) => {
