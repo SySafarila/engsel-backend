@@ -19,6 +19,7 @@ export type User = {
   verified_at?: Date;
   updated_at: Date;
   created_at: Date;
+  balance: number;
 };
 
 export type CurrentUserSuccess = {

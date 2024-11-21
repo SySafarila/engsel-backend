@@ -30,6 +30,7 @@ const meController = async (req: Request, res: Response) => {
         verified_at: user.verified_at ?? undefined,
         updated_at: user.updated_at,
         created_at: user.created_at,
+        balance: Number(user.balance),
       },
     };
 
