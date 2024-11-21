@@ -67,9 +67,6 @@ export default class Midtrans {
   }
 
   async charge(): Promise<void> {
-    logger.info(
-      `${this.provider} trying to charge transaction: ${this.transaction.transactionId}`
-    );
     switch (this.transaction.paymentMethod) {
       case "qris":
         await this.chargeQris();
@@ -109,9 +106,6 @@ export default class Midtrans {
           .add(this.transaction.experiry_time_in_minutes, "minutes")
           .format("x")
       );
-      logger.info(
-        `${this.provider} success charge transaction: ${this.transaction.transactionId}`
-      );
     } catch (error) {
       logger.error(
         `${this.provider} failed to charge transaction: ${this.transaction.transactionId}`
@@ -149,9 +143,6 @@ export default class Midtrans {
         moment(parser.transaction_time)
           .add(this.transaction.experiry_time_in_minutes, "minutes")
           .format("x")
-      );
-      logger.info(
-        `${this.provider} success charge transaction: ${this.transaction.transactionId}`
       );
     } catch (error) {
       logger.error(

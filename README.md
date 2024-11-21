@@ -204,3 +204,17 @@ Request body:
   "transaction_id": "xxx-xxx-xxx"
 }
 ```
+
+### Withdraw
+
+`POST` /withdraws
+
+`Authorization` Bearer [your-token]
+
+Request body:
+
+```json
+{
+  "amount": 100000
+}
+```

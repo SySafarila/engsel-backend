@@ -26,6 +26,7 @@ model User {
   tokens      Token[]
   donations   Donation[]
   balance     Decimal    @default(0) @db.Decimal()
+  withdraws   Withdraw[]
 
   @@map("users")
 }
@@ -86,4 +87,16 @@ model Donation {
 
   @@index([updated_at])
   @@map("donations")
+}
+
+model Withdraw {
+  id         String   @id @unique @db.Uuid
+  user_id    String   @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id])
+  amount     Decimal  @db.Decimal()
+  is_pending Boolean  @default(true)
+  updated_at DateTime @default(now())
+  created_at DateTime @default(now())
+
+  @@map("withdraws")
 }

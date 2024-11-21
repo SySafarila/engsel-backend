@@ -143,6 +143,7 @@ async function main() {
       username: "SySafarila",
       password: bcrypt.hashSync("password", 10),
       name: "SySafarila",
+      balance: 10000,
       roles: {
         connect: {
           name: "user",

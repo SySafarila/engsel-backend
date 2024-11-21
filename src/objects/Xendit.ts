@@ -11,9 +11,6 @@ export default class Xendit {
   }
 
   async charge() {
-    logger.info(
-      `${this.provider} trying to charge transaction: ${this.transaction.transactionId}`
-    );
     switch (this.transaction.paymentMethod) {
       case "qris":
         await this.chargeQris();

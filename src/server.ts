@@ -8,6 +8,7 @@ import permissions from "./routes/permissions";
 import roles from "./routes/roles";
 import transactions from "./routes/transactions";
 import users from "./routes/users";
+import withdraws from "./routes/withdraws";
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use(roles);
 app.use(users);
 app.use(transactions);
 app.use(donations);
+app.use(withdraws);
 
 export default app;
