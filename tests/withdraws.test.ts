@@ -19,4 +19,20 @@ describe("Withdraw", () => {
 
     expect(res2.statusCode).toBe(200);
   });
+
+  it("Get Withdraw", async () => {
+    let token: string = "";
+    const res = await request(app).post("/auth/login").send({
+      email: "sysafarila@mail.com",
+      password: "password",
+    });
+    token = res.body.token;
+
+    const res2 = await request(app)
+      .get("/withdraws")
+      .set("Authorization", `Bearer ${token}`)
+      .send();
+
+    expect(res2.statusCode).toBe(200);
+  });
 });
