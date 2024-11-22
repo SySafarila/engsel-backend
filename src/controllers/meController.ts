@@ -14,6 +14,22 @@ const meController = async (req: Request, res: Response) => {
       where: {
         id: user_id,
       },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        verified_at: true,
+        updated_at: true,
+        created_at: true,
+        balance: true,
+        roles: {
+          select: {
+            name: true,
+            level: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -32,6 +48,7 @@ const meController = async (req: Request, res: Response) => {
         created_at: user.created_at,
         balance: Number(user.balance),
       },
+      roles: user.roles,
     };
 
     res.json(response);

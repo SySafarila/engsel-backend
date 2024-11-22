@@ -25,6 +25,10 @@ export type User = {
 export type CurrentUserSuccess = {
   message: string;
   user: User;
+  roles: {
+    name: string;
+    level: number;
+  }[];
 };
 
 export type LogoutSuccess = {
