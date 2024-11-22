@@ -43,14 +43,29 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({
       select: {
+        id: true,
         name: true,
         username: true,
+        email: true,
+        balance: true,
+        roles: {
+          select: {
+            name: true,
+            level: true,
+          },
+          orderBy: {
+            level: "asc",
+          },
+        },
       },
     });
 
     const response: Users = {
       message: `Get all users`,
-      user: users,
+      users: users.map((user) => ({
+        ...user,
+        balance: user.balance.toNumber(),
+      })),
     };
 
     res.json(response);

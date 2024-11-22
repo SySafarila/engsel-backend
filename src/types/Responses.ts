@@ -127,9 +127,16 @@ export type UserDetail = {
 
 export type Users = {
   message: string;
-  user: {
+  users: {
+    id: string;
     name: string;
     username: string;
+    email: string;
+    balance: number;
+    roles: {
+      name: string;
+      level: number;
+    }[];
   }[];
 };
 
