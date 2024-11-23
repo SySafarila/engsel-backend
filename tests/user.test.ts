@@ -9,8 +9,8 @@ describe("User", () => {
       .post("/auth/login")
       .accept("application/json")
       .send({
-        email: "super.admin@admin.com",
-        password: "password",
+        email: "testing.update@gmail.com",
+        password: "password2",
       });
 
     expect(login.statusCode).toBe(200);
