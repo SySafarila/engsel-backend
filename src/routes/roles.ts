@@ -11,9 +11,9 @@ import can from "../middlewares/permissionMiddleware";
 const router = express.Router();
 
 router.use("/roles", authMiddleware);
-router.put("/roles", can("roles-create"), storeRole);
-router.patch("/roles", can("roles-update"), updateRole);
-router.delete("/roles", can("roles-delete"), deleteRole);
+router.post("/roles", can("roles-create"), storeRole);
+router.patch("/roles/:roleName", can("roles-update"), updateRole);
+router.delete("/roles/:roleName", can("roles-delete"), deleteRole);
 router.get("/roles", can("roles-read"), readRole);
 
 export default router;

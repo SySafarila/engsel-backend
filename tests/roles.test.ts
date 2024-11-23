@@ -60,7 +60,7 @@ describe("READ roles", () => {
 describe("CREATE role", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .put("/roles")
+      .post("/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -73,7 +73,7 @@ describe("CREATE role", () => {
   });
   it("Should fail", async () => {
     const res2 = await request(app)
-      .put("/roles")
+      .post("/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`)
       .send({
@@ -84,7 +84,7 @@ describe("CREATE role", () => {
     expect(res2.statusCode).toBe(400);
 
     const res3 = await request(app)
-      .put("/roles")
+      .post("/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`)
       .send({
@@ -99,53 +99,38 @@ describe("CREATE role", () => {
 describe("UPDATE roles", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .patch("/roles")
+      .patch("/roles/basic-user")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        name: "basic-user",
-        new_name: "advanced-user",
+        name: "advanced-user",
       });
 
     expect(res.statusCode).toBe(200);
     expect(res.body.data.name).toBe("advanced-user");
 
     const res2 = await request(app)
-      .patch("/roles")
+      .patch("/roles/advanced-user")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
         name: "advanced-user",
-        new_name: "advanced-user",
-        new_level: 1,
+        level: 1,
       });
 
     expect(res2.statusCode).toBe(200);
     expect(res2.body.data.name).toBe("advanced-user");
     expect(res2.body.data.level).toBe(1);
-
-    const res3 = await request(app)
-      .patch("/roles")
-      .accept("application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "advanced-user",
-        permissions: ["a", "permissions-read"],
-      });
-
-    expect(res3.statusCode).toBe(200);
-    expect(res3.body.data.name).toBe("advanced-user");
   });
 
   it("Should fail", async () => {
     const res3 = await request(app)
-      .patch("/roles")
+      .patch("/roles/advanced-user")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`)
       .send({
         name: "advanced-user",
-        new_name: "advanced-user",
-        new_level: 0,
+        level: 0,
       });
 
     expect(res3.statusCode).toBe(400);
@@ -155,24 +140,20 @@ describe("UPDATE roles", () => {
 describe("DELETE role", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .delete("/roles")
+      .delete("/roles/advanced-user")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "advanced-user",
-      });
+      .send();
 
     expect(res.statusCode).toBe(200);
   });
 
   it("Should fail", async () => {
     const res2 = await request(app)
-      .delete("/roles")
+      .delete("/roles/super-admin")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`)
-      .send({
-        name: "super-admin",
-      });
+      .send();
 
     expect(res2.statusCode).toBe(400);
   });

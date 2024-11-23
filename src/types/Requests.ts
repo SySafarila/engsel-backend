@@ -37,14 +37,13 @@ export type RoleCreate = {
 
 export type RoleUpdate = {
   name: string;
-  new_name?: string;
-  new_level?: number;
-  new_permissions?: string[];
+  level?: number;
+  permissions?: string[];
 };
 
-export type RoleDelete = {
-  name: string;
-};
+// export type RoleDelete = {
+//   name: string;
+// };
 
 export type SendDonate = {
   donator_name: string;

@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
 import Locals from "../types/locals";
-import { RoleCreate, RoleDelete, RoleUpdate } from "../types/Requests";
+import { RoleCreate, RoleUpdate } from "../types/Requests";
 import {
   ErrorResponse,
   RoleCreateSuccess,
@@ -12,11 +12,7 @@ import {
 } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
-import {
-  validateDelete,
-  validateStore,
-  validateUpdate,
-} from "../validator/validateRole";
+import { validateStore, validateUpdate } from "../validator/validateRole";
 
 export const storeRole = async (req: Request, res: Response) => {
   const { name, level, permissions } = req.body as RoleCreate;
@@ -94,23 +90,23 @@ export const storeRole = async (req: Request, res: Response) => {
 };
 
 export const updateRole = async (req: Request, res: Response) => {
-  const { name, new_name, new_level, new_permissions } = req.body as RoleUpdate;
+  const { name, level, permissions } = req.body as RoleUpdate;
   const { role_level_peak } = res.locals as Locals;
+  const params = req.params as { roleName: string };
   const prisma = new PrismaClient();
   try {
     await validateUpdate({
       name: name,
-      new_level: new_level,
-      new_name: new_name,
-      new_permissions: new_permissions,
+      level: level,
+      permissions: permissions,
     });
 
     const validPermissions: { name: string }[] = [];
-    if (new_permissions) {
+    if (permissions) {
       const checkValidPermissions = await prisma.permission.findMany({
         where: {
           name: {
-            in: new_permissions,
+            in: permissions,
           },
         },
       });
@@ -122,7 +118,7 @@ export const updateRole = async (req: Request, res: Response) => {
 
     const check = await prisma.role.findFirst({
       where: {
-        name: name,
+        name: params.roleName,
       },
     });
 
@@ -132,32 +128,32 @@ export const updateRole = async (req: Request, res: Response) => {
 
     if (role_level_peak && role_level_peak >= check.level) {
       throw new HTTPError(
-        `Your peak role level is ${role_level_peak}, you cannot update role with level that higher than your level. Note: lower is higher (1 > 2)`,
+        `Your peak role level is ${role_level_peak}, you cannot update role with level that higher than your level (${check.level}). Note: lower is higher (1 > 2)`,
         400
       );
     }
 
-    if (role_level_peak && new_level && role_level_peak >= new_level) {
+    if (role_level_peak && level && role_level_peak >= level) {
       throw new HTTPError(
-        `Your peak role level is ${role_level_peak}, you cannot update role with level that higher than your level. Note: lower is higher (1 > 2)`,
+        `Your peak role level is ${role_level_peak}, you cannot update role with level that higher than your level (${check.level}). Note: lower is higher (1 > 2)`,
         400
       );
     }
 
     const updateRole = await prisma.role.update({
       where: {
-        name: name,
+        name: params.roleName,
       },
       data: {
-        name: new_name ?? check.name,
-        level: new_level ?? check.level,
+        name: name ?? check.name,
+        level: level ?? check.level,
       },
     });
 
-    if (new_permissions) {
+    if (permissions) {
       const updateRolePermissions = await prisma.role.update({
         where: {
-          name: name,
+          name: params.roleName,
         },
         data: {
           permissions: {
@@ -217,16 +213,14 @@ export const updateRole = async (req: Request, res: Response) => {
 };
 
 export const deleteRole = async (req: Request, res: Response) => {
-  const { name } = req.body as RoleDelete;
   const { role_level_peak } = res.locals as Locals;
+  const params = req.params as { roleName: string };
   const prisma = new PrismaClient();
+
   try {
-    await validateDelete({
-      name: name,
-    });
     const check = await prisma.role.findFirst({
       where: {
-        name: name,
+        name: params.roleName,
       },
     });
 
@@ -243,7 +237,7 @@ export const deleteRole = async (req: Request, res: Response) => {
 
     await prisma.role.delete({
       where: {
-        name: name,
+        name: params.roleName,
       },
     });
 
