@@ -22,7 +22,7 @@ export const settlement = async ({
 
   const user = await prisma.user.findUnique({
     where: {
-      id: donate.user_id,
+      id: donate.user_id!,
     },
   });
 
@@ -33,7 +33,7 @@ export const settlement = async ({
   await prisma.$transaction(async (tx) => {
     await tx.user.update({
       where: {
-        id: donate.user_id,
+        id: donate.user_id!,
       },
       data: {
         balance: {
@@ -57,7 +57,7 @@ export const settlement = async ({
     .to(transactionId)
     .emit("transaction-settlement", `Transaction ID: ${transactionId} success`);
   io.of("/donations")
-    .to(donate.user_id)
+    .to(donate.user_id!)
     .emit("donation", {
       donator_name: donate.donator_name,
       amount: donate.amount,

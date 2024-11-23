@@ -144,7 +144,7 @@ export const replayDonation = async (req: Request, res: Response) => {
     }
 
     io.of("/donations")
-      .to(donation.user_id)
+      .to(donation.user_id!)
       .emit("donation", {
         donator: {
           name: donation.donator_name,
