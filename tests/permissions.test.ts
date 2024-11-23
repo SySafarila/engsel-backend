@@ -41,7 +41,7 @@ describe("READ permissions", () => {
 describe("CREATE permission", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .put("/permissions")
+      .post("/permissions")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -53,7 +53,7 @@ describe("CREATE permission", () => {
 
   it("Should fail", async () => {
     const res = await request(app)
-      .put("/permissions")
+      .post("/permissions")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}x`)
       .send({
@@ -61,28 +61,17 @@ describe("CREATE permission", () => {
       });
 
     expect(res.statusCode).toBe(401);
-
-    const res2 = await request(app)
-      .put("/permissions")
-      .accept("application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "permissions-read",
-      });
-
-    expect(res2.statusCode).toBe(400);
   });
 });
 
 describe("UPDATE permission", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .patch("/permissions")
+      .patch("/permissions/permissions-readx")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        name: "permissions-readx",
-        new_name: "permission-redx2",
+        name: "permission-redx2",
       });
 
     expect(res.statusCode).toBe(200);
@@ -90,49 +79,34 @@ describe("UPDATE permission", () => {
 
   it("Should fail", async () => {
     const res = await request(app)
-      .patch("/permissions")
+      .patch("/permissions/permissions-readx")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}xx`)
       .send({
-        name: "permissions-readx",
-        new_name: "permission-redx2",
+        name: "permission-redx2",
       });
 
     expect(res.statusCode).toBe(401);
-
-    const res2 = await request(app)
-      .patch("/permissions")
-      .accept("application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "permissions-readx",
-      });
-
-    expect(res2.statusCode).toBe(400);
   });
 });
 
 describe("DELETE permission", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .delete("/permissions")
+      .delete("/permissions/permission-redx2")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
-      .send({
-        name: "permission-redx2",
-      });
+      .send();
 
     expect(res.statusCode).toBe(200);
   });
 
   it("Should fail", async () => {
     const res = await request(app)
-      .delete("/permissions")
+      .delete("/permissions/permission-redx2")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}xxx`)
-      .send({
-        name: "permission-redx2",
-      });
+      .send();
 
     expect(res.statusCode).toBe(401);
   });

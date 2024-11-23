@@ -23,7 +23,6 @@ export type PermissionCreate = {
 
 export type PermissionUpdate = {
   name: string;
-  new_name: string;
 };
 
 export type PermissionDelete = {
@@ -85,4 +84,12 @@ export type MidtransWebhookQrisSettlement = {
   acquirer: string;
   shopeepay_reference_number: string;
   reference_id: string;
+};
+
+export type UpdateUser = {
+  name: string;
+  username: string;
+  roles: string[];
+  email: string;
+  balance: number;
 };

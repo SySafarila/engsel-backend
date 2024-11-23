@@ -6,18 +6,14 @@ import {
   updateUser,
 } from "../controllers/userController";
 import authMiddleware from "../middlewares/authMiddleware";
-import permissionMiddleware from "../middlewares/permissionMiddleware";
+import can from "../middlewares/permissionMiddleware";
 
 const router = express.Router();
 
-router.get("/users", getUsers);
-router.get("/users/:username", getUserDetail);
-router.patch("/users/:username", updateUser);
-router.delete(
-  "/users/:username",
-  authMiddleware,
-  permissionMiddleware("users-delete"),
-  deleteUser
-);
+router.use("/", authMiddleware);
+router.get("/users", can("users-read"), getUsers);
+router.get("/users/:username", can("users-read"), getUserDetail);
+router.patch("/users/:username", can("users-update"), updateUser);
+router.delete("/users/:username", can("users-delete"), deleteUser);
 
 export default router;

@@ -14,11 +14,7 @@ import {
 } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
-import {
-  validateDelete,
-  validateStore,
-  validateUpdate,
-} from "../validator/validatePermission";
+import { validateStore, validateUpdate } from "../validator/validatePermission";
 
 export const storePermission = async (req: Request, res: Response) => {
   const { name } = req.body as PermissionCreate;
@@ -66,16 +62,21 @@ export const storePermission = async (req: Request, res: Response) => {
 };
 
 export const updatePermission = async (req: Request, res: Response) => {
-  const { name, new_name } = req.body as PermissionUpdate;
+  const { name } = req.body as PermissionUpdate;
+  const params = req.params as { permissionName: string };
   const prisma = new PrismaClient();
+
   try {
+    if (!params.permissionName) {
+      throw new HTTPError("Permission name required", 400);
+    }
+
     await validateUpdate({
       name: name,
-      new_name: new_name,
     });
     const check = await prisma.permission.findFirst({
       where: {
-        name: name,
+        name: params.permissionName,
       },
     });
 
@@ -85,10 +86,10 @@ export const updatePermission = async (req: Request, res: Response) => {
 
     const permission = await prisma.permission.update({
       where: {
-        name: name,
+        name: params.permissionName,
       },
       data: {
-        name: new_name,
+        name: name,
       },
     });
 
@@ -114,15 +115,17 @@ export const updatePermission = async (req: Request, res: Response) => {
 };
 
 export const deletePermission = async (req: Request, res: Response) => {
-  const { name } = req.body as PermissionDelete;
   const prisma = new PrismaClient();
+  const params = req.params as { permissionName: string };
+
   try {
-    await validateDelete({
-      name: name,
-    });
+    if (!params.permissionName) {
+      throw new HTTPError("Permission name required", 400);
+    }
+
     const check = await prisma.permission.findFirst({
       where: {
-        name: name,
+        name: params.permissionName,
       },
     });
 
@@ -132,7 +135,7 @@ export const deletePermission = async (req: Request, res: Response) => {
 
     await prisma.permission.delete({
       where: {
-        name: name,
+        name: params.permissionName,
       },
     });
 

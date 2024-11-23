@@ -1,19 +1,15 @@
 import Joi from "joi";
-import { SendDonate } from "../types/Requests";
+import { UpdateUser } from "../types/Requests";
 
-export const validateUpdateUser = async (request: {
-  name: string;
-  username: string;
-  roles: string[];
-}): Promise<void> => {
-  const schema: Joi.ObjectSchema<{
-    name: string;
-    username: string;
-    roles: string[];
-  }> = Joi.object({
+export const validateUpdateUser = async (
+  request: UpdateUser
+): Promise<void> => {
+  const schema: Joi.ObjectSchema<UpdateUser> = Joi.object({
     name: Joi.string().required(),
     username: Joi.string().required(),
+    email: Joi.string().email().required(),
     roles: Joi.array().items(Joi.string()),
+    balance: Joi.number().required(),
   });
   const options: Joi.ValidationOptions = {
     abortEarly: false,

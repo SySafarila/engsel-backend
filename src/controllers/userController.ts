@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import Locals from "../types/locals";
+import { UpdateUser } from "../types/Requests";
 import { ErrorResponse, UserDetail, Users } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
-import Joi from "joi";
 import { validateUpdateUser } from "../validator/validateUpdateUser";
 
 export const getUserDetail = async (req: Request, res: Response) => {
@@ -21,6 +21,7 @@ export const getUserDetail = async (req: Request, res: Response) => {
         name: true,
         username: true,
         balance: true,
+        email: true,
         roles: {
           select: {
             level: true,
@@ -44,6 +45,7 @@ export const getUserDetail = async (req: Request, res: Response) => {
         name: checkUsername.name,
         username: checkUsername.username,
         balance: Number(checkUsername.balance),
+        email: checkUsername.email,
         roles: checkUsername.roles,
       },
     };
@@ -100,32 +102,46 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   const prisma = new PrismaClient();
-  const { user_id } = res.locals as Locals;
+  const { user_id, role_level_peak } = res.locals as Locals;
   const { username } = req.params as { username: string };
+  let selectedUserPeakRole: number = 9999;
 
   try {
-    const checkCurrentUser = await prisma.user.findFirst({
+    const currentUser = await prisma.user.findFirst({
       where: {
         id: user_id,
       },
     });
 
-    if (!checkCurrentUser) {
+    if (!currentUser) {
       throw new HTTPError("User not found", 404);
     }
 
-    if (checkCurrentUser.username === username) {
+    if (currentUser.username === username) {
       throw new HTTPError("You cannot delete yourself", 400);
     }
 
-    const checkUsername = await prisma.user.findFirst({
+    const selectedUser = await prisma.user.findFirst({
       where: {
         username: username,
       },
+      include: {
+        roles: true,
+      },
     });
 
-    if (!checkUsername) {
+    if (!selectedUser) {
       throw new HTTPError("User not found", 404);
+    }
+
+    selectedUser.roles.forEach((role) => {
+      if (role.level <= selectedUserPeakRole) {
+        selectedUserPeakRole = role.level;
+      }
+    });
+
+    if (role_level_peak && role_level_peak >= selectedUserPeakRole) {
+      throw new HTTPError("You need higher level", 401);
     }
 
     await prisma.user.delete({
@@ -149,19 +165,21 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   const prisma = new PrismaClient();
   const { username } = req.params as { username: string };
-  const body = req.body as { name: string; username: string; roles: string[] };
+  const body = req.body as UpdateUser;
 
   try {
     await validateUpdateUser({
       name: body.name,
       roles: body.roles,
       username: body.username,
+      email: body.email,
+      balance: body.balance,
     });
 
     const user = await prisma.user.findFirst({
       where: {
         username: username,
-      }
+      },
     });
 
     if (!user) {
@@ -176,6 +194,16 @@ export const updateUser = async (req: Request, res: Response) => {
 
     if (checkUsername && checkUsername.id != user.id) {
       throw new HTTPError("Username already registered", 400);
+    }
+
+    const checkEmail = await prisma.user.findFirst({
+      where: {
+        email: body.email,
+      },
+    });
+
+    if (checkEmail && checkEmail.id != user.id) {
+      throw new HTTPError("Email already registered", 400);
     }
 
     const validRoles: { name: string }[] = [];
@@ -198,6 +226,7 @@ export const updateUser = async (req: Request, res: Response) => {
       data: {
         name: body.name,
         username: body.username,
+        balance: body.balance,
         roles: {
           set: validRoles,
         },

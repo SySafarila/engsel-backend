@@ -123,6 +123,7 @@ export type UserDetail = {
     name: string;
     username: string;
     balance: number;
+    email: string;
     roles: {
       level: number;
       name: string;
