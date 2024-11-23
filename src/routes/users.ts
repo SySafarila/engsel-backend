@@ -10,7 +10,7 @@ import can from "../middlewares/permissionMiddleware";
 
 const router = express.Router();
 
-router.use("/", authMiddleware);
+router.use("/users", authMiddleware);
 router.get("/users", can("users-read"), getUsers);
 router.get("/users/:username", can("users-read"), getUserDetail);
 router.patch("/users/:username", can("users-update"), updateUser);
