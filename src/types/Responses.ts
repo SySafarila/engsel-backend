@@ -122,6 +122,11 @@ export type UserDetail = {
     id: string;
     name: string;
     username: string;
+    balance: number;
+    roles: {
+      level: number;
+      name: string;
+    }[];
   };
 };
 

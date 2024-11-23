@@ -4,6 +4,8 @@ import Locals from "../types/locals";
 import { ErrorResponse, UserDetail, Users } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
+import Joi from "joi";
+import { validateUpdateUser } from "../validator/validateUpdateUser";
 
 export const getUserDetail = async (req: Request, res: Response) => {
   const prisma = new PrismaClient();
@@ -13,6 +15,21 @@ export const getUserDetail = async (req: Request, res: Response) => {
     const checkUsername = await prisma.user.findFirst({
       where: {
         username: username,
+      },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        balance: true,
+        roles: {
+          select: {
+            level: true,
+            name: true,
+          },
+          orderBy: {
+            level: "asc",
+          },
+        },
       },
     });
 
@@ -26,6 +43,8 @@ export const getUserDetail = async (req: Request, res: Response) => {
         id: checkUsername.id,
         name: checkUsername.name,
         username: checkUsername.username,
+        balance: Number(checkUsername.balance),
+        roles: checkUsername.roles,
       },
     };
 
@@ -117,6 +136,76 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     res.json({
       message: `${username} deleted!`,
+    });
+  } catch (error: any) {
+    const handler = errorHandler(error);
+
+    res.status(handler.code).json({
+      message: handler.message,
+    } as ErrorResponse);
+  }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+  const prisma = new PrismaClient();
+  const { username } = req.params as { username: string };
+  const body = req.body as { name: string; username: string; roles: string[] };
+
+  try {
+    await validateUpdateUser({
+      name: body.name,
+      roles: body.roles,
+      username: body.username,
+    });
+
+    const user = await prisma.user.findFirst({
+      where: {
+        username: username,
+      }
+    });
+
+    if (!user) {
+      throw new HTTPError("User not found", 404);
+    }
+
+    const checkUsername = await prisma.user.findFirst({
+      where: {
+        username: body.username,
+      },
+    });
+
+    if (checkUsername && checkUsername.id != user.id) {
+      throw new HTTPError("Username already registered", 400);
+    }
+
+    const validRoles: { name: string }[] = [];
+    const checkRoles = await prisma.role.findMany({
+      where: {
+        name: {
+          in: body.roles,
+        },
+      },
+    });
+
+    checkRoles.forEach((checkRole) => {
+      validRoles.push({ name: checkRole.name });
+    });
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        name: body.name,
+        username: body.username,
+        roles: {
+          set: validRoles,
+        },
+      },
+    });
+
+    res.json({
+      message: `${username} updated!`,
     });
   } catch (error: any) {
     const handler = errorHandler(error);
