@@ -109,4 +109,9 @@ model Bank {
   bank        String    @db.VarChar(100)
   number      BigInt    @db.BigInt
   verified_at DateTime?
+  updated_at  DateTime  @default(now())
+  created_at  DateTime  @default(now())
+
+  @@index([created_at])
+  @@map("banks")
 }

@@ -92,3 +92,8 @@ export type UpdateUser = {
   email: string;
   balance: number;
 };
+
+export type BankCreate = {
+  bank: string;
+  number: number;
+};
