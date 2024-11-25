@@ -27,6 +27,7 @@ model User {
   donations   Donation[]
   balance     Decimal    @default(0) @db.Decimal()
   withdraws   Withdraw[]
+  banks       Bank[]
 
   @@map("users")
 }
@@ -99,4 +100,13 @@ model Withdraw {
   created_at DateTime @default(now())
 
   @@map("withdraws")
+}
+
+model Bank {
+  id          String    @id @unique @db.Uuid
+  user_id     String    @db.Uuid
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  bank        String    @db.VarChar(100)
+  number      BigInt    @db.BigInt
+  verified_at DateTime?
 }
