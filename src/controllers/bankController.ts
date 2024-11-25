@@ -88,6 +88,18 @@ export const storeBank = async (req: Request, res: Response) => {
       bank: bank,
       number: number,
     });
+
+    const checkBank = await prisma.bank.findFirst({
+      where: {
+        user_id: user_id,
+        bank: bank,
+      },
+    });
+
+    if (checkBank) {
+      throw new HTTPError("Bank tidak boleh duplikat", 400);
+    }
+
     await prisma.bank.create({
       data: {
         id: UUIDV7(),
