@@ -8,10 +8,10 @@ import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.post("/auth/login", loginController);
-router.post("/auth/register", registerController);
-router.get("/auth/me", authMiddleware, meController);
-router.patch("/auth/me", authMiddleware, updateAccountController);
-router.post("/auth/logout", authMiddleware, logoutController);
+router.post("/login", loginController);
+router.post("/register", registerController);
+router.get("/me", authMiddleware, meController);
+router.patch("/me", authMiddleware, updateAccountController);
+router.post("/logout", authMiddleware, logoutController);
 
 export default router;

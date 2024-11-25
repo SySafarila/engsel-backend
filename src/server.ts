@@ -2,6 +2,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import rootController from "./controllers/rootController";
+import { getUserDetailPublic } from "./controllers/userController";
+import { midtransWebhook } from "./controllers/webhookController";
 import auth from "./routes/auth";
 import donations from "./routes/donations";
 import permissions from "./routes/permissions";
@@ -22,12 +24,19 @@ app.use(
 );
 
 app.get("/", rootController);
-app.use(auth);
-app.use(permissions);
-app.use(roles);
-app.use(users);
-app.use(transactions);
-app.use(donations);
-app.use(withdraws);
+
+// admin
+app.use("/admin", permissions);
+app.use("/admin", roles);
+app.use("/admin", users);
+
+// public
+app.use("/auth", auth);
+app.use("/transactions", transactions);
+app.use("/donations", donations);
+app.use("/withdraws", withdraws);
+
+app.post("/webhooks/:transactionId/midtrans", midtransWebhook);
+app.get("/public/users/:username", getUserDetailPublic);
 
 export default app;

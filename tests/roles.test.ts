@@ -33,14 +33,14 @@ describe("Login by autorized user", () => {
 describe("READ roles", () => {
   it("Should success with super admin", async () => {
     const res = await request(app)
-      .get("/roles")
+      .get("/admin/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(200);
 
     const res2 = await request(app)
-      .get("/roles")
+      .get("/admin/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`);
 
@@ -49,7 +49,7 @@ describe("READ roles", () => {
 
   it("Should success with admin", async () => {
     const res2 = await request(app)
-      .get("/roles")
+      .get("/admin/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`);
 
@@ -60,7 +60,7 @@ describe("READ roles", () => {
 describe("CREATE role", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .post("/roles")
+      .post("/admin/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -73,7 +73,7 @@ describe("CREATE role", () => {
   });
   it("Should fail", async () => {
     const res2 = await request(app)
-      .post("/roles")
+      .post("/admin/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`)
       .send({
@@ -84,7 +84,7 @@ describe("CREATE role", () => {
     expect(res2.statusCode).toBe(400);
 
     const res3 = await request(app)
-      .post("/roles")
+      .post("/admin/roles")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`)
       .send({
@@ -99,7 +99,7 @@ describe("CREATE role", () => {
 describe("UPDATE roles", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .patch("/roles/basic-user")
+      .patch("/admin/roles/basic-user")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -110,7 +110,7 @@ describe("UPDATE roles", () => {
     expect(res.body.data.name).toBe("advanced-user");
 
     const res2 = await request(app)
-      .patch("/roles/advanced-user")
+      .patch("/admin/roles/advanced-user")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -125,7 +125,7 @@ describe("UPDATE roles", () => {
 
   it("Should fail", async () => {
     const res3 = await request(app)
-      .patch("/roles/advanced-user")
+      .patch("/admin/roles/advanced-user")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`)
       .send({
@@ -140,7 +140,7 @@ describe("UPDATE roles", () => {
 describe("DELETE role", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .delete("/roles/advanced-user")
+      .delete("/admin/roles/advanced-user")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send();
@@ -150,7 +150,7 @@ describe("DELETE role", () => {
 
   it("Should fail", async () => {
     const res2 = await request(app)
-      .delete("/roles/super-admin")
+      .delete("/admin/roles/super-admin")
       .accept("application/json")
       .set("Authorization", `Bearer ${token2}`)
       .send();

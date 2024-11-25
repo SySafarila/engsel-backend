@@ -43,7 +43,7 @@ export default class Midtrans {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Basic ${this.MIDTRANS_SERVER_KEY}`,
-        "X-Append-Notification": `${process.env.BASE_URL}/transactions/${this.transaction.transactionId}/midtrans`,
+        "X-Append-Notification": `${process.env.BASE_URL}/webhooks/${this.transaction.transactionId}/midtrans`,
       },
     };
     return axiosConfig;

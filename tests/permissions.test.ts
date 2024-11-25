@@ -21,7 +21,7 @@ describe("Login by autorized user", () => {
 describe("READ permissions", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .get("/permissions")
+      .get("/admin/permissions")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`);
 
@@ -30,7 +30,7 @@ describe("READ permissions", () => {
 
   it("Should fail", async () => {
     const res = await request(app)
-      .get("/permissions")
+      .get("/admin/permissions")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}xxx`);
 
@@ -41,7 +41,7 @@ describe("READ permissions", () => {
 describe("CREATE permission", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .post("/permissions")
+      .post("/admin/permissions")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -53,7 +53,7 @@ describe("CREATE permission", () => {
 
   it("Should fail", async () => {
     const res = await request(app)
-      .post("/permissions")
+      .post("/admin/permissions")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}x`)
       .send({
@@ -67,7 +67,7 @@ describe("CREATE permission", () => {
 describe("UPDATE permission", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .patch("/permissions/permissions-readx")
+      .patch("/admin/permissions/permissions-readx")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -79,7 +79,7 @@ describe("UPDATE permission", () => {
 
   it("Should fail", async () => {
     const res = await request(app)
-      .patch("/permissions/permissions-readx")
+      .patch("/admin/permissions/permissions-readx")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}xx`)
       .send({
@@ -93,7 +93,7 @@ describe("UPDATE permission", () => {
 describe("DELETE permission", () => {
   it("Should success", async () => {
     const res = await request(app)
-      .delete("/permissions/permission-redx2")
+      .delete("/admin/permissions/permission-redx2")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send();
@@ -103,7 +103,7 @@ describe("DELETE permission", () => {
 
   it("Should fail", async () => {
     const res = await request(app)
-      .delete("/permissions/permission-redx2")
+      .delete("/admin/permissions/permission-redx2")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}xxx`)
       .send();

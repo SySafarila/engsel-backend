@@ -9,8 +9,8 @@ describe("User", () => {
       .post("/auth/login")
       .accept("application/json")
       .send({
-        email: "testing.update@gmail.com",
-        password: "password2",
+        email: "super.admin@admin.com",
+        password: "password",
       });
 
     expect(login.statusCode).toBe(200);
@@ -19,7 +19,7 @@ describe("User", () => {
 
   it("Get user detail", async () => {
     const res = await request(app)
-      .get("/users/SySafarila")
+      .get("/admin/users/SySafarila")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send();
@@ -29,7 +29,7 @@ describe("User", () => {
 
   it("Get all users data", async () => {
     const res = await request(app)
-      .get("/users")
+      .get("/admin/users")
       .accept("application/json")
       .set("Authorization", `Bearer ${token}`)
       .send();

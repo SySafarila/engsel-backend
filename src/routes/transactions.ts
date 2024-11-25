@@ -1,14 +1,8 @@
 import express from "express";
-import {
-  getTransactionDetail,
-  midtransWebhook,
-} from "../controllers/transactionController";
+import { getTransactionDetail } from "../controllers/transactionController";
 
 const router = express.Router();
 
-router.get("/transactions/:transactionId", getTransactionDetail);
-
-// webhook
-router.post("/transactions/:transactionId/midtrans", midtransWebhook);
+router.get("/:transactionId", getTransactionDetail);
 
 export default router;

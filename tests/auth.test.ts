@@ -2,6 +2,7 @@ import request from "supertest";
 import app from "../src/server";
 
 let token: string = "";
+let superAdminToken: string = "";
 
 describe("Register a user", () => {
   it("Should success", async () => {
@@ -43,7 +44,18 @@ describe("User can login", () => {
       });
 
     expect(res.statusCode).toBe(200);
-    token = res.body.token;
+    superAdminToken = res.body.token;
+
+    const res2 = await request(app)
+      .post("/auth/login")
+      .accept("application/json")
+      .send({
+        email: "admin@admin.com",
+        password: "password",
+      });
+
+    expect(res2.statusCode).toBe(200);
+    token = res2.body.token;
   });
 
   it("Should fail", async () => {
@@ -106,7 +118,7 @@ describe("Updating user", () => {
       .post("/auth/login")
       .accept("application/json")
       .send({
-        email: "super.admin@admin.com",
+        email: "admin@admin.com",
         password: "password",
       });
 

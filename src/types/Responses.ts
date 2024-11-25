@@ -131,6 +131,15 @@ export type UserDetail = {
   };
 };
 
+export type UserDetailPublic = {
+  message: string;
+  user: {
+    id: string;
+    name: string;
+    username: string;
+  };
+};
+
 export type Users = {
   message: string;
   users: {

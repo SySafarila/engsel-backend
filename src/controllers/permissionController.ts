@@ -2,9 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
 import {
-  PermissionCreate,
-  PermissionDelete,
-  PermissionUpdate,
+  PermissionCreate, PermissionUpdate
 } from "../types/Requests";
 import {
   ErrorResponse,

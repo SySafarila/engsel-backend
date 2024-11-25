@@ -146,13 +146,14 @@ export const replayDonation = async (req: Request, res: Response) => {
     io.of("/donations")
       .to(donation.user_id!)
       .emit("donation", {
-        donator: {
-          name: donation.donator_name,
-        },
+        donator_name: donation.donator_name,
         amount: donation.amount,
         currency: donation.currency,
         message: donation.message,
-      });
+        created_at: donation.created_at.toDateString(),
+        updated_at: donation.updated_at.toDateString(),
+        id: donation.id,
+      } as DonationSocket);
 
     res.json({
       message: "success",
