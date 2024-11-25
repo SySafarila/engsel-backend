@@ -149,6 +149,14 @@ async function main() {
           name: "user",
         },
       },
+      banks: {
+        create: {
+          bank: "bca",
+          id: UUIDV7(),
+          number: 121212,
+          verified_at: new Date(),
+        },
+      },
     },
   });
 }
