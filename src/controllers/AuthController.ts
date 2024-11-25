@@ -188,7 +188,7 @@ export default class AuthController {
     }
   }
 
-  static async updateAccount(req: Request, res: Response) {
+  static async updateMe(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const { email, password, name, username } = req.body as UpdateAccount;
     const prisma = new PrismaClient();

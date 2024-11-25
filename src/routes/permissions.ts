@@ -9,22 +9,22 @@ router.use("/permissions", authMiddleware);
 router.get(
   "/permissions",
   can("permissions-read"),
-  PermissionController.readPermission
+  PermissionController.read
 );
 router.post(
   "/permissions",
   can("permissions-create"),
-  PermissionController.storePermission
+  PermissionController.store
 );
 router.patch(
   "/permissions/:permissionName",
   can("permissions-update"),
-  PermissionController.updatePermission
+  PermissionController.update
 );
 router.delete(
   "/permissions/:permissionName",
   can("permissions-delete"),
-  PermissionController.deletePermission
+  PermissionController.delete
 );
 
 export default router;

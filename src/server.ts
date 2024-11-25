@@ -39,12 +39,12 @@ app.use("/donations", donations);
 app.use("/withdraws", withdraws);
 
 // users
-app.get("/users/:username", UserController.getUserDetailPublic);
+app.get("/users/:username", UserController.getDetailPublic);
 
 // banks
-app.get("/banks", authMiddleware, BankController.getBanks);
-app.delete("/banks/:bankId", authMiddleware, BankController.deleteBank);
-app.post("/banks", authMiddleware, BankController.storeBank);
+app.get("/banks", authMiddleware, BankController.get);
+app.delete("/banks/:bankId", authMiddleware, BankController.delete);
+app.post("/banks", authMiddleware, BankController.store);
 
 // webhooks
 app.post("/webhooks/:transactionId/midtrans", WebhookController.midtrans);

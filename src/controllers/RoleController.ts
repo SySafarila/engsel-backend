@@ -15,7 +15,7 @@ import HTTPError from "../utils/HTTPError";
 import RoleValidator from "../validator/RoleValidator";
 
 export default class RoleController {
-  static async storeRole(req: Request, res: Response) {
+  static async store(req: Request, res: Response) {
     const { name, level, permissions } = req.body as RoleCreate;
     const { role_level_peak } = res.locals as Locals;
     const prisma = new PrismaClient();
@@ -90,7 +90,7 @@ export default class RoleController {
     }
   }
 
-  static async updateRole(req: Request, res: Response) {
+  static async update(req: Request, res: Response) {
     const { name, level, permissions } = req.body as RoleUpdate;
     const { role_level_peak } = res.locals as Locals;
     const params = req.params as { roleName: string };
@@ -213,7 +213,7 @@ export default class RoleController {
     }
   }
 
-  static async deleteRole(req: Request, res: Response) {
+  static async delete(req: Request, res: Response) {
     const { role_level_peak } = res.locals as Locals;
     const params = req.params as { roleName: string };
     const prisma = new PrismaClient();
@@ -255,7 +255,7 @@ export default class RoleController {
     }
   }
 
-  static async readRole(req: Request, res: Response) {
+  static async read(req: Request, res: Response) {
     const prisma = new PrismaClient();
     try {
       const roles = await prisma.role.findMany({

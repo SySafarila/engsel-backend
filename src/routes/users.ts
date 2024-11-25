@@ -7,16 +7,16 @@ const router = express.Router();
 
 router.use("/users", authMiddleware);
 router.get("/users", can("users-read"), UserController.getUsers);
-router.get("/users/:username", can("users-read"), UserController.getUserDetail);
+router.get("/users/:username", can("users-read"), UserController.getDetail);
 router.patch(
   "/users/:username",
   can("users-update"),
-  UserController.updateUser
+  UserController.update
 );
 router.delete(
   "/users/:username",
   can("users-delete"),
-  UserController.deleteUser
+  UserController.delete
 );
 
 export default router;

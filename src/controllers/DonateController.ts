@@ -18,7 +18,7 @@ import { validateDonate } from "../validator/validateDonate";
 import { validateReplayDonate } from "../validator/validateReplayDonate";
 
 export default class DonateController {
-  static async donateCharge(req: Request, res: Response) {
+  static async charge(req: Request, res: Response) {
     const { amount, donator_name, message, payment_method, donator_email } =
       req.body as SendDonate;
     const { username } = req.params as { username: string };
@@ -123,7 +123,7 @@ export default class DonateController {
     }
   }
 
-  static async replayDonation(req: Request, res: Response) {
+  static async replay(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const { transaction_id } = req.body as { transaction_id: string };
     const prisma = new PrismaClient();
@@ -168,7 +168,7 @@ export default class DonateController {
     }
   }
 
-  static async testDonation(req: Request, res: Response) {
+  static async test(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
 
     try {

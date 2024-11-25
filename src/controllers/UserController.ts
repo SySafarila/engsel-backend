@@ -13,7 +13,7 @@ import HTTPError from "../utils/HTTPError";
 import { validateUpdateUser } from "../validator/validateUpdateUser";
 
 export default class UserController {
-  static async getUserDetail(req: Request, res: Response) {
+  static async getDetail(req: Request, res: Response) {
     const prisma = new PrismaClient();
     const { username } = req.params as { username: string };
 
@@ -66,7 +66,7 @@ export default class UserController {
     }
   }
 
-  static async getUserDetailPublic(req: Request, res: Response) {
+  static async getDetailPublic(req: Request, res: Response) {
     const prisma = new PrismaClient();
     const { username } = req.params as { username: string };
 
@@ -145,7 +145,7 @@ export default class UserController {
     }
   }
 
-  static async deleteUser(req: Request, res: Response) {
+  static async delete(req: Request, res: Response) {
     const prisma = new PrismaClient();
     const { user_id, role_level_peak } = res.locals as Locals;
     const { username } = req.params as { username: string };
@@ -207,7 +207,7 @@ export default class UserController {
     }
   }
 
-  static async updateUser(req: Request, res: Response) {
+  static async update(req: Request, res: Response) {
     const prisma = new PrismaClient();
     const { username } = req.params as { username: string };
     const body = req.body as UpdateUser;

@@ -9,7 +9,7 @@ import HTTPError from "../utils/HTTPError";
 import { validateBank } from "../validator/validateBank";
 
 export default class BankController {
-  static async getBanks(req: Request, res: Response) {
+  static async get(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const prisma = new PrismaClient();
 
@@ -50,7 +50,7 @@ export default class BankController {
     }
   }
 
-  static async deleteBank(req: Request, res: Response) {
+  static async delete(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const { bankId } = req.params as { bankId: string };
     const prisma = new PrismaClient();
@@ -79,7 +79,7 @@ export default class BankController {
     }
   }
 
-  static async storeBank(req: Request, res: Response) {
+  static async store(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const prisma = new PrismaClient();
     const { bank, number } = req.body as BankCreate;

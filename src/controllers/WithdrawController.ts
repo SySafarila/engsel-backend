@@ -8,7 +8,7 @@ import { PrismaClient } from "@prisma/client";
 import HTTPError from "../utils/HTTPError";
 
 export default class WithdrawController {
-  static async withdrawCharge(req: Request, res: Response) {
+  static async charge(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const { amount } = req.body as { amount: number };
     const prisma = new PrismaClient();
@@ -45,7 +45,7 @@ export default class WithdrawController {
     }
   }
 
-  static async getWithdraw(req: Request, res: Response) {
+  static async get(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const prisma = new PrismaClient();
     const { is_pending, cursor } = req.query as {

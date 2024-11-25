@@ -6,7 +6,7 @@ import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 
 export default class TransactionController {
-  static async getTransactionDetail(req: Request, res: Response) {
+  static async getDetail(req: Request, res: Response) {
     const prisma = new PrismaClient();
     const { transactionId } = req.params as { transactionId: string };
 

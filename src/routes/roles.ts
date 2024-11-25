@@ -6,17 +6,17 @@ import can from "../middlewares/permissionMiddleware";
 const router = express.Router();
 
 router.use("/roles", authMiddleware);
-router.post("/roles", can("roles-create"), RoleController.storeRole);
+router.post("/roles", can("roles-create"), RoleController.store);
 router.patch(
   "/roles/:roleName",
   can("roles-update"),
-  RoleController.updateRole
+  RoleController.update
 );
 router.delete(
   "/roles/:roleName",
   can("roles-delete"),
-  RoleController.deleteRole
+  RoleController.delete
 );
-router.get("/roles", can("roles-read"), RoleController.readRole);
+router.get("/roles", can("roles-read"), RoleController.read);
 
 export default router;

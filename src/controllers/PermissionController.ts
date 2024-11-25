@@ -13,7 +13,7 @@ import errorHandler from "../utils/errorHandler";
 import PermissionValidator from "../validator/PermissionValidator";
 
 export default class PermissionController {
-  static async storePermission(req: Request, res: Response) {
+  static async store(req: Request, res: Response) {
     const { name } = req.body as PermissionCreate;
     const prisma = new PrismaClient();
     try {
@@ -58,7 +58,7 @@ export default class PermissionController {
     }
   }
 
-  static async updatePermission(req: Request, res: Response) {
+  static async update(req: Request, res: Response) {
     const { name } = req.body as PermissionUpdate;
     const params = req.params as { permissionName: string };
     const prisma = new PrismaClient();
@@ -111,7 +111,7 @@ export default class PermissionController {
     }
   }
 
-  static async deletePermission(req: Request, res: Response) {
+  static async delete(req: Request, res: Response) {
     const prisma = new PrismaClient();
     const params = req.params as { permissionName: string };
 
@@ -149,7 +149,7 @@ export default class PermissionController {
     }
   }
 
-  static async readPermission(req: Request, res: Response) {
+  static async read(req: Request, res: Response) {
     const prisma = new PrismaClient();
     try {
       const permissions = await prisma.permission.findMany({

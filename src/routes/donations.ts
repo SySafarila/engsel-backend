@@ -5,8 +5,8 @@ import authMiddleware from "../middlewares/authMiddleware";
 const router = express.Router();
 
 router.get("/", authMiddleware, DonateController.getDonations);
-router.post("/:username/donate", DonateController.donateCharge);
-router.post("/replay", authMiddleware, DonateController.replayDonation);
-router.post("/test", authMiddleware, DonateController.testDonation);
+router.post("/:username/donate", DonateController.charge);
+router.post("/replay", authMiddleware, DonateController.replay);
+router.post("/test", authMiddleware, DonateController.test);
 
 export default router;

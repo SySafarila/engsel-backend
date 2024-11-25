@@ -4,7 +4,7 @@ import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, WithdrawController.getWithdraw);
-router.post("/", authMiddleware, WithdrawController.withdrawCharge);
+router.get("/", authMiddleware, WithdrawController.get);
+router.post("/", authMiddleware, WithdrawController.charge);
 
 export default router;
