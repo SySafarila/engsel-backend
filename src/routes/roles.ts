@@ -1,5 +1,5 @@
 import express from "express";
-import RoleController from "../controllers/roleController";
+import RoleController from "../controllers/RoleController";
 import authMiddleware from "../middlewares/authMiddleware";
 import can from "../middlewares/permissionMiddleware";
 
