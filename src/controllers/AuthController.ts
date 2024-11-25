@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { validateLogin } from "../validator/validateLogin";
-import HTTPError from "../utils/HTTPError";
-import comparePassword from "../utils/comparePassword";
-import signJwt from "../utils/signJwt";
+import bcrypt from "bcrypt";
+import { Request, Response } from "express";
+import { v7 as UUIDV7 } from "uuid";
+import { Login, Register, UpdateAccount } from "../types/Requests";
 import {
   CurrentUserSuccess,
   ErrorResponse,
@@ -10,13 +10,12 @@ import {
   LogoutSuccess,
   RegisterSuccess,
 } from "../types/Responses";
-import errorHandler from "../utils/errorHandler";
-import { Request, Response } from "express";
-import { Login, Register, UpdateAccount } from "../types/Requests";
-import { v7 as UUIDV7 } from "uuid";
-import validateRegister from "../validator/validateRegister";
-import bcrypt from "bcrypt";
 import Locals from "../types/locals";
+import HTTPError from "../utils/HTTPError";
+import comparePassword from "../utils/comparePassword";
+import errorHandler from "../utils/errorHandler";
+import signJwt from "../utils/signJwt";
+import AuthValidator from "../validator/AuthValidator";
 import { validateUpdateAccount } from "../validator/validateUpdateAccount";
 
 export default class AuthController {
@@ -25,7 +24,7 @@ export default class AuthController {
     const prisma = new PrismaClient();
 
     try {
-      await validateLogin({
+      await AuthValidator.login({
         email: email,
         password: password,
       });
@@ -79,7 +78,7 @@ export default class AuthController {
     const prisma = new PrismaClient();
 
     try {
-      await validateRegister({
+      await AuthValidator.register({
         email: email,
         name: name,
         password: password,

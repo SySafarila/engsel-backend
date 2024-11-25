@@ -10,14 +10,14 @@ import {
 } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
-import { validateStore, validateUpdate } from "../validator/validatePermission";
+import PermissionValidator from "../validator/PermissionValidator";
 
 export default class PermissionController {
   static async storePermission(req: Request, res: Response) {
     const { name } = req.body as PermissionCreate;
     const prisma = new PrismaClient();
     try {
-      await validateStore({
+      await PermissionValidator.validateStore({
         name: name,
       });
       const check = await prisma.permission.findFirst({
@@ -68,7 +68,7 @@ export default class PermissionController {
         throw new HTTPError("Permission name required", 400);
       }
 
-      await validateUpdate({
+      await PermissionValidator.validateUpdate({
         name: name,
       });
       const check = await prisma.permission.findFirst({
