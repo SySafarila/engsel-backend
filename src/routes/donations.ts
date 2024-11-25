@@ -1,17 +1,12 @@
 import express from "express";
-import {
-  donateCharge,
-  getDonations,
-  replayDonation,
-  testDonation,
-} from "../controllers/DonateController";
+import DonateController from "../controllers/donateController";
 import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getDonations);
-router.post("/:username/donate", donateCharge);
-router.post("/replay", authMiddleware, replayDonation);
-router.post("/test", authMiddleware, testDonation);
+router.get("/", authMiddleware, DonateController.getDonations);
+router.post("/:username/donate", DonateController.donateCharge);
+router.post("/replay", authMiddleware, DonateController.replayDonation);
+router.post("/test", authMiddleware, DonateController.testDonation);
 
 export default router;
