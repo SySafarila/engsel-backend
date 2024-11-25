@@ -5,12 +5,27 @@ import errorHandler from "../utils/errorHandler";
 import withdraw from "../utils/withdraw";
 import { validateWithdraw } from "../validator/validateWithdraw";
 import { PrismaClient } from "@prisma/client";
+import HTTPError from "../utils/HTTPError";
 
 export const withdrawCharge = async (req: Request, res: Response) => {
   const { user_id } = res.locals as Locals;
   const { amount } = req.body as { amount: number };
+  const prisma = new PrismaClient();
 
   try {
+    const checkBank = await prisma.bank.findFirst({
+      where: {
+        user_id: user_id,
+        verified_at: {
+          not: null,
+        },
+      },
+    });
+
+    if (!checkBank) {
+      throw new HTTPError("Tambahkan data bank yang terverifikasi dulu", 400);
+    }
+
     await validateWithdraw({ amount: amount });
     await withdraw({
       amount: amount,
