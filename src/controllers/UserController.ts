@@ -107,8 +107,26 @@ export default class UserController {
 
   static async getUsers(req: Request, res: Response) {
     const prisma = new PrismaClient();
+    const { identifier } = req.query as { identifier: string };
+
     try {
       const users = await prisma.user.findMany({
+        ...(identifier && {
+          where: {
+            OR: [
+              {
+                username: {
+                  contains: identifier,
+                },
+              },
+              {
+                email: {
+                  contains: identifier,
+                },
+              },
+            ],
+          },
+        }),
         select: {
           id: true,
           name: true,
