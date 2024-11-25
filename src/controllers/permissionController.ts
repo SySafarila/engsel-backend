@@ -1,9 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
-import {
-  PermissionCreate, PermissionUpdate
-} from "../types/Requests";
+import { PermissionCreate, PermissionUpdate } from "../types/Requests";
 import {
   ErrorResponse,
   PermissionCreateSuccess,
@@ -14,163 +12,165 @@ import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
 import { validateStore, validateUpdate } from "../validator/validatePermission";
 
-export const storePermission = async (req: Request, res: Response) => {
-  const { name } = req.body as PermissionCreate;
-  const prisma = new PrismaClient();
-  try {
-    await validateStore({
-      name: name,
-    });
-    const check = await prisma.permission.findFirst({
-      where: {
+export default class PermissionController {
+  static async storePermission(req: Request, res: Response) {
+    const { name } = req.body as PermissionCreate;
+    const prisma = new PrismaClient();
+    try {
+      await validateStore({
         name: name,
-      },
-    });
+      });
+      const check = await prisma.permission.findFirst({
+        where: {
+          name: name,
+        },
+      });
 
-    if (check) {
-      throw new HTTPError("Permission already exists", 400);
+      if (check) {
+        throw new HTTPError("Permission already exists", 400);
+      }
+
+      const permission = await prisma.permission.create({
+        data: {
+          id: UUIDV7(),
+          name: name,
+        },
+      });
+
+      const response: PermissionCreateSuccess = {
+        message: "Success",
+        data: {
+          id: permission.id,
+          name: permission.name,
+          created_at: permission.created_at,
+          updated_at: permission.updated_at,
+        },
+      };
+
+      res.json(response);
+      return;
+    } catch (error: any) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
     }
+  }
 
-    const permission = await prisma.permission.create({
-      data: {
-        id: UUIDV7(),
+  static async updatePermission(req: Request, res: Response) {
+    const { name } = req.body as PermissionUpdate;
+    const params = req.params as { permissionName: string };
+    const prisma = new PrismaClient();
+
+    try {
+      if (!params.permissionName) {
+        throw new HTTPError("Permission name required", 400);
+      }
+
+      await validateUpdate({
         name: name,
-      },
-    });
+      });
+      const check = await prisma.permission.findFirst({
+        where: {
+          name: params.permissionName,
+        },
+      });
 
-    const response: PermissionCreateSuccess = {
-      message: "Success",
-      data: {
-        id: permission.id,
-        name: permission.name,
-        created_at: permission.created_at,
-        updated_at: permission.updated_at,
-      },
-    };
+      if (!check) {
+        throw new HTTPError("Permission not found", 404);
+      }
 
-    res.json(response);
-    return;
-  } catch (error: any) {
-    const handler = errorHandler(error);
+      const permission = await prisma.permission.update({
+        where: {
+          name: params.permissionName,
+        },
+        data: {
+          name: name,
+        },
+      });
 
-    res.status(handler.code).json({
-      message: handler.message,
-    } as ErrorResponse);
-  }
-};
+      const response: PermissionCreateSuccess = {
+        message: "Success",
+        data: {
+          id: permission.id,
+          name: permission.name,
+          created_at: permission.created_at,
+          updated_at: permission.updated_at,
+        },
+      };
 
-export const updatePermission = async (req: Request, res: Response) => {
-  const { name } = req.body as PermissionUpdate;
-  const params = req.params as { permissionName: string };
-  const prisma = new PrismaClient();
+      res.json(response);
+      return;
+    } catch (error: any) {
+      const handler = errorHandler(error);
 
-  try {
-    if (!params.permissionName) {
-      throw new HTTPError("Permission name required", 400);
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
     }
-
-    await validateUpdate({
-      name: name,
-    });
-    const check = await prisma.permission.findFirst({
-      where: {
-        name: params.permissionName,
-      },
-    });
-
-    if (!check) {
-      throw new HTTPError("Permission not found", 404);
-    }
-
-    const permission = await prisma.permission.update({
-      where: {
-        name: params.permissionName,
-      },
-      data: {
-        name: name,
-      },
-    });
-
-    const response: PermissionCreateSuccess = {
-      message: "Success",
-      data: {
-        id: permission.id,
-        name: permission.name,
-        created_at: permission.created_at,
-        updated_at: permission.updated_at,
-      },
-    };
-
-    res.json(response);
-    return;
-  } catch (error: any) {
-    const handler = errorHandler(error);
-
-    res.status(handler.code).json({
-      message: handler.message,
-    } as ErrorResponse);
   }
-};
 
-export const deletePermission = async (req: Request, res: Response) => {
-  const prisma = new PrismaClient();
-  const params = req.params as { permissionName: string };
+  static async deletePermission(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    const params = req.params as { permissionName: string };
 
-  try {
-    if (!params.permissionName) {
-      throw new HTTPError("Permission name required", 400);
+    try {
+      if (!params.permissionName) {
+        throw new HTTPError("Permission name required", 400);
+      }
+
+      const check = await prisma.permission.findFirst({
+        where: {
+          name: params.permissionName,
+        },
+      });
+
+      if (!check) {
+        throw new HTTPError("Permission not found", 404);
+      }
+
+      await prisma.permission.delete({
+        where: {
+          name: params.permissionName,
+        },
+      });
+
+      res.json({
+        message: "Success",
+      } as PermissionDeleteSuccess);
+      return;
+    } catch (error: any) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
     }
+  }
 
-    const check = await prisma.permission.findFirst({
-      where: {
-        name: params.permissionName,
-      },
-    });
+  static async readPermission(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    try {
+      const permissions = await prisma.permission.findMany({
+        orderBy: {
+          name: "asc",
+        },
+      });
 
-    if (!check) {
-      throw new HTTPError("Permission not found", 404);
+      const response: PermissionReadSuccess = {
+        message: "Success",
+        data: permissions,
+      };
+
+      res.json(response);
+      return;
+    } catch (error: any) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
     }
-
-    await prisma.permission.delete({
-      where: {
-        name: params.permissionName,
-      },
-    });
-
-    res.json({
-      message: "Success",
-    } as PermissionDeleteSuccess);
-    return;
-  } catch (error: any) {
-    const handler = errorHandler(error);
-
-    res.status(handler.code).json({
-      message: handler.message,
-    } as ErrorResponse);
   }
-};
-
-export const readPermission = async (req: Request, res: Response) => {
-  const prisma = new PrismaClient();
-  try {
-    const permissions = await prisma.permission.findMany({
-      orderBy: {
-        name: "asc",
-      },
-    });
-
-    const response: PermissionReadSuccess = {
-      message: "Success",
-      data: permissions,
-    };
-
-    res.json(response);
-    return;
-  } catch (error: any) {
-    const handler = errorHandler(error);
-
-    res.status(handler.code).json({
-      message: handler.message,
-    } as ErrorResponse);
-  }
-};
+}

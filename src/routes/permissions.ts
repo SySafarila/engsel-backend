@@ -1,27 +1,30 @@
 import express from "express";
-import {
-  deletePermission,
-  readPermission,
-  storePermission,
-  updatePermission,
-} from "../controllers/permissionController";
+import PermissionController from "../controllers/permissionController";
 import authMiddleware from "../middlewares/authMiddleware";
 import can from "../middlewares/permissionMiddleware";
 
 const router = express.Router();
 
 router.use("/permissions", authMiddleware);
-router.get("/permissions", can("permissions-read"), readPermission);
-router.post("/permissions", can("permissions-create"), storePermission);
+router.get(
+  "/permissions",
+  can("permissions-read"),
+  PermissionController.readPermission
+);
+router.post(
+  "/permissions",
+  can("permissions-create"),
+  PermissionController.storePermission
+);
 router.patch(
   "/permissions/:permissionName",
   can("permissions-update"),
-  updatePermission
+  PermissionController.updatePermission
 );
 router.delete(
   "/permissions/:permissionName",
   can("permissions-delete"),
-  deletePermission
+  PermissionController.deletePermission
 );
 
 export default router;
