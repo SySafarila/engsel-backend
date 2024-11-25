@@ -1,8 +1,8 @@
 import express from "express";
-import { getTransactionDetail } from "../controllers/transactionController";
+import TransactionController from "../controllers/TransactionController";
 
 const router = express.Router();
 
-router.get("/:transactionId", getTransactionDetail);
+router.get("/:transactionId", TransactionController.getTransactionDetail);
 
 export default router;

@@ -1,10 +1,10 @@
 import express from "express";
-import { getWithdraw, withdrawCharge } from "../controllers/withdrawController";
+import WithdrawController from "../controllers/WithdrawController";
 import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getWithdraw);
-router.post("/", authMiddleware, withdrawCharge);
+router.get("/", authMiddleware, WithdrawController.getWithdraw);
+router.post("/", authMiddleware, WithdrawController.withdrawCharge);
 
 export default router;

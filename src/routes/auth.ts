@@ -1,17 +1,13 @@
 import express from "express";
-import loginController from "../controllers/loginController";
-import logoutController from "../controllers/logoutController";
-import meController from "../controllers/meController";
-import registerController from "../controllers/registerController";
-import updateAccountController from "../controllers/updateAccount";
+import AuthController from "../controllers/AuthController";
 import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.post("/login", loginController);
-router.post("/register", registerController);
-router.get("/me", authMiddleware, meController);
-router.patch("/me", authMiddleware, updateAccountController);
-router.post("/logout", authMiddleware, logoutController);
+router.post("/login", AuthController.login);
+router.post("/register", AuthController.register);
+router.get("/me", authMiddleware, AuthController.me);
+router.patch("/me", authMiddleware, AuthController.updateAccount);
+router.post("/logout", authMiddleware, AuthController.logout);
 
 export default router;

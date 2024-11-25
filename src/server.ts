@@ -3,7 +3,7 @@ import cors from "cors";
 import express from "express";
 import BankController from "./controllers/BankController";
 import rootController from "./controllers/rootController";
-import UserController from "./controllers/userController";
+import UserController from "./controllers/UserController";
 import WebhookController from "./controllers/WebhookController";
 import authMiddleware from "./middlewares/authMiddleware";
 import auth from "./routes/auth";

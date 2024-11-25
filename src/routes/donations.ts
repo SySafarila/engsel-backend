@@ -4,7 +4,7 @@ import {
   getDonations,
   replayDonation,
   testDonation,
-} from "../controllers/donateController";
+} from "../controllers/DonateController";
 import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
