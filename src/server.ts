@@ -3,7 +3,7 @@ import cors from "cors";
 import express from "express";
 import BankController from "./controllers/BankController";
 import rootController from "./controllers/rootController";
-import { getUserDetailPublic } from "./controllers/userController";
+import UserController from "./controllers/userController";
 import WebhookController from "./controllers/WebhookController";
 import authMiddleware from "./middlewares/authMiddleware";
 import auth from "./routes/auth";
@@ -39,7 +39,7 @@ app.use("/donations", donations);
 app.use("/withdraws", withdraws);
 
 // users
-app.get("/users/:username", getUserDetailPublic);
+app.get("/users/:username", UserController.getUserDetailPublic);
 
 // banks
 app.get("/banks", authMiddleware, BankController.getBanks);
