@@ -1,5 +1,5 @@
 import express from "express";
-import PermissionController from "../controllers/permissionController";
+import PermissionController from "../controllers/PermissionController";
 import authMiddleware from "../middlewares/authMiddleware";
 import can from "../middlewares/permissionMiddleware";
 
