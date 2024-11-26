@@ -3,7 +3,7 @@ import app from "../src/server";
 
 let withdrawId: string = "";
 describe("Withdraw", () => {
-  it("Withdraw success", async () => {
+  it("User charge Withdraw success", async () => {
     let token: string = "";
     const res = await request(app).post("/auth/login").send({
       email: "sysafarila@mail.com",
@@ -21,10 +21,10 @@ describe("Withdraw", () => {
     expect(res2.statusCode).toBe(200);
   });
 
-  it("Get Withdraw", async () => {
+  it("User get Withdraw success", async () => {
     let token: string = "";
     const res = await request(app).post("/auth/login").send({
-      email: "super.admin@admin.com",
+      email: "sysafarila@mail.com",
       password: "password",
     });
     token = res.body.token;
@@ -34,6 +34,15 @@ describe("Withdraw", () => {
       .set("Authorization", `Bearer ${token}`)
       .send();
     expect(res2.statusCode).toBe(200);
+  });
+
+  it("Admin Get Withdraws and accept withdraw", async () => {
+    let token: string = "";
+    const res = await request(app).post("/auth/login").send({
+      email: "super.admin@admin.com",
+      password: "password",
+    });
+    token = res.body.token;
 
     const res3 = await request(app)
       .get("/admin/withdraws")
