@@ -17,24 +17,11 @@ import withdrawAdmin from "./routes/withdrawsAdmin";
 import Cors from "./utils/Cors";
 
 const app = express();
-const whitelist = Cors.parseOrigins();
+// const whitelist = Cors.parseOrigins();
 
 app.use(
   cors({
-    origin(requestOrigin, callback) {
-      if (!requestOrigin) {
-        callback(null);
-      } else {
-        if (whitelist.includes(requestOrigin)) {
-          callback(null, requestOrigin);
-        } else {
-          callback(
-            new Error(`Request from ${requestOrigin} blocked by CORS`),
-            requestOrigin
-          );
-        }
-      }
-    },
+    ...Cors.cors(),
     credentials: true,
   })
 );

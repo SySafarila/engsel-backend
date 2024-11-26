@@ -5,24 +5,11 @@ import { onConnection as donationsOnConnection } from "./socket.io/donations";
 import { onConnection as transactionsOnConnection } from "./socket.io/transactions";
 import Cors from "./utils/Cors";
 
-const whitelist = Cors.parseOrigins();
+// const whitelist = Cors.parseOrigins();
 export const httpServer = createServer(app);
 export const io = new Server(httpServer, {
   cors: {
-    origin(requestOrigin, callback) {
-      if (!requestOrigin) {
-        callback(null);
-      } else {
-        if (whitelist.includes(requestOrigin)) {
-          callback(null, requestOrigin);
-        } else {
-          callback(
-            new Error(`Request from ${requestOrigin} blocked by CORS`),
-            requestOrigin
-          );
-        }
-      }
-    },
+    ...Cors.cors(),
   },
 });
 
