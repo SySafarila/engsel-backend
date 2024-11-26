@@ -13,6 +13,7 @@ import roles from "./routes/roles";
 import transactions from "./routes/transactions";
 import users from "./routes/users";
 import withdraws from "./routes/withdraws";
+import withdrawAdmin from "./routes/withdrawsAdmin";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.get("/", rootController);
 app.use("/admin", permissions);
 app.use("/admin", roles);
 app.use("/admin", users);
+app.use("/admin", withdrawAdmin);
 
 // public
 app.use("/auth", auth);

@@ -1,11 +1,12 @@
+import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { validate as validateUUID } from "uuid";
 import Locals from "../types/locals";
-import { ErrorResponse } from "../types/Responses";
+import { ErrorResponse, Withdraws } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
+import HTTPError from "../utils/HTTPError";
 import withdraw from "../utils/withdraw";
 import { validateWithdraw } from "../validator/validateWithdraw";
-import { PrismaClient } from "@prisma/client";
-import HTTPError from "../utils/HTTPError";
 
 export default class WithdrawController {
   static async charge(req: Request, res: Response) {
@@ -28,13 +29,16 @@ export default class WithdrawController {
       }
 
       await validateWithdraw({ amount: amount });
-      await withdraw({
+      const { withdrawId } = await withdraw({
         amount: amount,
         user_id: user_id,
       });
 
       res.json({
         message: "success",
+        data: {
+          withdraw_id: withdrawId,
+        },
       });
     } catch (error) {
       const handler = errorHandler(error);
@@ -82,6 +86,106 @@ export default class WithdrawController {
       res.json({
         message: "success",
         withdraws: withdraws,
+      });
+    } catch (error) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
+    }
+  }
+
+  static async adminGet(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    const { is_pending, cursor } = req.query as {
+      is_pending: string;
+      cursor: string;
+    };
+
+    try {
+      const withdraws = await prisma.withdraw.findMany({
+        where: {
+          ...(is_pending == "true" && { is_pending: true }),
+          ...(is_pending == "false" && { is_pending: false }),
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+        select: {
+          id: true,
+          amount: true,
+          created_at: true,
+          updated_at: true,
+          is_pending: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+        take: 10,
+        ...(cursor && {
+          cursor: {
+            id: cursor,
+          },
+        }),
+        ...(cursor && { skip: 1 }),
+      });
+
+      res.json({
+        message: "success",
+        data: withdraws.map((withdraw) => ({
+          ...withdraw,
+          amount: Number(withdraw.amount),
+          created_at: withdraw.created_at.toDateString(),
+          updated_at: withdraw.updated_at.toDateString(),
+        })),
+      } as { message: string; data: Withdraws });
+    } catch (error) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
+    }
+  }
+
+  static async adminAccept(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    const { withdrawId } = req.params as { withdrawId: string };
+
+    try {
+      const checkId = validateUUID(withdrawId);
+
+      if (!checkId) {
+        throw new HTTPError("Invalid withdraw ID", 400);
+      }
+
+      const checkWithdraw = await prisma.withdraw.findFirst({
+        where: {
+          id: withdrawId,
+        },
+      });
+
+      if (!checkWithdraw) {
+        throw new HTTPError("Withdraw not found", 404);
+      }
+
+      await prisma.withdraw.update({
+        where: {
+          id: withdrawId,
+        },
+        data: {
+          is_pending: false,
+        },
+      });
+
+      res.json({
+        message: "Success",
       });
     } catch (error) {
       const handler = errorHandler(error);

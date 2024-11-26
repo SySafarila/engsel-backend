@@ -7,7 +7,9 @@ type Params = {
   amount: number;
 };
 
-export default async function withdraw(values: Params): Promise<void> {
+export default async function withdraw(
+  values: Params
+): Promise<{ withdrawId: string }> {
   const prisma = new PrismaClient();
 
   const user = await prisma.user.findFirst({
@@ -23,6 +25,8 @@ export default async function withdraw(values: Params): Promise<void> {
     throw new HTTPError(`Request larger than your balance`, 400);
   }
 
+  let withdrawId: string = "";
+
   await prisma.$transaction(async (tx) => {
     await tx.user.update({
       where: {
@@ -35,7 +39,7 @@ export default async function withdraw(values: Params): Promise<void> {
       },
     });
 
-    await tx.withdraw.create({
+    const withdraw = await tx.withdraw.create({
       data: {
         id: UUIDV7(),
         amount: values.amount,
@@ -46,5 +50,9 @@ export default async function withdraw(values: Params): Promise<void> {
         },
       },
     });
+
+    withdrawId = withdraw.id;
   });
+
+  return { withdrawId: withdrawId };
 }

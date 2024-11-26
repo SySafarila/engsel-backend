@@ -202,3 +202,19 @@ export type DonationSocket = {
   id: string;
   message: string;
 };
+
+export type Withdraw = {
+  id: string;
+  amount: number;
+  created_at: string;
+  updated_at: string;
+  is_pending: boolean;
+  user: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+  };
+};
+
+export type Withdraws = Withdraw[];
