@@ -14,17 +14,32 @@ import transactions from "./routes/transactions";
 import users from "./routes/users";
 import withdraws from "./routes/withdraws";
 import withdrawAdmin from "./routes/withdrawsAdmin";
+import Cors from "./utils/Cors";
 
 const app = express();
+const whitelist = Cors.parseOrigins();
 
-app.use(express.json());
-app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONT_END_URL,
+    origin(requestOrigin, callback) {
+      if (!requestOrigin) {
+        callback(null);
+      } else {
+        if (whitelist.includes(requestOrigin)) {
+          callback(null, requestOrigin);
+        } else {
+          callback(
+            new Error(`Request from ${requestOrigin} blocked by CORS`),
+            requestOrigin
+          );
+        }
+      }
+    },
     credentials: true,
   })
 );
+app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", rootController);
 
