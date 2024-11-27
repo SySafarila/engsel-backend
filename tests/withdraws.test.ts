@@ -53,7 +53,13 @@ describe("Withdraw", () => {
     const res4 = await request(app)
       .patch(`/admin/withdraws/${withdrawId}/accept`)
       .set("Authorization", `Bearer ${token}`)
-      .send();
+      .attach("image", "test.jpeg");
     expect(res4.statusCode).toBe(200);
+
+    const res5 = await request(app)
+      .patch(`/admin/withdraws/${withdrawId}/accept`)
+      .set("Authorization", `Bearer ${token}`)
+      .attach("image", "README.md");
+    expect(res5.statusCode).toBe(400);
   });
 });

@@ -96,6 +96,7 @@ model Withdraw {
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   amount     Decimal  @db.Decimal()
   is_pending Boolean  @default(true)
+  image      String?  @db.VarChar()
   updated_at DateTime @default(now())
   created_at DateTime @default(now())
 

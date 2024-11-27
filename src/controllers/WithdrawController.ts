@@ -159,6 +159,11 @@ export default class WithdrawController {
     const { withdrawId } = req.params as { withdrawId: string };
 
     try {
+      const image = req.file;
+      if (!image) {
+        throw new HTTPError("File required with mimetype image/*", 400);
+      }
+
       const checkId = validateUUID(withdrawId);
 
       if (!checkId) {
@@ -181,6 +186,7 @@ export default class WithdrawController {
         },
         data: {
           is_pending: false,
+          image: image.filename
         },
       });
 
