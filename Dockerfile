@@ -10,6 +10,8 @@ COPY . /app/
 
 RUN npm run build
 
-EXPOSE 3000
+RUN npx prisma generate
+
+EXPOSE 3000 3030
 
 CMD [ "node", "./dist/index.js" ]
