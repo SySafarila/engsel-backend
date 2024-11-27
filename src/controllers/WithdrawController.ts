@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import path from "path";
 import { validate as validateUUID } from "uuid";
 import Locals from "../types/locals";
-import { ErrorResponse, Withdraws } from "../types/Responses";
+import { ErrorResponse, Withdraw, Withdraws } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import withdraw from "../utils/withdraw";
@@ -85,8 +86,13 @@ export default class WithdrawController {
 
       res.json({
         message: "success",
-        withdraws: withdraws,
-      });
+        withdraws: withdraws.map((withdraw) => ({
+          ...withdraw,
+          amount: Number(withdraw.amount),
+          created_at: withdraw.created_at.toDateString(),
+          updated_at: withdraw.updated_at.toDateString(),
+        })),
+      } as { message: string; withdraws: Withdraws });
     } catch (error) {
       const handler = errorHandler(error);
 
@@ -154,6 +160,67 @@ export default class WithdrawController {
     }
   }
 
+  static async adminGetDetail(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    const { withdrawId } = req.params as { withdrawId: string };
+
+    try {
+      const checkId = validateUUID(withdrawId);
+
+      if (!checkId) {
+        throw new HTTPError("Invalid withdraw ID", 400);
+      }
+
+      const withdraw = await prisma.withdraw.findFirst({
+        where: {
+          id: withdrawId,
+        },
+        select: {
+          id: true,
+          amount: true,
+          created_at: true,
+          updated_at: true,
+          is_pending: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      if (!withdraw) {
+        throw new HTTPError("Data not found", 404);
+      }
+
+      res.json({
+        message: "success",
+        data: {
+          amount: Number(withdraw.amount),
+          id: withdraw.id,
+          created_at: withdraw.created_at.toDateString(),
+          updated_at: withdraw.updated_at.toDateString(),
+          is_pending: withdraw.is_pending,
+          user: {
+            email: withdraw.user.email,
+            id: withdraw.user.id,
+            name: withdraw.user.name,
+            username: withdraw.user.username,
+          },
+        },
+      } as { message: string; data: Withdraw });
+    } catch (error) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
+    }
+  }
+
   static async adminAccept(req: Request, res: Response) {
     const prisma = new PrismaClient();
     const { withdrawId } = req.params as { withdrawId: string };
@@ -186,13 +253,72 @@ export default class WithdrawController {
         },
         data: {
           is_pending: false,
-          image: image.filename
+          image: image.filename,
         },
       });
 
       res.json({
         message: "Success",
       });
+    } catch (error) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
+    }
+  }
+
+  static async getImage(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    const { withdrawId } = req.params as { withdrawId: string };
+
+    try {
+      const checkId = validateUUID(withdrawId);
+
+      if (!checkId) {
+        throw new HTTPError("Invalid withdraw ID", 400);
+      }
+
+      const withdraw = await prisma.withdraw.findFirst({
+        where: {
+          id: withdrawId,
+          image: {
+            not: null,
+          },
+        },
+        select: {
+          id: true,
+          amount: true,
+          created_at: true,
+          updated_at: true,
+          is_pending: true,
+          image: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      if (!withdraw) {
+        throw new HTTPError("Data not found", 404);
+      }
+
+      const img = path.join(
+        __dirname,
+        "..",
+        "..",
+        "storage",
+        "images",
+        withdraw.image!
+      );
+
+      res.sendFile(img);
     } catch (error) {
       const handler = errorHandler(error);
 

@@ -33,6 +33,7 @@ const router = express.Router();
 
 router.use("/withdraws", authMiddleware);
 router.get("/withdraws", can("withdraws-read"), WithdrawController.adminGet);
+router.get("/withdraws/:withdrawId", can("withdraws-read"), WithdrawController.adminGetDetail);
 router.patch(
   "/withdraws/:withdrawId/accept",
   can("withdraws-update"),
