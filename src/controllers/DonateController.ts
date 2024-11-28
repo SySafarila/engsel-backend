@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
+import Creator from "../objects/Creator";
 import Donator from "../objects/Donator";
-import Receiver from "../objects/Receiver";
 import Transaction from "../objects/Transaction";
 import { io } from "../socketio";
 import Locals from "../types/locals";
@@ -45,11 +45,11 @@ export default class DonateController {
 
       // charge to payment gateway and save to database
       const donator = new Donator(donator_name, donator_email);
-      const receiver = new Receiver(username);
+      const receiver = new Creator(username);
       const transaction = new Transaction({
         amount: amount,
         donator: donator,
-        receiver: receiver,
+        creator: receiver,
         message: message,
         paymentMethod: payment_method,
       });

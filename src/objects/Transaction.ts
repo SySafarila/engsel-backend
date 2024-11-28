@@ -4,22 +4,22 @@ import { PaymentMethod } from "../types/Requests";
 import { Qris, VirtualAccount } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import logger from "../utils/logger";
+import Creator from "./Creator";
 import Donator from "./Donator";
 import Midtrans from "./Midtrans";
-import Receiver from "./Receiver";
 import Xendit from "./Xendit";
 
 type TransactionParam = {
   donator: Donator;
-  receiver: Receiver;
+  creator: Creator;
   message: string;
   amount: number;
   paymentMethod: PaymentMethod;
 };
 
 export default class Transaction {
-  protected message: string;
-  receiver: Receiver;
+  message: string;
+  creator: Creator;
   donator: Donator;
   amount: number;
   transactionId: string = uuid();
@@ -31,7 +31,7 @@ export default class Transaction {
   provider?: string;
 
   constructor(values: TransactionParam) {
-    this.receiver = values.receiver;
+    this.creator = values.creator;
     this.donator = values.donator;
     this.message = values.message;
     this.amount = values.amount;
@@ -74,7 +74,7 @@ export default class Transaction {
           provider: this.provider!,
           user: {
             connect: {
-              username: this.receiver.username,
+              username: this.creator.username,
             },
           },
         },

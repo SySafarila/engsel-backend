@@ -7,7 +7,7 @@ export const validateDonate = async (request: SendDonate): Promise<void> => {
     donator_name: Joi.string().required(),
     message: Joi.string().required(),
     payment_method: Joi.string().required(),
-    donator_email: Joi.string().email().optional().allow(null),
+    donator_email: Joi.string().email().required(),
   });
   const options: Joi.ValidationOptions = {
     abortEarly: false,

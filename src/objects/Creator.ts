@@ -1,4 +1,4 @@
-export default class Receiver {
+export default class Creator {
   username: string;
   name?: string;
   url?: string;

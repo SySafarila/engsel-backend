@@ -47,7 +47,7 @@ export type RoleUpdate = {
 
 export type SendDonate = {
   donator_name: string;
-  donator_email?: string;
+  donator_email: string;
   message: string;
   payment_method: PaymentMethod;
   amount: number;
