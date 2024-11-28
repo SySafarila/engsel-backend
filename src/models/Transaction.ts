@@ -15,9 +15,11 @@ type TransactionParam = {
   message: string;
   amount: number;
   paymentMethod: PaymentMethod;
+  prisma: PrismaClient;
 };
 
 export default class Transaction {
+  prisma: PrismaClient;
   message: string;
   creator: Creator;
   donator: Donator;
@@ -36,6 +38,7 @@ export default class Transaction {
     this.message = values.message;
     this.amount = values.amount;
     this.paymentMethod = values.paymentMethod;
+    this.prisma = values.prisma;
   }
 
   async charge(): Promise<void> {
@@ -55,10 +58,8 @@ export default class Transaction {
   }
 
   async save(): Promise<void> {
-    const prisma = new PrismaClient();
-
     try {
-      await prisma.donation.create({
+      await this.prisma.donation.create({
         data: {
           amount: this.amount,
           currency: "IDR",

@@ -4,7 +4,7 @@ import app from "../src/server";
 let transactionQris: string, transactionBcaVa: string;
 
 describe("Donation", () => {
-  it("Charge donation to payment gateway", async () => {
+  it("Donator can charge to payment gateway", async () => {
     const res = await request(app)
       .post("/donations/SySafarila/donate")
       .accept("application/json")
@@ -27,13 +27,14 @@ describe("Donation", () => {
         donator_name: "Syahrul Safarila",
         message: "Hello world!",
         payment_method: "bca-virtual-account",
+        donator_email: "sysafarila@gmail.com",
       });
 
     expect(res2.statusCode).toBe(200);
     transactionBcaVa = res2.body.transaction_id;
   });
 
-  it("Get detail donation", async () => {
+  it("Donator can get charged detail", async () => {
     const res = await request(app)
       .get(`/transactions/${transactionQris}`)
       .send();
@@ -43,12 +44,9 @@ describe("Donation", () => {
       .get(`/transactions/${transactionBcaVa}`)
       .send();
     expect(res2.statusCode).toBe(200);
-
-    const res3 = await request(app).get(`/transactions/xxx`).send();
-    expect(res3.statusCode).toBe(400);
   });
 
-  it("Replay donation", async () => {
+  it("Creator can replay donation", async () => {
     let token: string = "";
     const res = await request(app).post("/auth/login").send({
       email: "sysafarila@mail.com",

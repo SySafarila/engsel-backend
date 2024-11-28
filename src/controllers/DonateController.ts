@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
-import Creator from "../objects/Creator";
-import Donator from "../objects/Donator";
-import Transaction from "../objects/Transaction";
+import Creator from "../models/Creator";
+import Donator from "../models/Donator";
+import Transaction from "../models/Transaction";
 import { io } from "../socketio";
 import Locals from "../types/locals";
 import { SendDonate } from "../types/Requests";
@@ -33,25 +33,23 @@ export default class DonateController {
         donator_email,
       });
 
-      const checkReceiver = await prisma.user.findFirst({
-        where: {
-          username: username,
-        },
+      // charge to payment gateway and save to database
+      const donator = new Donator({
+        email: donator_email,
+        name: donator_name,
       });
 
-      if (!checkReceiver) {
-        throw new HTTPError("User not found", 404);
-      }
+      const creator = new Creator(prisma);
+      creator.username = username;
+      await creator.findByUsername();
 
-      // charge to payment gateway and save to database
-      const donator = new Donator(donator_name, donator_email);
-      const receiver = new Creator(username);
       const transaction = new Transaction({
         amount: amount,
         donator: donator,
-        creator: receiver,
+        creator: creator,
         message: message,
         paymentMethod: payment_method,
+        prisma: prisma,
       });
       await transaction.charge();
       await transaction.save();
