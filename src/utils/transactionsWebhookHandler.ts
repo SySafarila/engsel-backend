@@ -5,11 +5,11 @@ import HTTPError from "./HTTPError";
 
 export const settlement = async ({
   transactionId,
+  prisma,
 }: {
   transactionId: string;
+  prisma: PrismaClient;
 }): Promise<void> => {
-  const prisma = new PrismaClient();
-
   const donate = await prisma.donation.findUnique({
     where: {
       id: transactionId,
@@ -63,8 +63,8 @@ export const settlement = async ({
       amount: donate.amount,
       currency: donate.currency,
       message: donate.message,
-      created_at: donate.created_at.toString(),
-      updated_at: donate.updated_at.toString(),
+      created_at: donate.created_at.toDateString(),
+      updated_at: donate.updated_at.toDateString(),
       id: donate.id,
     } as DonationSocket);
 };

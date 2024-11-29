@@ -4,7 +4,7 @@ import Cookies from "../types/Cookies";
 import Locals from "../types/locals";
 import { ErrorResponse } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
-import verifyJwt from "../utils/verifyJwt";
+import Token from "../utils/Token";
 
 const authMiddleware = async (
   req: Request,
@@ -26,7 +26,7 @@ const authMiddleware = async (
       throw new HTTPError("Token required", 401);
     }
 
-    const { payload } = await verifyJwt(jwt!);
+    const { payload } = await Token.verifyJwt(jwt);
     const { user_id, token_id } = payload;
 
     const token = await prisma.token.findFirst({

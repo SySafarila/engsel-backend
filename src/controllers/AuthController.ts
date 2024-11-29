@@ -14,7 +14,7 @@ import Locals from "../types/locals";
 import HTTPError from "../utils/HTTPError";
 import comparePassword from "../utils/comparePassword";
 import errorHandler from "../utils/errorHandler";
-import signJwt from "../utils/signJwt";
+import Token from "../utils/Token";
 import AuthValidator from "../validator/AuthValidator";
 import { validateUpdateAccount } from "../validator/validateUpdateAccount";
 
@@ -44,7 +44,7 @@ export default class AuthController {
         hashedPassword: findUser.password,
       });
 
-      const token = await signJwt(findUser.id);
+      const token = await Token.signJwt(findUser.id);
 
       await prisma.token.create({
         data: {

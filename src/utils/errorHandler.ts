@@ -1,11 +1,11 @@
+import { AxiosError } from "axios";
 import Joi from "joi";
 import HTTPError from "./HTTPError";
 import logger from "./logger";
-import { AxiosError } from "axios";
 
 const errorHandler = (error: any): { code: number; message: string } => {
-  let code: number | undefined = undefined;
-  let message: string | undefined = undefined;
+  let code: number = 500;
+  let message: string = "Internal server error";
 
   if (error instanceof Joi.ValidationError) {
     code = 400;
@@ -23,8 +23,8 @@ const errorHandler = (error: any): { code: number; message: string } => {
   }
 
   return {
-    code: code ?? 500,
-    message: message ?? "Internal server error",
+    code: code,
+    message: message,
   };
 };
 

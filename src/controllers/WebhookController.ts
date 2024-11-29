@@ -7,7 +7,7 @@ import { ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { getMidtransServerKey } from "../utils/midtrans";
-import { settlement } from "../utils/transactions";
+import { settlement } from "../utils/transactionsWebhookHandler";
 
 export default class WebhookController {
   static async midtrans(req: Request, res: Response) {
@@ -46,7 +46,7 @@ export default class WebhookController {
 
       switch (body.transaction_status) {
         case "settlement":
-          await settlement({ transactionId: transactionId });
+          await settlement({ transactionId: transactionId, prisma: prisma });
           break;
 
         case "expire":
