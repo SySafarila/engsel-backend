@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "banks" ALTER COLUMN "number" SET DATA TYPE VARCHAR(100);

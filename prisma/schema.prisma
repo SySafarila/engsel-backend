@@ -108,7 +108,7 @@ model Bank {
   user_id     String    @db.Uuid
   user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
   bank        String    @db.VarChar(100)
-  number      BigInt    @db.BigInt
+  number      String    @db.VarChar(100)
   verified_at DateTime?
   updated_at  DateTime  @default(now())
   created_at  DateTime  @default(now())

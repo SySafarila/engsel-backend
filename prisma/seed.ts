@@ -153,7 +153,7 @@ async function main() {
         create: {
           bank: "bca",
           id: UUIDV7(),
-          number: 121212,
+          number: '121212',
           verified_at: new Date(),
         },
       },

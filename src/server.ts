@@ -1,12 +1,11 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import BankController from "./controllers/BankController";
 import rootController from "./controllers/rootController";
 import UserController from "./controllers/UserController";
 import WebhookController from "./controllers/WebhookController";
-import authMiddleware from "./middlewares/authMiddleware";
 import auth from "./routes/auth";
+import banks from "./routes/banks";
 import donations from "./routes/donations";
 import permissions from "./routes/permissions";
 import roles from "./routes/roles";
@@ -17,7 +16,6 @@ import withdrawAdmin from "./routes/withdrawsAdmin";
 import Cors from "./utils/Cors";
 
 const app = express();
-// const whitelist = Cors.parseOrigins();
 
 app.use(
   cors({
@@ -41,14 +39,10 @@ app.use("/auth", auth);
 app.use("/transactions", transactions);
 app.use("/donations", donations);
 app.use("/withdraws", withdraws);
+app.use("/banks", banks);
 
 // users
 app.get("/users/:username", UserController.getDetailPublic);
-
-// banks
-app.get("/banks", authMiddleware, BankController.get);
-app.delete("/banks/:bankId", authMiddleware, BankController.delete);
-app.post("/banks", authMiddleware, BankController.store);
 
 // webhooks
 app.post("/webhooks/:transactionId/midtrans", WebhookController.midtrans);

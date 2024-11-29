@@ -95,5 +95,5 @@ export type UpdateUser = {
 
 export type BankCreate = {
   bank: string;
-  number: number;
+  number: string;
 };

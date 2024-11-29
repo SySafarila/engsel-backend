@@ -101,16 +101,21 @@ export default class BankController {
         throw new HTTPError("Bank tidak boleh duplikat", 400);
       }
 
-      await prisma.bank.create({
+      const result = await prisma.bank.create({
         data: {
           id: UUIDV7(),
           bank: bank,
           number: number,
           user_id: user_id,
         },
+        select: {
+          id: true,
+          bank: true,
+          number: true,
+        },
       });
 
-      res.status(200).json({ message: "Success" });
+      res.status(200).json({ message: "Success", data: result });
     } catch (error: any) {
       const handler = errorHandler(error);
 
