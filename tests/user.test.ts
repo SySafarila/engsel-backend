@@ -17,7 +17,7 @@ describe("User", () => {
     token = login.body.token;
   });
 
-  it("Get user detail", async () => {
+  it("Admin can get user detail", async () => {
     const res = await request(app)
       .get("/admin/users/SySafarila")
       .accept("application/json")
@@ -27,7 +27,7 @@ describe("User", () => {
     expect(res.statusCode).toBe(200);
   });
 
-  it("Get all users data", async () => {
+  it("Admin can get all users data", async () => {
     const res = await request(app)
       .get("/admin/users")
       .accept("application/json")

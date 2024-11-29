@@ -3,7 +3,7 @@ import app from "../src/server";
 
 let transactionQris: string, transactionBcaVa: string;
 
-describe("Donation", () => {
+describe("Donation executed by donator", () => {
   it("Donator can charge to payment gateway", async () => {
     const res = await request(app)
       .post("/donations/SySafarila/donate")
@@ -45,7 +45,9 @@ describe("Donation", () => {
       .send();
     expect(res2.statusCode).toBe(200);
   });
+});
 
+describe("Donation executed by Creator", () => {
   it("Creator can replay donation", async () => {
     let token: string = "";
     const res = await request(app).post("/auth/login").send({

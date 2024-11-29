@@ -2,8 +2,8 @@ import request from "supertest";
 import app from "../src/server";
 
 let withdrawId: string = "";
-describe("Withdraw", () => {
-  it("User charge Withdraw success", async () => {
+describe("Withdraw executed by creator", () => {
+  it("Creator can send withdraw request", async () => {
     let token: string = "";
     const res = await request(app).post("/auth/login").send({
       email: "sysafarila@mail.com",
@@ -21,7 +21,7 @@ describe("Withdraw", () => {
     expect(res2.statusCode).toBe(200);
   });
 
-  it("User get Withdraw success", async () => {
+  it("Creator can get withdraws data", async () => {
     let token: string = "";
     const res = await request(app).post("/auth/login").send({
       email: "sysafarila@mail.com",
@@ -35,8 +35,10 @@ describe("Withdraw", () => {
       .send();
     expect(res2.statusCode).toBe(200);
   });
+});
 
-  it("Admin Get Withdraws and accept withdraw", async () => {
+describe("Withdraw executed by Admin", () => {
+  it("Admin Get Withdraws data and accept withdraw", async () => {
     let token: string = "";
     const res = await request(app).post("/auth/login").send({
       email: "super.admin@admin.com",

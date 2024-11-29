@@ -4,7 +4,7 @@ import app from "../src/server";
 let token: string = "";
 let superAdminToken: string = "";
 
-describe("Register a user", () => {
+describe("/auth/Register", () => {
   it("Should success", async () => {
     const res = await request(app)
       .post("/auth/register")
@@ -33,19 +33,8 @@ describe("Register a user", () => {
   });
 });
 
-describe("User can login", () => {
+describe("/auth/login", () => {
   it("Should success", async () => {
-    const res = await request(app)
-      .post("/auth/login")
-      .accept("application/json")
-      .send({
-        email: "super.admin@admin.com",
-        password: "password",
-      });
-
-    expect(res.statusCode).toBe(200);
-    superAdminToken = res.body.token;
-
     const res2 = await request(app)
       .post("/auth/login")
       .accept("application/json")
@@ -71,7 +60,7 @@ describe("User can login", () => {
   });
 });
 
-describe("Get current user", () => {
+describe("/auth/me", () => {
   it("Should success", async () => {
     const res = await request(app)
       .get("/auth/me")
@@ -85,13 +74,13 @@ describe("Get current user", () => {
     const res = await request(app)
       .get("/auth/me")
       .accept("application/json")
-      .set("Authorization", `Bearer ${token}xxx`);
+      .set("Authorization", `Bearer xxx`);
 
     expect(res.statusCode).toBe(401);
   });
 });
 
-describe("User can logout", () => {
+describe("/auth/logout", () => {
   it("Should success", async () => {
     const res = await request(app)
       .post("/auth/logout")
@@ -111,7 +100,7 @@ describe("User can logout", () => {
   });
 });
 
-describe("Updating user", () => {
+describe("/auth/me UPDATE USER", () => {
   it("Should success", async () => {
     let token: string = "";
     const res = await request(app)
