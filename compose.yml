@@ -9,14 +9,14 @@ services:
     ports:
       - 5432:5432
     restart: always
-  express:
-    build: .
-    container_name: express
-    environment:
-      - DATABASE_URL="postgresql://postgres:password@postgres17:5432/engsel"
-      - JWT_SECRET="secret"
-      - DEV_MODE="false"
-      - BASE_URL="http://localhost:3000"
-      - FRONT_END_URLS="http://localhost:3002,http://localhost:3001"
-    ports:
-      - 3000:3000
+  # express:
+  #   build: .
+  #   container_name: express
+  #   environment:
+  #     - DATABASE_URL="postgresql://postgres:password@postgres17:5432/engsel"
+  #     - JWT_SECRET="secret"
+  #     - DEV_MODE="false"
+  #     - BASE_URL="http://localhost:3000"
+  #     - FRONT_END_URLS="http://localhost:3002,http://localhost:3001"
+  #   ports:
+  #     - 3000:3000
