@@ -18,6 +18,7 @@ import comparePassword from "../utils/comparePassword";
 import errorHandler from "../utils/errorHandler";
 import AuthValidator from "../validator/AuthValidator";
 import { validateUpdateAccount } from "../validator/validateUpdateAccount";
+import Domain from "../utils/Domain";
 
 export default class AuthController {
   static async login(req: Request, res: Response) {
@@ -69,6 +70,10 @@ export default class AuthController {
         maxAge: 60 * 60 * token.expHours, // 6 hours,
         sameSite: "lax",
         path: "/",
+        ...(req.headers.origin && {
+          domain: `.${Domain.clear(req.headers.origin)}`,
+        }),
+        secure: true,
       });
 
       res.setHeader("Set-Cookie", cookie).json(response);
