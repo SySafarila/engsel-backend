@@ -1,4 +1,3 @@
-import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import rootController from "./controllers/rootController";
@@ -24,7 +23,6 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(cookieParser());
 
 app.get("/", rootController);
 

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { parse } from "cookie";
 import { NextFunction, Request, Response } from "express";
 import Cookies from "../types/Cookies";
 import Locals from "../types/locals";
@@ -12,13 +13,20 @@ const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
+    let jwt: string | undefined = undefined;
     const locals = res.locals as Locals;
-    const cookies: Cookies = req.cookies;
     const prisma = new PrismaClient();
     const { authorization } = req.headers;
-    let jwt: string | undefined = authorization?.split("Bearer ")[1];
 
-    if (cookies.access_token) {
+    if (authorization) {
+      const bearerToken = authorization.split("Bearer ");
+      if (bearerToken[1]) {
+        jwt = bearerToken[1];
+      }
+    }
+
+    if (req.headers.cookie) {
+      const cookies: Cookies = parse(req.headers.cookie);
       jwt = cookies.access_token;
     }
 
