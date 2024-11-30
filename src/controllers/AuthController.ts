@@ -303,7 +303,18 @@ export default class AuthController {
         },
       });
 
-      res.json({
+      const cookie = serialize("access_token", "logout", {
+        httpOnly: true,
+        maxAge: 1,
+        sameSite: "lax",
+        path: "/",
+        ...(req.headers.origin && {
+          domain: `.${Domain.clear(req.headers.origin)}`,
+        }),
+        secure: true,
+      });
+
+      res.setHeader("Set-Cookie", cookie).json({
         message: "Logout success",
       } as LogoutSuccess);
     } catch (error: any) {
