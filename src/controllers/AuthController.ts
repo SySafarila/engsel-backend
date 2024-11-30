@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { serialize } from "cookie";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
 import { Login, Register, UpdateAccount } from "../types/Requests";
@@ -12,9 +13,9 @@ import {
 } from "../types/Responses";
 import Locals from "../types/locals";
 import HTTPError from "../utils/HTTPError";
+import Token from "../utils/Token";
 import comparePassword from "../utils/comparePassword";
 import errorHandler from "../utils/errorHandler";
-import Token from "../utils/Token";
 import AuthValidator from "../validator/AuthValidator";
 import { validateUpdateAccount } from "../validator/validateUpdateAccount";
 
@@ -63,7 +64,14 @@ export default class AuthController {
         token: token.token,
       };
 
-      res.json(response);
+      const cookie = serialize("access_token", token.token, {
+        httpOnly: true,
+        maxAge: 60 * 60 * token.expHours, // 6 hours,
+        sameSite: "lax",
+        path: "/",
+      });
+
+      res.setHeader("Set-Cookie", cookie).json(response);
     } catch (error: any) {
       const handler = errorHandler(error);
 
