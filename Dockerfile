@@ -25,6 +25,8 @@ FROM node:20.17-alpine AS runner
 # Set working directory
 WORKDIR /app
 
+ENV NODE_ENV=production
+
 # Copy only necessary files from the builder
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
