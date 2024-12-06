@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { io } from "../socketio";
-import { DonationSocket } from "../types/Responses";
+import SocketNotification from "../models/SocketNotification";
 import HTTPError from "./HTTPError";
 
 export const settlement = async ({
@@ -53,18 +52,13 @@ export const settlement = async ({
     });
   });
 
-  io.of("/transactions")
-    .to(transactionId)
-    .emit("transaction-settlement", `Transaction ID: ${transactionId} success`);
-  io.of("/donations")
-    .to(donate.user_id!)
-    .emit("donation", {
-      donator_name: donate.donator_name,
-      amount: donate.amount,
-      currency: donate.currency,
-      message: donate.message,
-      created_at: donate.created_at.toDateString(),
-      updated_at: donate.updated_at.toDateString(),
-      id: donate.id,
-    } as DonationSocket);
+  SocketNotification.sendDonatorSettlement(transactionId);
+  SocketNotification.sendNotificationToCreator({
+    amount: donate.amount,
+    currency: donate.currency,
+    donatorName: donate.donator_name,
+    id: donate.id,
+    message: donate.message,
+    creatorId: user.id,
+  });
 };

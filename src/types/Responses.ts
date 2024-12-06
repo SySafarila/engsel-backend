@@ -195,12 +195,11 @@ export type MidtransBcaVaSuccess = {
 
 export type DonationSocket = {
   amount: number;
-  created_at: string;
-  updated_at: string;
   donator_name: string;
-  donator_email?: string;
   id: string;
   message: string;
+  is_test: boolean;
+  is_replay: boolean;
 };
 
 export type Withdraw = {

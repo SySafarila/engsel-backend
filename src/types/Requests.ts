@@ -97,3 +97,12 @@ export type BankCreate = {
   bank: string;
   number: string;
 };
+
+export type SendNotificationToCreator = {
+  creatorId: string;
+  donatorName: string;
+  amount: number;
+  currency: string;
+  message: string;
+  id: string;
+};

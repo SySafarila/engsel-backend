@@ -1,11 +1,11 @@
-import app from "./server";
-import { httpServer } from "./socketio";
+import express from "./server";
+import { httpServer as socketIo } from "./socketio";
 
 const port = process.env.APP_PORT ?? 3000;
 
-app.listen(port, () => {
+express.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
 // websocket
-httpServer.listen(3030);
+socketIo.listen(3030);

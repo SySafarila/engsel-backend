@@ -12,13 +12,13 @@ import {
   RegisterSuccess,
 } from "../types/Responses";
 import Locals from "../types/locals";
+import Domain from "../utils/Domain";
 import HTTPError from "../utils/HTTPError";
+import Password from "../utils/Password";
 import Token from "../utils/Token";
-import comparePassword from "../utils/comparePassword";
 import errorHandler from "../utils/errorHandler";
 import AuthValidator from "../validator/AuthValidator";
 import { validateUpdateAccount } from "../validator/validateUpdateAccount";
-import Domain from "../utils/Domain";
 
 export default class AuthController {
   static async login(req: Request, res: Response) {
@@ -41,7 +41,7 @@ export default class AuthController {
         throw new HTTPError("Credentials not match", 401);
       }
 
-      await comparePassword({
+      await Password.compare({
         plainPassword: password,
         hashedPassword: findUser.password,
       });
@@ -115,7 +115,7 @@ export default class AuthController {
         throw new HTTPError("Username or email already registered", 400);
       }
 
-      const hashPassword: string = bcrypt.hashSync(password, 10);
+      const hashPassword: string = Password.hash(password);
 
       await prisma.user.create({
         data: {

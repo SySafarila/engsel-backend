@@ -45,6 +45,9 @@ export default class WebhookController {
       }
 
       switch (body.transaction_status) {
+        case "pending":
+          break;
+
         case "settlement":
           await settlement({ transactionId: transactionId, prisma: prisma });
           break;
@@ -56,9 +59,6 @@ export default class WebhookController {
           break;
 
         case "deny":
-          break;
-
-        case "pending":
           break;
 
         case "capture":

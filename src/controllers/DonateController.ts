@@ -1,17 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
-import { v7 as UUIDV7 } from "uuid";
 import Creator from "../models/Creator";
 import Donator from "../models/Donator";
+import SocketNotification from "../models/SocketNotification";
 import Transaction from "../models/Transaction";
-import { io } from "../socketio";
 import Locals from "../types/locals";
 import { SendDonate } from "../types/Requests";
-import {
-  DonateSuccess,
-  DonationSocket,
-  ErrorResponse,
-} from "../types/Responses";
+import { DonateSuccess, ErrorResponse } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateDonate } from "../validator/validateDonate";
@@ -142,17 +137,14 @@ export default class DonateController {
         throw new HTTPError("Donation not found", 404);
       }
 
-      io.of("/donations")
-        .to(donation.user_id!)
-        .emit("donation", {
-          donator_name: donation.donator_name,
-          amount: donation.amount,
-          currency: donation.currency,
-          message: donation.message,
-          created_at: donation.created_at.toDateString(),
-          updated_at: donation.updated_at.toDateString(),
-          id: donation.id,
-        } as DonationSocket);
+      SocketNotification.sendReplayDonation({
+        amount: donation.amount,
+        creatorId: donation.user_id!,
+        currency: donation.currency,
+        donatorName: donation.donator_name,
+        id: donation.id,
+        message: donation.message,
+      });
 
       res.json({
         message: "success",
@@ -170,17 +162,7 @@ export default class DonateController {
     const { user_id } = res.locals as Locals;
 
     try {
-      io.of("/donations")
-        .to(user_id)
-        .emit("donation", {
-          donator_name: "Syahrul Safarila",
-          amount: 100000,
-          currency: "IDR",
-          message: "Hello world! ini hanya testing!",
-          created_at: new Date().toDateString(),
-          updated_at: new Date().toDateString(),
-          id: UUIDV7(),
-        } as DonationSocket);
+      SocketNotification.sendTestDonation(user_id);
 
       res.json({
         message: "success",
