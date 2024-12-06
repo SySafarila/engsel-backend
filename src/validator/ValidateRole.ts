@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { RoleCreate, RoleUpdate } from "../types/Requests";
 
-export default class RoleValidator {
+export default class ValidateRole {
   static async validateStore(values: RoleCreate) {
     const schema: Joi.ObjectSchema<RoleCreate> = Joi.object({
       name: Joi.string().required(),

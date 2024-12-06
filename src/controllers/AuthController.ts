@@ -17,7 +17,7 @@ import HTTPError from "../utils/HTTPError";
 import Password from "../utils/Password";
 import Token from "../utils/Token";
 import errorHandler from "../utils/errorHandler";
-import AuthValidator from "../validator/AuthValidator";
+import ValidateAuth from "../validator/ValidateAuth";
 import { validateUpdateAccount } from "../validator/validateUpdateAccount";
 
 export default class AuthController {
@@ -26,7 +26,7 @@ export default class AuthController {
     const prisma = new PrismaClient();
 
     try {
-      await AuthValidator.login({
+      await ValidateAuth.login({
         email: email,
         password: password,
       });
@@ -91,7 +91,7 @@ export default class AuthController {
     const prisma = new PrismaClient();
 
     try {
-      await AuthValidator.register({
+      await ValidateAuth.register({
         email: email,
         name: name,
         password: password,

@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { Login, Register } from "../types/Requests";
 
-export default class AuthValidator {
+export default class ValidateAuth {
   static async login(request: Login): Promise<void> {
     const schema: Joi.ObjectSchema<Login> = Joi.object({
       email: Joi.string().email().required(),

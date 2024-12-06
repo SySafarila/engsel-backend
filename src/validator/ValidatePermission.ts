@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { PermissionCreate, PermissionUpdate } from "../types/Requests";
 
-export default class PermissionValidator {
+export default class ValidatePermission {
   static async validateStore(values: PermissionCreate) {
     const schema: Joi.ObjectSchema<PermissionCreate> = Joi.object({
       name: Joi.string().required(),

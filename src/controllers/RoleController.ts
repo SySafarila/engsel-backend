@@ -12,7 +12,7 @@ import {
 } from "../types/Responses";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
-import RoleValidator from "../validator/RoleValidator";
+import ValidateRole from "../validator/ValidateRole";
 
 export default class RoleController {
   static async store(req: Request, res: Response) {
@@ -20,7 +20,7 @@ export default class RoleController {
     const { role_level_peak } = res.locals as Locals;
     const prisma = new PrismaClient();
     try {
-      await RoleValidator.validateStore({
+      await ValidateRole.validateStore({
         level: level,
         name: name,
         permissions: permissions,
@@ -96,7 +96,7 @@ export default class RoleController {
     const params = req.params as { roleName: string };
     const prisma = new PrismaClient();
     try {
-      await RoleValidator.validateUpdate({
+      await ValidateRole.validateUpdate({
         name: name,
         level: level,
         permissions: permissions,

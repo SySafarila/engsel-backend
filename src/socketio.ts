@@ -5,7 +5,6 @@ import { onConnection as donationsOnConnection } from "./socket.io/donations";
 import { onConnection as transactionsOnConnection } from "./socket.io/transactions";
 import Cors from "./utils/Cors";
 
-// const whitelist = Cors.parseOrigins();
 export const httpServer = createServer(app);
 export const io = new Server(httpServer, {
   cors: {
