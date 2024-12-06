@@ -13,6 +13,7 @@ import users from "./routes/users";
 import withdraws from "./routes/withdraws";
 import withdrawAdmin from "./routes/withdrawsAdmin";
 import Cors from "./utils/Cors";
+import bankAdmin from './routes/banksAdmin'
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/admin", permissions);
 app.use("/admin", roles);
 app.use("/admin", users);
 app.use("/admin", withdrawAdmin);
+app.use("/admin", bankAdmin);
 
 // public
 app.use("/auth", auth);

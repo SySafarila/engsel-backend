@@ -124,4 +124,100 @@ export default class BankController {
       } as ErrorResponse);
     }
   }
+
+  static async getAdmin(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+
+    try {
+      const banks = await prisma.bank.findMany({
+        where: {
+          verified_at: {
+            equals: null,
+          },
+        },
+        select: {
+          id: true,
+          bank: true,
+          number: true,
+          verified_at: true,
+          user: {
+            select: {
+              email: true,
+              name: true,
+              username: true,
+            },
+          },
+        },
+        orderBy: {
+          created_at: "asc",
+        },
+      });
+
+      const response = {
+        message: "success",
+        data: banks.map((bank) => ({
+          ...bank,
+          verified_at: bank.verified_at
+            ? new Date(bank.verified_at).getTime()
+            : null,
+          number: Number(bank.number),
+        })),
+      };
+
+      res.status(200).json(response);
+    } catch (error: any) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
+    }
+  }
+
+  static async acceptBank(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    const { bankId } = req.params as { bankId: string };
+
+    try {
+      const validateBankId = validateUUID(bankId);
+      if (!validateBankId) {
+        throw new HTTPError("Invalid Bank ID", 400);
+      }
+
+      const bank = await prisma.bank.update({
+        where: {
+          id: bankId,
+        },
+        data: {
+          verified_at: new Date(),
+        },
+        select: {
+          id: true,
+          bank: true,
+          number: true,
+          verified_at: true,
+          user: {
+            select: {
+              username: true,
+              email: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      const response = {
+        message: "success",
+        data: { ...bank, verified_at: bank.verified_at?.toDateString() },
+      };
+
+      res.status(200).json(response);
+    } catch (error: any) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
+    }
+  }
 }
