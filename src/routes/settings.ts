@@ -4,11 +4,7 @@ import authMiddleware from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.get(
-  "/overlays/:overlayCode",
-  authMiddleware,
-  SettingController.getOverlaySetting
-);
+router.get("/overlays/:overlayCode", SettingController.getOverlaySetting);
 router.post(
   "/overlays/:overlayCode",
   authMiddleware,

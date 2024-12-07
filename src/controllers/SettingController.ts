@@ -111,7 +111,7 @@ export default class SettingController {
     const prisma = new PrismaClient();
     const overlays: OverlayCode[] = ["basic", "formula-1"];
     const { overlayCode } = req.params as { overlayCode: OverlayCode };
-    const { user_id } = res.locals as Locals;
+    const { streamkey } = req.query as { streamkey: string };
 
     try {
       if (!overlays.includes(overlayCode)) {
@@ -120,7 +120,7 @@ export default class SettingController {
 
       let overlay = await prisma.setting.findFirst({
         where: {
-          user_id: user_id,
+          user_id: streamkey,
           key: "overlay-" + overlayCode,
         },
         select: {
