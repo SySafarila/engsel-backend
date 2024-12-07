@@ -5,15 +5,16 @@ import UserController from "./controllers/UserController";
 import WebhookController from "./controllers/WebhookController";
 import auth from "./routes/auth";
 import banks from "./routes/banks";
+import bankAdmin from "./routes/banksAdmin";
 import donations from "./routes/donations";
 import permissions from "./routes/permissions";
 import roles from "./routes/roles";
+import settings from './routes/settings';
 import transactions from "./routes/transactions";
 import users from "./routes/users";
 import withdraws from "./routes/withdraws";
 import withdrawAdmin from "./routes/withdrawsAdmin";
 import Cors from "./utils/Cors";
-import bankAdmin from './routes/banksAdmin'
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use("/transactions", transactions);
 app.use("/donations", donations);
 app.use("/withdraws", withdraws);
 app.use("/banks", banks);
+app.use("/settings", settings);
 
 // users
 app.get("/users/:username", UserController.getDetailPublic);
