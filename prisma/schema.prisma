@@ -130,3 +130,16 @@ model Setting {
   @@index([created_at])
   @@map("settings")
 }
+
+model Tts {
+  id         String   @id @unique @db.Uuid
+  text       String   @db.Text
+  audio      String?  @db.Text
+  is_female  Boolean  @db.Boolean
+  sound_type Int      @db.SmallInt
+  updated_at DateTime @default(now())
+  created_at DateTime @default(now())
+
+  @@index([text])
+  @@map("tts")
+}
