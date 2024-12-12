@@ -13,7 +13,9 @@ const errorHandler = (error: any): { code: number; message: string } => {
   } else if (error instanceof HTTPError) {
     code = error.code;
     message = error.message;
-    logger.error(error.message);
+    if (code >= 500) {
+      logger.error(error.message);
+    }
   } else if (error instanceof AxiosError) {
     code = 500;
     message = error.message;

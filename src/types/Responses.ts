@@ -201,6 +201,10 @@ export type DonationSocket = {
   message: string;
   is_test: boolean;
   is_replay: boolean;
+  is_media_share: boolean;
+  is_tts: boolean;
+  currency: string;
+  tts?: string[];
 };
 
 export type Withdraw = {

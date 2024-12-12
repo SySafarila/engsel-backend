@@ -16,41 +16,60 @@ export default class Tts {
     }
   }
 
-  private async generate(text: string): Promise<string> {
+  private async hitGoogleTtsApi(text: string): Promise<string> {
     // hit google tts API
     return text;
   }
 
-  async save(values: Params) {
-    const base64 = await this.generate(values.text);
-    return (
-      await this.prisma!.tts.create({
-        data: {
-          id: UUIDV7(),
-          is_female: values.isFemale,
-          sound_type: values.soundType,
-          text: values.text,
-          audio: base64,
-        },
-      })
-    ).audio;
+  async generateTts(text: string): Promise<string> {
+    let sound: undefined | string = undefined;
+
+    const find = await this.find({
+      isFemale: true,
+      soundType: 1,
+      text: text,
+    });
+
+    if (find && find.audio) {
+      sound = find.audio;
+    } else {
+      const create = await this.generateAndSave({
+        isFemale: true,
+        soundType: 1,
+        text: text,
+      });
+      sound = create.audio!;
+    }
+
+    return sound;
   }
 
-  async findEqual(values: Params) {
-    return (
-      await this.prisma!.tts.findFirst({
-        where: {
-          text: {
-            equals: values.text,
-          },
-          is_female: {
-            equals: values.isFemale,
-          },
-          sound_type: {
-            equals: values.soundType,
-          },
+  private async generateAndSave(values: Params) {
+    const base64 = await this.hitGoogleTtsApi(values.text);
+    return await this.prisma!.tts.create({
+      data: {
+        id: UUIDV7(),
+        is_female: values.isFemale,
+        sound_type: values.soundType,
+        text: values.text,
+        audio: base64,
+      },
+    });
+  }
+
+  private async find(values: Params) {
+    return await this.prisma!.tts.findFirst({
+      where: {
+        text: {
+          equals: values.text,
         },
-      })
-    )?.audio;
+        is_female: {
+          equals: values.isFemale,
+        },
+        sound_type: {
+          equals: values.soundType,
+        },
+      },
+    });
   }
 }
