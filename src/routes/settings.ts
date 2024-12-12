@@ -10,5 +10,7 @@ router.post(
   authMiddleware,
   SettingController.setOverlaySetting
 );
+router.get("/min-tts", authMiddleware, SettingController.getMinTts);
+router.patch("/min-tts", authMiddleware, SettingController.minTts);
 
 export default router;

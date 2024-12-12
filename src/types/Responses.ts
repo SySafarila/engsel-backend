@@ -138,6 +138,7 @@ export type UserDetailPublic = {
     name: string;
     username: string;
   };
+  minTts: number;
 };
 
 export type Users = {

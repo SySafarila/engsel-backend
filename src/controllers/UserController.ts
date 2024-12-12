@@ -86,6 +86,13 @@ export default class UserController {
         throw new HTTPError("User not found", 404);
       }
 
+      const minTts = await prisma.setting.findFirst({
+        where: {
+          user_id: checkUsername.id,
+          key: "min-amount-for-tts",
+        },
+      });
+
       const response: UserDetailPublic = {
         message: `Get user detail by username: ${username}`,
         user: {
@@ -93,9 +100,13 @@ export default class UserController {
           name: checkUsername.name,
           username: checkUsername.username,
         },
+        minTts: Number(minTts?.value) ?? 10000,
       };
 
-      res.json(response);
+      res.json({
+        message: "Success",
+        data: response,
+      });
     } catch (error: any) {
       const handler = errorHandler(error);
 
