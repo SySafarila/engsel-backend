@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import Joi from "joi";
+import { errors as joseErrors } from "jose";
 import HTTPError from "./HTTPError";
 import logger from "./logger";
 
@@ -20,6 +21,15 @@ const errorHandler = (error: any): { code: number; message: string } => {
     code = 500;
     message = error.message;
     logger.error(error);
+  } else if (error instanceof joseErrors.JWTExpired) {
+    code = 401;
+    message = "Token expired";
+  } else if (error instanceof joseErrors.JWTInvalid) {
+    code = 401;
+    message = "Token invalid";
+  } else if (error instanceof joseErrors.JWTClaimValidationFailed) {
+    code = 401;
+    message = error.code;
   } else {
     logger.error(error.message ?? "Internal server error");
   }

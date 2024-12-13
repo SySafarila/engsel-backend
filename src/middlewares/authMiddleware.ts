@@ -6,6 +6,7 @@ import Locals from "../types/locals";
 import { ErrorResponse } from "../types/Responses";
 import HTTPError from "../utils/HTTPError";
 import Token from "../utils/Token";
+import errorHandler from "../utils/errorHandler";
 
 const authMiddleware = async (
   req: Request,
@@ -94,14 +95,10 @@ const authMiddleware = async (
 
     return next();
   } catch (error: any) {
-    if (error instanceof HTTPError) {
-      res.status(error.code).json({
-        message: error.message,
-      } as ErrorResponse);
-      return;
-    }
-    res.status(401).json({
-      message: error.message ?? "Unauthorized request",
+    const handler = errorHandler(error);
+
+    res.status(handler.code).json({
+      message: handler.message,
     } as ErrorResponse);
   }
 };
