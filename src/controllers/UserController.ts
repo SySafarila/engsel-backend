@@ -100,7 +100,7 @@ export default class UserController {
           name: checkUsername.name,
           username: checkUsername.username,
         },
-        minTts: Number(minTts?.value) ?? 10000,
+        minTts: minTts ? Number(minTts.value) : 10000,
       };
 
       res.json({
