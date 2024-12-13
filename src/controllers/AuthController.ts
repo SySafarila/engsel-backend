@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { serialize } from "cookie";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
 import { Login, Register, UpdateAccount } from "../types/Requests";
@@ -12,7 +11,7 @@ import {
   RegisterSuccess,
 } from "../types/Responses";
 import Locals from "../types/locals";
-import Domain from "../utils/Domain";
+import Cookie from "../utils/Cookie";
 import HTTPError from "../utils/HTTPError";
 import Password from "../utils/Password";
 import Token from "../utils/Token";
@@ -65,16 +64,7 @@ export default class AuthController {
         token: token.token,
       };
 
-      const cookie = serialize("access_token", token.token, {
-        httpOnly: true,
-        maxAge: 60 * 60 * token.expHours, // 6 hours,
-        sameSite: "lax",
-        path: "/",
-        ...(req.headers.origin && {
-          domain: `.${Domain.clear(req.headers.origin)}`,
-        }),
-        secure: true,
-      });
+      const cookie = Cookie.loginCookie(req, token.token, token.expHours);
 
       res.setHeader("Set-Cookie", cookie).json(response);
     } catch (error: any) {
@@ -303,16 +293,7 @@ export default class AuthController {
         },
       });
 
-      const cookie = serialize("access_token", "logout", {
-        httpOnly: true,
-        maxAge: 1,
-        sameSite: "lax",
-        path: "/",
-        ...(req.headers.origin && {
-          domain: `.${Domain.clear(req.headers.origin)}`,
-        }),
-        secure: true,
-      });
+      const cookie = Cookie.logoutCookie(req);
 
       res.setHeader("Set-Cookie", cookie).json({
         message: "Logout success",

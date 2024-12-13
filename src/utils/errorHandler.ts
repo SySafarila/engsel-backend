@@ -30,6 +30,9 @@ const errorHandler = (error: any): { code: number; message: string } => {
   } else if (error instanceof joseErrors.JWTClaimValidationFailed) {
     code = 401;
     message = error.code;
+  } else if (error instanceof joseErrors.JOSEError) {
+    code = 401;
+    message = error.code;
   } else {
     logger.error(error.message ?? "Internal server error");
   }
