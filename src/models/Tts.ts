@@ -115,11 +115,3 @@ export default class Tts {
     });
   }
 }
-
-async function name() {
-  const tts = new Tts();
-
-  await tts.generateTts("Halo baaang, ini testing");
-}
-
-name();
