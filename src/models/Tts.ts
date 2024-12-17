@@ -1,5 +1,8 @@
+import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 import { PrismaClient } from "@prisma/client";
 import { v7 as UUIDV7 } from "uuid";
+import HTTPError from "../utils/HTTPError";
+import logger from "../utils/logger";
 
 type Params = {
   text: string;
@@ -18,7 +21,42 @@ export default class Tts {
 
   private async hitGoogleTtsApi(text: string): Promise<string> {
     // hit google tts API
-    return text;
+    const client = new TextToSpeechClient();
+
+    // Performs the text-to-speech request
+    try {
+      const [response] = await client.synthesizeSpeech({
+        input: {
+          text: text,
+        },
+        voice: {
+          languageCode: "id",
+          ssmlGender: "FEMALE",
+        },
+        audioConfig: {
+          audioEncoding: "MP3",
+        },
+      });
+
+      if (response.audioContent) {
+        return Buffer.from(response.audioContent).toString("base64");
+      }
+
+      logger.error(
+        "Error while generating audio by Google Text-To-Speech: audioContent from response not exists"
+      );
+      throw new HTTPError(
+        "Error while generating audio by Google Text-To-Speech: audioContent from response not exists",
+        500
+      );
+    } catch (error) {
+      logger.error("Error while generating audio by Google Text-To-Speech");
+      logger.error(error);
+      throw new HTTPError(
+        "Error while generating audio by Google Text-To-Speech",
+        500
+      );
+    }
   }
 
   async generateTts(text: string): Promise<string> {
