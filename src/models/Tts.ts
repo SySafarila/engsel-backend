@@ -30,11 +30,13 @@ export default class Tts {
           text: text,
         },
         voice: {
-          languageCode: "id",
-          ssmlGender: "FEMALE",
+          languageCode: "id-ID",
+          name: "id-ID-Standard-D",
         },
         audioConfig: {
           audioEncoding: "MP3",
+          pitch: 0,
+          speakingRate: 1, // speed of speaking
         },
       });
 
