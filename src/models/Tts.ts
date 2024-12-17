@@ -1,5 +1,5 @@
-import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 import { PrismaClient } from "@prisma/client";
+import axios, { AxiosError } from "axios";
 import { v7 as UUIDV7 } from "uuid";
 import HTTPError from "../utils/HTTPError";
 import logger from "../utils/logger";
@@ -20,44 +20,46 @@ export default class Tts {
   }
 
   private async hitGoogleTtsApi(text: string): Promise<string> {
-    // hit google tts API
-    const client = new TextToSpeechClient();
+    const token = process.env.GOOGLE_TEXT_TO_SPEECH;
 
     // Performs the text-to-speech request
+    const request = {
+      input: {
+        text: text,
+      },
+      voice: {
+        languageCode: "id-ID",
+        name: "id-ID-Standard-D",
+      },
+      audioConfig: {
+        audioEncoding: "MP3",
+      },
+    };
+
     try {
-      const [response] = await client.synthesizeSpeech({
-        input: {
-          text: text,
-        },
-        voice: {
-          languageCode: "id-ID",
-          name: "id-ID-Standard-D",
-        },
-        audioConfig: {
-          audioEncoding: "MP3",
-          pitch: 0,
-          speakingRate: 1, // speed of speaking
-        },
-      });
-
-      if (response.audioContent) {
-        return Buffer.from(response.audioContent).toString("base64");
-      }
-
-      logger.error(
-        "Error while generating audio by Google Text-To-Speech: audioContent from response not exists"
+      const res = await axios.post(
+        "https://texttospeech.googleapis.com/v1/text:synthesize",
+        request,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "x-goog-user-project": "central-rush-444509-j2",
+          },
+        }
       );
-      throw new HTTPError(
-        "Error while generating audio by Google Text-To-Speech: audioContent from response not exists",
-        500
-      );
+
+      return res.data.audioContent;
     } catch (error) {
-      logger.error("Error while generating audio by Google Text-To-Speech");
-      logger.error(error);
-      throw new HTTPError(
-        "Error while generating audio by Google Text-To-Speech",
-        500
-      );
+      if (error instanceof AxiosError) {
+        logger.error("Error while generating audio by Google Text-To-Speech");
+        logger.error(error.message);
+        throw new HTTPError(
+          "Error while generating audio by Google Text-To-Speech",
+          error.status ?? 500
+        );
+      } else {
+        throw new HTTPError("Internal server error", 500);
+      }
     }
   }
 
@@ -113,3 +115,11 @@ export default class Tts {
     });
   }
 }
+
+async function name() {
+  const tts = new Tts();
+
+  await tts.generateTts("Halo baaang, ini testing");
+}
+
+name();
