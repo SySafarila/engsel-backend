@@ -51,9 +51,6 @@ export default class SocketNotification {
     let tts: string[] = [];
 
     if (data.amount >= minAmountForTts) {
-      logger.info(
-        `implementation needed to generate TTS for ${data.id} donation`
-      );
       tts = await SocketNotification.generateTts(data);
     }
 
@@ -90,9 +87,6 @@ export default class SocketNotification {
     let tts: string[] = [];
 
     if (data.amount >= minAmountForTts) {
-      logger.info(
-        `implementation needed to generate TTS for ${data.id} donation`
-      );
       tts = await SocketNotification.generateTts(data);
     }
 
@@ -122,9 +116,6 @@ export default class SocketNotification {
     let tts: string[] = [];
 
     if (amount >= minAmountForTts) {
-      logger.info(
-        `implementation needed to generate TTS for xxx-xxx-xxx-testing donation`
-      );
       tts = await SocketNotification.generateTts({
         amount: amount,
         creatorId: creatorId,

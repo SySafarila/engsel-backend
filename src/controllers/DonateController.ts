@@ -162,7 +162,7 @@ export default class DonateController {
     const { user_id } = res.locals as Locals;
 
     try {
-      SocketNotification.sendTestDonation(user_id);
+      await SocketNotification.sendTestDonation(user_id);
 
       res.json({
         message: "success",
