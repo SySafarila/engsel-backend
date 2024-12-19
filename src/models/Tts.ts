@@ -20,7 +20,7 @@ export default class Tts {
   }
 
   private async hitGoogleTtsApi(text: string): Promise<string> {
-    const token = process.env.GOOGLE_TEXT_TO_SPEECH;
+    const token = process.env.GOOGLE_TEXT_TO_SPEECH_API_KEY;
 
     // Performs the text-to-speech request
     const request = {
@@ -36,14 +36,17 @@ export default class Tts {
       },
     };
 
+    if (!token) {
+      logger.error("GOOGLE_TEXT_TO_SPEECH_API_KEY not set");
+      throw new HTTPError("GOOGLE_TEXT_TO_SPEECH_API_KEY not set", 500);
+    }
     try {
       const res = await axios.post(
         "https://texttospeech.googleapis.com/v1/text:synthesize",
         request,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "x-goog-user-project": "central-rush-444509-j2",
+          params: {
+            key: token,
           },
         }
       );
@@ -57,9 +60,9 @@ export default class Tts {
           "Error while generating audio by Google Text-To-Speech",
           error.status ?? 500
         );
-      } else {
-        throw new HTTPError("Internal server error", 500);
       }
+
+      throw new HTTPError("Internal server error", 500);
     }
   }
 

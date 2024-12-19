@@ -53,7 +53,7 @@ export const settlement = async ({
   });
 
   SocketNotification.sendDonatorSettlement(transactionId);
-  SocketNotification.sendNotificationToCreator({
+  await SocketNotification.sendNotificationToCreator({
     amount: donate.amount,
     currency: donate.currency,
     donatorName: donate.donator_name,

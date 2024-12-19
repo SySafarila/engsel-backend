@@ -31,16 +31,15 @@ export default class SocketNotification {
     return minAmountForTts;
   }
 
-  static async generateTts(
-    data: SendNotificationToCreator
-  ): Promise<[string, string]> {
+  static async generateTts(data: SendNotificationToCreator): Promise<string[]> {
+    const ttsArray: string[] = [];
     const tts = new Tts();
-    const opening = await tts.generateTts(
+    ttsArray[0] = await tts.generateTts(
       `${data.donatorName} baru saja memberikan ${data.amount} rupiah`
     );
-    const message = await tts.generateTts(data.message);
+    ttsArray[1] = await tts.generateTts(data.message);
 
-    return [opening, message];
+    return ttsArray;
   }
 
   static async sendNotificationToCreator(data: SendNotificationToCreator) {
@@ -51,7 +50,11 @@ export default class SocketNotification {
     let tts: string[] = [];
 
     if (data.amount >= minAmountForTts) {
-      tts = await SocketNotification.generateTts(data);
+      try {
+        tts = await SocketNotification.generateTts(data);
+      } catch {
+        tts = [];
+      }
     }
 
     io.of("/donations")
