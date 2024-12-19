@@ -56,6 +56,7 @@ export default class Tts {
       if (error instanceof AxiosError) {
         logger.error("Error while generating audio by Google Text-To-Speech");
         logger.error(error.message);
+        logger.error(error.response?.data.error.message);
         throw new HTTPError(
           "Error while generating audio by Google Text-To-Speech",
           error.status ?? 500
