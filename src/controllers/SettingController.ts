@@ -159,14 +159,7 @@ export default class SettingController {
         amount: amount,
       });
 
-      let resSetting: {
-        id: string;
-        user_id: string | null;
-        key: string;
-        value: Prisma.JsonValue;
-        updated_at: Date;
-        created_at: Date;
-      };
+      let resSetting: Object;
       const setting = await prisma.setting.findFirst({
         where: {
           user_id: user_id,
@@ -212,14 +205,7 @@ export default class SettingController {
     const { user_id } = res.locals as Locals;
 
     try {
-      let resSetting: {
-        id: string;
-        user_id: string | null;
-        key: string;
-        value: Prisma.JsonValue;
-        updated_at: Date;
-        created_at: Date;
-      } | null;
+      let resSetting: Object | null;
 
       resSetting = await prisma.setting.findFirst({
         where: {
