@@ -84,7 +84,7 @@ export default class Tts {
         soundType: 1,
         text: text,
       });
-      sound = create.audio!;
+      sound = create.audio as string;
     }
 
     return sound;
