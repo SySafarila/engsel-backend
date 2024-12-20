@@ -84,10 +84,10 @@ export default class Tts {
         soundType: 1,
         text: text,
       });
-      sound = create.audio as string;
+      sound = create.audio!;
     }
 
-    return sound;
+    return sound as string;
   }
 
   private async generateAndSave(values: Params) {
