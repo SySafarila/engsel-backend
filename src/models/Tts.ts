@@ -40,6 +40,7 @@ export default class Tts {
       logger.error("GOOGLE_TEXT_TO_SPEECH_API_KEY not set");
       throw new HTTPError("GOOGLE_TEXT_TO_SPEECH_API_KEY not set", 500);
     }
+
     try {
       const res = await axios.post(
         "https://texttospeech.googleapis.com/v1/text:synthesize",
@@ -51,7 +52,9 @@ export default class Tts {
         }
       );
 
-      return res.data.audioContent;
+      const audio: string = res.data.audioContent;
+
+      return audio;
     } catch (error) {
       if (error instanceof AxiosError) {
         logger.error("Error while generating audio by Google Text-To-Speech");
@@ -63,7 +66,9 @@ export default class Tts {
         );
       }
 
-      throw new HTTPError("Internal server error", 500);
+      logger.error("Error while generating audio by Google Text-To-Speech");
+      logger.error(error);
+      throw new HTTPError("Internal server error", 500, error as Error);
     }
   }
 
