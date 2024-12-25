@@ -101,6 +101,7 @@ async function main() {
       username: "_SUPERADMIN",
       password: bcrypt.hashSync("password", 10),
       name: "Super Admin",
+      verified_at: new Date(),
       roles: {
         connectOrCreate: {
           create: {
@@ -122,6 +123,7 @@ async function main() {
       username: "_ADMIN",
       password: bcrypt.hashSync("password", 10),
       name: "Admin",
+      verified_at: new Date(),
       roles: {
         connectOrCreate: {
           create: {
@@ -144,6 +146,7 @@ async function main() {
       password: bcrypt.hashSync("password", 10),
       name: "SySafarila",
       balance: 10000,
+      verified_at: new Date(),
       roles: {
         connect: {
           name: "user",
@@ -153,7 +156,7 @@ async function main() {
         create: {
           bank: "bca",
           id: UUIDV7(),
-          number: '121212',
+          number: "121212",
           verified_at: new Date(),
         },
       },
