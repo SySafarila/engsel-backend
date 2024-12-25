@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
+import Mailer from "../models/Mailer";
 import { Login, Register, UpdateAccount } from "../types/Requests";
 import {
   CurrentUserSuccess,
@@ -20,6 +21,52 @@ import ValidateAuth from "../validator/ValidateAuth";
 import { validateUpdateAccount } from "../validator/validateUpdateAccount";
 
 export default class AuthController {
+  static async emailVerification(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    const { token } = req.params as { token: string };
+
+    try {
+      if (!token) {
+        throw new HTTPError("Token required", 404);
+      }
+
+      // check token
+      const { payload } = await Token.verifyEmailToken(token);
+
+      // update user verified_at
+      const user = await prisma.user.findFirst({
+        where: {
+          email: payload.email,
+          verified_at: {
+            equals: null,
+          },
+        },
+      });
+
+      if (!user) {
+        throw new HTTPError("Email already verified", 400);
+      }
+
+      await prisma.user.update({
+        where: {
+          email: payload.email,
+        },
+        data: {
+          verified_at: new Date(),
+        },
+      });
+
+      res.json({
+        message: "Email verified",
+      });
+    } catch (error: any) {
+      const handler = errorHandler(error);
+
+      res.status(handler.code).json({
+        message: handler.message,
+      } as ErrorResponse);
+    }
+  }
   static async login(req: Request, res: Response) {
     const { email, password } = req.body as Login;
     const prisma = new PrismaClient();
@@ -105,6 +152,12 @@ export default class AuthController {
         throw new HTTPError("Username or email already registered", 400);
       }
 
+      const verificationToken = await Token.generateVerificationToken(email);
+      await Mailer.sendVerificationEmail(
+        email,
+        verificationToken.token,
+        verificationToken.expHours
+      );
       const hashPassword: string = Password.hash(password);
 
       await prisma.user.create({

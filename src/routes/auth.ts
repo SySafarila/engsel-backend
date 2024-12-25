@@ -10,5 +10,6 @@ router.post("/register", AuthController.register);
 router.get("/me", authMiddleware, AuthController.me);
 router.patch("/me", authMiddleware, AuthController.updateMe);
 router.post("/logout", logoutMiddleware, AuthController.logout);
+router.get("/email-verification/:token", AuthController.emailVerification);
 
 export default router;
