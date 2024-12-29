@@ -28,7 +28,7 @@ model User {
   balance     Decimal    @default(0) @db.Decimal()
   withdraws   Withdraw[]
   banks       Bank[]
-  setting     Setting[]
+  settings    Setting[]
 
   @@map("users")
 }
