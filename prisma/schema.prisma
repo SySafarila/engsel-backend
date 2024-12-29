@@ -68,27 +68,40 @@ model Token {
 }
 
 model Donation {
-  id                     String   @id @unique @db.Uuid
-  user_id                String?  @db.Uuid
-  user                   User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
-  currency               String   @db.VarChar(3)
-  donator_name           String   @db.VarChar(255)
-  donator_email          String?  @db.VarChar(255)
-  message                String   @db.Text
+  id                     String        @id @unique @db.Uuid
+  user_id                String?       @db.Uuid
+  user                   User?         @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  currency               String        @db.VarChar(3)
+  donator_name           String        @db.VarChar(255)
+  donator_email          String?       @db.VarChar(255)
+  message                String        @db.Text
   amount                 Float
-  payment_method         String   @db.VarChar(50)
+  payment_method         String        @db.VarChar(50)
   tts                    Json?
-  qris_image             String?  @db.Text
-  virtual_account_number String?  @db.VarChar(100)
-  virtual_account_bank   String?  @db.VarChar(50)
-  is_paid                Boolean  @default(false)
-  provider               String   @db.VarChar(50)
-  expired_at             BigInt?  @db.BigInt
-  updated_at             DateTime @default(now())
-  created_at             DateTime @default(now())
+  qris_image             String?       @db.Text
+  virtual_account_number String?       @db.VarChar(100)
+  virtual_account_bank   String?       @db.VarChar(50)
+  is_paid                Boolean       @default(false)
+  provider               String        @db.VarChar(50)
+  expired_at             BigInt?       @db.BigInt
+  updated_at             DateTime      @default(now())
+  created_at             DateTime      @default(now())
+  fees                   DonationFee[]
 
   @@index([updated_at])
   @@map("donations")
+}
+
+model DonationFee {
+  id          String   @id @unique @db.Uuid
+  donation    Donation @relation(fields: [donation_id], references: [id], onDelete: Cascade)
+  donation_id String   @db.Uuid
+  percentage  Decimal  @default(0.7) @db.Decimal()
+  description String   @default("Payment Gateway Fee") @db.Text
+  updated_at  DateTime @default(now())
+  created_at  DateTime @default(now())
+
+  @@map("donation_fees")
 }
 
 model Withdraw {
