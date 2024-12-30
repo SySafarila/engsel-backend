@@ -18,11 +18,12 @@ export default class ValidateAuth {
   }
 
   static async register(values: Register) {
+    const regex = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
     const schema: Joi.ObjectSchema<Register> = Joi.object({
       email: Joi.string().email().required(),
       password: Joi.string().min(8).required(),
       name: Joi.string().required(),
-      username: Joi.string().required(),
+      username: Joi.string().regex(regex).required(),
     });
     const options: Joi.ValidationOptions = {
       abortEarly: false,
