@@ -21,6 +21,6 @@ jobs:
       - run: npx prisma generate
       - run: npx prisma migrate deploy
       - run: npx prisma db seed
-      - run: MIDTRANS_SERVER_KEY=${{ secrets.MIDTRANS_SERVER_KEY }} SMTP_HOST=${{ secrets.SMTP_HOST }} SMTP_PORT=${{ secrets.SMTP_PORT }} SMTP_USER=${{ secrets.SMTP_USER }} SMTP_PASS=${{ SMTP_PASS }} npm test
+      - run: MIDTRANS_SERVER_KEY=${{ secrets.MIDTRANS_SERVER_KEY }} SMTP_HOST=${{ secrets.SMTP_HOST }} SMTP_PORT=${{ secrets.SMTP_PORT }} SMTP_USER=${{ secrets.SMTP_USER }} SMTP_PASS=${{ secrets.SMTP_PASS }} npm test
       - run: npm run build
       - run: docker compose down
