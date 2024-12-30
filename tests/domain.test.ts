@@ -25,5 +25,8 @@ describe("Domain clear", () => {
 
     const test8 = Domain.clear("https://testing.com:3000");
     expect(test8).toBe("testing.com");
+
+    const test9 = Domain.clear("https://ce09-103-171-183-15.ngrok-free.app");
+    expect(test9).toBe("ce09-103-171-183-15.ngrok-free.app");
   });
 });
