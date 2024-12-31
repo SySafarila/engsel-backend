@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
 import Locals from "../types/locals";
@@ -7,11 +7,11 @@ import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import ValidateSetting from "../validator/ValidateSetting";
 
-type OverlayCode = "basic" | "formula-1";
+type OverlayCode = "basic" | "f1-radio";
 
 export default class SettingController {
   private static overlaySettingJson(req: Request, overlayCode: OverlayCode) {
-    const overlays: OverlayCode[] = ["basic", "formula-1"];
+    const overlays: OverlayCode[] = ["basic", "f1-radio"];
     let setting: object = {};
     if (overlays.includes(overlayCode)) {
       switch (overlayCode) {
@@ -24,8 +24,12 @@ export default class SettingController {
           };
           break;
 
-        case "formula-1":
-          setting = {};
+        case "f1-radio":
+          setting = {
+            driver_name: req.body.driver_name ?? "Leclerc",
+            team: req.body.team ?? "ferrari",
+          };
+          break;
 
         default:
           setting = {};
@@ -37,7 +41,7 @@ export default class SettingController {
   }
 
   static async setOverlaySetting(req: Request, res: Response) {
-    const overlays: OverlayCode[] = ["basic", "formula-1"];
+    const overlays: OverlayCode[] = ["basic", "f1-radio"];
     const { overlayCode } = req.params as { overlayCode: OverlayCode };
     const { user_id } = res.locals as Locals;
     const prisma = new PrismaClient();
@@ -110,7 +114,7 @@ export default class SettingController {
 
   static async getOverlaySetting(req: Request, res: Response) {
     const prisma = new PrismaClient();
-    const overlays: OverlayCode[] = ["basic", "formula-1"];
+    const overlays: OverlayCode[] = ["basic", "f1-radio"];
     const { overlayCode } = req.params as { overlayCode: OverlayCode };
     const { streamkey } = req.query as { streamkey: string };
 
