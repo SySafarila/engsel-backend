@@ -31,7 +31,7 @@ export default class Cookie {
       ...(req.headers.origin && {
         domain: `.${Domain.clear(req.headers.origin)}`,
       }),
-      secure: true,
+      secure: req.secure ? true : false,
     });
     return cookie;
   }
