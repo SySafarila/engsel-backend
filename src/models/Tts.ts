@@ -19,7 +19,7 @@ export default class Tts {
     }
   }
 
-  private async hitGoogleTtsApi(text: string): Promise<string> {
+  private async hitGoogleTtsApi(text: string): Promise<string | null> {
     const token = process.env.GOOGLE_TEXT_TO_SPEECH_API_KEY;
 
     // Performs the text-to-speech request
@@ -38,7 +38,8 @@ export default class Tts {
 
     if (!token) {
       logger.error("GOOGLE_TEXT_TO_SPEECH_API_KEY not set");
-      throw new HTTPError("GOOGLE_TEXT_TO_SPEECH_API_KEY not set", 500);
+      return null;
+      // throw new HTTPError("GOOGLE_TEXT_TO_SPEECH_API_KEY not set", 500);
     }
 
     try {
@@ -60,10 +61,11 @@ export default class Tts {
         logger.error("Error while generating audio by Google Text-To-Speech");
         logger.error(error.message);
         logger.error(error.response?.data.error.message);
-        throw new HTTPError(
-          "Error while generating audio by Google Text-To-Speech",
-          error.status ?? 500
-        );
+        return null;
+        // throw new HTTPError(
+        //   "Error while generating audio by Google Text-To-Speech",
+        //   error.status ?? 500
+        // );
       }
 
       logger.error("Error while generating audio by Google Text-To-Speech");
