@@ -1,6 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as PC } from "@prisma/client";
 import axios, { AxiosError } from "axios";
 import { v7 as UUIDV7 } from "uuid";
+import PrismaClient from "../utils/Database";
 import HTTPError from "../utils/HTTPError";
 import logger from "../utils/logger";
 
@@ -11,13 +12,7 @@ type Params = {
 };
 
 export default class Tts {
-  private prisma: PrismaClient | undefined;
-
-  constructor(prisma?: PrismaClient) {
-    if (!this.prisma) {
-      this.prisma = prisma ?? new PrismaClient();
-    }
-  }
+  private prisma: PC = PrismaClient;
 
   private async hitGoogleTtsApi(text: string): Promise<string | null> {
     const token = process.env.GOOGLE_TEXT_TO_SPEECH_API_KEY;
@@ -99,7 +94,7 @@ export default class Tts {
 
   private async generateAndSave(values: Params) {
     const base64 = await this.hitGoogleTtsApi(values.text);
-    return await this.prisma!.tts.create({
+    return await this.prisma.tts.create({
       data: {
         id: UUIDV7(),
         is_female: values.isFemale,
@@ -111,7 +106,7 @@ export default class Tts {
   }
 
   private async find(values: Params) {
-    return await this.prisma!.tts.findFirst({
+    return await this.prisma.tts.findFirst({
       where: {
         text: {
           equals: values.text,

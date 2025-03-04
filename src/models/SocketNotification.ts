@@ -1,14 +1,14 @@
-import { PrismaClient } from "@prisma/client";
 import { v7 as UUIDV7 } from "uuid";
 import { io } from "../socketio";
 import { SendNotificationToCreator } from "../types/Requests";
 import { DonationSocket } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import logger from "../utils/logger";
 import Tts from "./Tts";
 
 export default class SocketNotification {
   static async getMinAmountForTts(creatorId: string): Promise<number> {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     let minAmountForTts: number = 10000;
 

@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import path from "path";
 import { validate as validateUUID } from "uuid";
 import Locals from "../types/locals";
 import { ErrorResponse, Withdraw, Withdraws } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import withdraw from "../utils/withdraw";
@@ -13,7 +13,7 @@ export default class WithdrawController {
   static async charge(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const { amount } = req.body as { amount: number };
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       const checkBank = await prisma.bank.findFirst({
@@ -52,7 +52,7 @@ export default class WithdrawController {
 
   static async get(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { is_pending, cursor } = req.query as {
       is_pending: string;
       cursor: string;
@@ -103,7 +103,7 @@ export default class WithdrawController {
   }
 
   static async adminGet(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { is_pending, cursor } = req.query as {
       is_pending: string;
       cursor: string;
@@ -161,7 +161,7 @@ export default class WithdrawController {
   }
 
   static async adminGetDetail(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { withdrawId } = req.params as { withdrawId: string };
 
     try {
@@ -222,7 +222,7 @@ export default class WithdrawController {
   }
 
   static async adminAccept(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { withdrawId } = req.params as { withdrawId: string };
 
     try {
@@ -270,7 +270,7 @@ export default class WithdrawController {
   }
 
   static async getImage(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { withdrawId } = req.params as { withdrawId: string };
 
     try {

@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import Creator from "../models/Creator";
 import Donator from "../models/Donator";
@@ -7,6 +6,7 @@ import Transaction from "../models/Transaction";
 import Locals from "../types/locals";
 import { SendDonate } from "../types/Requests";
 import { DonateSuccess, ErrorResponse } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateDonate } from "../validator/validateDonate";
@@ -17,7 +17,7 @@ export default class DonateController {
     const { amount, donator_name, message, payment_method, donator_email } =
       req.body as SendDonate;
     const { username } = req.params as { username: string };
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       await validateDonate({
@@ -69,7 +69,7 @@ export default class DonateController {
   }
 
   static async getDonations(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { user_id } = res.locals as Locals;
     const { cursor } = req.query as { cursor: string };
 
@@ -119,7 +119,7 @@ export default class DonateController {
   static async replay(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const { transaction_id } = req.body as { transaction_id: string };
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       await validateReplayDonate({

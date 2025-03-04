@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import { parse } from "cookie";
 import { NextFunction, Request, Response } from "express";
 import Cookies from "../types/Cookies";
 import Locals from "../types/locals";
 import { LogoutSuccess } from "../types/Responses";
 import Cookie from "../utils/Cookie";
+import PrismaClient from "../utils/Database";
 import HTTPError from "../utils/HTTPError";
 import Token from "../utils/Token";
 
@@ -16,7 +16,7 @@ const logoutMiddleware = async (
   try {
     let jwt: string | undefined = undefined;
     const locals = res.locals as Locals;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { authorization } = req.headers;
 
     if (authorization) {

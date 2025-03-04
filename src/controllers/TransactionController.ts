@@ -1,13 +1,13 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { validate as validateUUID } from "uuid";
 import { DetailTransaction, ErrorResponse } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 
 export default class TransactionController {
   static async getDetail(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { transactionId } = req.params as { transactionId: string };
 
     try {

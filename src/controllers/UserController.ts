@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import Locals from "../types/locals";
 import { UpdateUser } from "../types/Requests";
@@ -8,13 +7,14 @@ import {
   UserDetailPublic,
   Users,
 } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateUpdateUser } from "../validator/validateUpdateUser";
 
 export default class UserController {
   static async getDetail(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { username } = req.params as { username: string };
 
     try {
@@ -67,7 +67,7 @@ export default class UserController {
   }
 
   static async getDetailPublic(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { username } = req.params as { username: string };
 
     try {
@@ -117,7 +117,7 @@ export default class UserController {
   }
 
   static async getUsers(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { identifier } = req.query as { identifier: string };
 
     try {
@@ -175,7 +175,7 @@ export default class UserController {
   }
 
   static async delete(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { user_id, role_level_peak } = res.locals as Locals;
     const { username } = req.params as { username: string };
     let selectedUserPeakRole: number = 9999;
@@ -237,7 +237,7 @@ export default class UserController {
   }
 
   static async update(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { username } = req.params as { username: string };
     const body = req.body as UpdateUser;
 

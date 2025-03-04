@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
 import Locals from "../types/locals";
@@ -10,6 +9,7 @@ import {
   RoleReadSuccess,
   RoleUpdateSuccess,
 } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import ValidateRole from "../validator/ValidateRole";
@@ -18,7 +18,7 @@ export default class RoleController {
   static async store(req: Request, res: Response) {
     const { name, level, permissions } = req.body as RoleCreate;
     const { role_level_peak } = res.locals as Locals;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     try {
       await ValidateRole.validateStore({
         level: level,
@@ -94,7 +94,7 @@ export default class RoleController {
     const { name, level, permissions } = req.body as RoleUpdate;
     const { role_level_peak } = res.locals as Locals;
     const params = req.params as { roleName: string };
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     try {
       await ValidateRole.validateUpdate({
         name: name,
@@ -216,7 +216,7 @@ export default class RoleController {
   static async delete(req: Request, res: Response) {
     const { role_level_peak } = res.locals as Locals;
     const params = req.params as { roleName: string };
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       const check = await prisma.role.findFirst({
@@ -256,7 +256,7 @@ export default class RoleController {
   }
 
   static async read(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     try {
       const roles = await prisma.role.findMany({
         orderBy: {

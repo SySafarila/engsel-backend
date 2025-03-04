@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7, validate as validateUUID } from "uuid";
 import Locals from "../types/locals";
 import { BankCreate } from "../types/Requests";
 import { ErrorResponse } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { validateBank } from "../validator/validateBank";
@@ -11,7 +11,7 @@ import { validateBank } from "../validator/validateBank";
 export default class BankController {
   static async get(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       const banks = await prisma.bank.findMany({
@@ -53,7 +53,7 @@ export default class BankController {
   static async delete(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const { bankId } = req.params as { bankId: string };
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       const validateBankId = validateUUID(bankId);
@@ -81,7 +81,7 @@ export default class BankController {
 
   static async store(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { bank, number } = req.body as BankCreate;
 
     try {
@@ -126,7 +126,7 @@ export default class BankController {
   }
 
   static async getAdmin(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       const banks = await prisma.bank.findMany({
@@ -175,7 +175,7 @@ export default class BankController {
   }
 
   static async acceptBank(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { bankId } = req.params as { bankId: string };
 
     try {

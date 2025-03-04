@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { v7 as UUIDV7 } from "uuid";
+import PrismaClient from "./Database";
 import HTTPError from "./HTTPError";
 
 type Params = {
@@ -10,7 +10,7 @@ type Params = {
 export default async function withdraw(
   values: Params
 ): Promise<{ withdrawId: string }> {
-  const prisma = new PrismaClient();
+  const prisma = PrismaClient;
 
   const user = await prisma.user.findFirst({
     where: {

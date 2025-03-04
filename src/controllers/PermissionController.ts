@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
 import { PermissionCreate, PermissionUpdate } from "../types/Requests";
@@ -8,6 +7,7 @@ import {
   PermissionDeleteSuccess,
   PermissionReadSuccess,
 } from "../types/Responses";
+import { default as PrismaClient } from "../utils/Database";
 import HTTPError from "../utils/HTTPError";
 import errorHandler from "../utils/errorHandler";
 import ValidatePermission from "../validator/ValidatePermission";
@@ -15,7 +15,7 @@ import ValidatePermission from "../validator/ValidatePermission";
 export default class PermissionController {
   static async store(req: Request, res: Response) {
     const { name } = req.body as PermissionCreate;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     try {
       await ValidatePermission.validateStore({
         name: name,
@@ -61,7 +61,7 @@ export default class PermissionController {
   static async update(req: Request, res: Response) {
     const { name } = req.body as PermissionUpdate;
     const params = req.params as { permissionName: string };
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       if (!params.permissionName) {
@@ -112,7 +112,7 @@ export default class PermissionController {
   }
 
   static async delete(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const params = req.params as { permissionName: string };
 
     try {
@@ -150,7 +150,7 @@ export default class PermissionController {
   }
 
   static async read(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     try {
       const permissions = await prisma.permission.findMany({
         orderBy: {

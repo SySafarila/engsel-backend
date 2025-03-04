@@ -1,12 +1,12 @@
-import { PrismaClient } from "@prisma/client";
 import { parse } from "cookie";
 import { NextFunction, Request, Response } from "express";
 import Cookies from "../types/Cookies";
 import Locals from "../types/locals";
 import { ErrorResponse } from "../types/Responses";
+import PrismaClient from "../utils/Database";
+import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import Token from "../utils/Token";
-import errorHandler from "../utils/errorHandler";
 
 const authMiddleware = async (
   req: Request,
@@ -16,7 +16,7 @@ const authMiddleware = async (
   try {
     let jwt: string | undefined = undefined;
     const locals = res.locals as Locals;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { authorization } = req.headers;
 
     if (authorization) {

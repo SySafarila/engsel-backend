@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { v7 as UUIDV7 } from "uuid";
+import PrismaClient from "../src/utils/Database";
 
-const prisma = new PrismaClient();
+const prisma = PrismaClient;
 
 async function main() {
   await prisma.permission.createMany({

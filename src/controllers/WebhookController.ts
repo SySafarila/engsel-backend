@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { createHash } from "crypto";
 import { Request, Response } from "express";
 import { validate as validateUUID } from "uuid";
 import { MidtransWebhookQrisSettlement } from "../types/Requests";
 import { ErrorResponse } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import { getMidtransServerKey } from "../utils/midtrans";
@@ -11,7 +11,7 @@ import { settlement } from "../utils/transactionsWebhookHandler";
 
 export default class WebhookController {
   static async midtrans(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { transactionId } = req.params as { transactionId: string };
     const body = req.body as MidtransWebhookQrisSettlement;
 

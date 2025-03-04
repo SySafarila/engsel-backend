@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
@@ -13,6 +12,7 @@ import {
 } from "../types/Responses";
 import Locals from "../types/locals";
 import Cookie from "../utils/Cookie";
+import PrismaClient from "../utils/Database";
 import HTTPError from "../utils/HTTPError";
 import Password from "../utils/Password";
 import Token from "../utils/Token";
@@ -22,7 +22,7 @@ import { validateUpdateAccount } from "../validator/validateUpdateAccount";
 
 export default class AuthController {
   static async emailVerification(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { token } = req.params as { token: string };
 
     try {
@@ -69,7 +69,7 @@ export default class AuthController {
   }
   static async login(req: Request, res: Response) {
     const { email, password } = req.body as Login;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       await ValidateAuth.login({
@@ -125,7 +125,7 @@ export default class AuthController {
 
   static async register(req: Request, res: Response) {
     const { email, password, name, username } = req.body as Register;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       await ValidateAuth.register({
@@ -189,7 +189,7 @@ export default class AuthController {
   }
 
   static async me(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { user_id } = res.locals as Locals;
 
     try {
@@ -247,7 +247,7 @@ export default class AuthController {
   static async updateMe(req: Request, res: Response) {
     const { user_id } = res.locals as Locals;
     const { email, password, name, username } = req.body as UpdateAccount;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       await validateUpdateAccount({
@@ -324,7 +324,7 @@ export default class AuthController {
 
   static async logout(req: Request, res: Response) {
     const { token_id } = res.locals as Locals;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       const findToken = await prisma.token.findFirst({

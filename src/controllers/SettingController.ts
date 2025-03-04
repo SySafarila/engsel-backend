@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { v7 as UUIDV7 } from "uuid";
 import Locals from "../types/locals";
 import { ErrorResponse } from "../types/Responses";
+import PrismaClient from "../utils/Database";
 import errorHandler from "../utils/errorHandler";
 import HTTPError from "../utils/HTTPError";
 import ValidateSetting from "../validator/ValidateSetting";
@@ -44,7 +44,7 @@ export default class SettingController {
     const overlays: OverlayCode[] = ["basic", "f1-radio"];
     const { overlayCode } = req.params as { overlayCode: OverlayCode };
     const { user_id } = res.locals as Locals;
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
 
     try {
       if (!overlays.includes(overlayCode)) {
@@ -113,7 +113,7 @@ export default class SettingController {
   }
 
   static async getOverlaySetting(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const overlays: OverlayCode[] = ["basic", "f1-radio"];
     const { overlayCode } = req.params as { overlayCode: OverlayCode };
     const { streamkey } = req.query as { streamkey: string };
@@ -154,7 +154,7 @@ export default class SettingController {
   }
 
   static async minTts(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { user_id } = res.locals as Locals;
     const { amount } = req.body as { amount: number };
 
@@ -205,7 +205,7 @@ export default class SettingController {
   }
 
   static async getMinTts(req: Request, res: Response) {
-    const prisma = new PrismaClient();
+    const prisma = PrismaClient;
     const { user_id } = res.locals as Locals;
 
     try {
