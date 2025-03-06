@@ -96,7 +96,7 @@ model DonationFee {
   id          String   @id @unique @db.Uuid
   donation    Donation @relation(fields: [donation_id], references: [id], onDelete: Cascade)
   donation_id String   @db.Uuid
-  percentage  Decimal  @default(0.7) @db.Decimal()
+  percentage  Float    @default(0.7) @db.DoublePrecision()
   description String   @default("Payment Gateway Fee") @db.Text
   updated_at  DateTime @default(now())
   created_at  DateTime @default(now())
