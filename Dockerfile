@@ -18,6 +18,7 @@ RUN npm run build
 
 # Generate Prisma client
 RUN npx prisma generate
+RUN npx prisma migrate deploy
 
 # Stage 2: Production
 FROM node:20.17-alpine AS runner
