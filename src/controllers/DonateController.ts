@@ -90,6 +90,15 @@ export default class DonateController {
           donator_email: true,
           created_at: true,
           updated_at: true,
+          fees: {
+            select: {
+              id: true,
+              percentage: true,
+              description: true,
+              created_at: true,
+              updated_at: true,
+            },
+          },
         },
         orderBy: {
           updated_at: "desc",

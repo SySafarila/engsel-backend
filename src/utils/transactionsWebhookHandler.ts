@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { v7 as UUIDV7 } from "uuid";
 import SocketNotification from "../models/SocketNotification";
 import HTTPError from "./HTTPError";
 
@@ -48,6 +49,11 @@ export const settlement = async ({
       data: {
         is_paid: true,
         updated_at: new Date(),
+        fees: {
+          create: {
+            id: UUIDV7(),
+          },
+        },
       },
     });
   });
