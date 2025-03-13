@@ -14,21 +14,23 @@ datasource db {
 }
 
 model User {
-  id          String     @id @unique @db.Uuid
-  name        String     @db.VarChar(255)
-  username    String     @unique @db.VarChar(255)
-  email       String     @unique @db.VarChar(255)
-  password    String
-  verified_at DateTime?
-  updated_at  DateTime   @default(now())
-  created_at  DateTime   @default(now())
-  roles       Role[]
-  tokens      Token[]
-  donations   Donation[]
-  balance     Decimal    @default(0) @db.Decimal()
-  withdraws   Withdraw[]
-  banks       Bank[]
-  settings    Setting[]
+  id            String         @id @unique @db.Uuid
+  name          String         @db.VarChar(255)
+  username      String         @unique @db.VarChar(255)
+  email         String         @unique @db.VarChar(255)
+  phone         String?        @unique @db.VarChar(15)
+  password      String
+  verified_at   DateTime?
+  updated_at    DateTime       @default(now())
+  created_at    DateTime       @default(now())
+  roles         Role[]
+  tokens        Token[]
+  donations     Donation[]
+  balance       Decimal        @default(0) @db.Decimal()
+  withdraws     Withdraw[]
+  banks         Bank[]
+  settings      Setting[]
+  verifications Verification[]
 
   @@map("users")
 }
@@ -155,4 +157,15 @@ model Tts {
 
   @@index([text])
   @@map("tts")
+}
+
+model Verification {
+  id         String   @id @unique @db.Uuid
+  user_id    String?  @db.Uuid
+  User       User?    @relation(fields: [user_id], references: [id])
+  code       String   @unique @db.VarChar(5)
+  updated_at DateTime @default(now())
+  created_at DateTime @default(now())
+
+  @@map("verifications")
 }
